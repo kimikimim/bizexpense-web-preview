@@ -25,6 +25,7 @@ import '../../recurring/data/recurring_transaction_model.dart';
 import '../../recurring/data/recurring_transaction_repository.dart';
 import '../../recurring/services/recurring_service.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../cards/presentation/card_list_page.dart';
 import '../../cards/data/card_repository.dart';
 import '../../tax/presentation/tax_summary_page.dart';
@@ -230,11 +231,12 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Widget _buildPrimaryActions() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
     final actions = [
-      {'icon': Icons.add_rounded, 'label': '매출 등록', 'color': const Color(0xFF2DB400), 'bg': const Color(0xFFEBF8E1)},
-      {'icon': Icons.remove_rounded, 'label': '지출 등록', 'color': const Color(0xFFFF4D4F), 'bg': const Color(0xFFFFECEC)},
-      {'icon': Icons.document_scanner_rounded, 'label': '영수증 촬영', 'color': const Color(0xFF3182F6), 'bg': const Color(0xFFE8F1FF)},
-      {'icon': Icons.analytics_rounded, 'label': '세무 리포트', 'color': const Color(0xFF8A2BE2), 'bg': const Color(0xFFF3EAFF)},
+      {'icon': Icons.add_rounded, 'label': l10n.actionAddIncome, 'color': const Color(0xFF2DB400), 'bg': const Color(0xFFEBF8E1)},
+      {'icon': Icons.remove_rounded, 'label': l10n.actionAddExpense, 'color': const Color(0xFFFF4D4F), 'bg': const Color(0xFFFFECEC)},
+      {'icon': Icons.document_scanner_rounded, 'label': l10n.actionScanReceipt, 'color': const Color(0xFF3182F6), 'bg': const Color(0xFFE8F1FF)},
+      {'icon': Icons.analytics_rounded, 'label': l10n.actionTaxReport, 'color': const Color(0xFF8A2BE2), 'bg': const Color(0xFFF3EAFF)},
     ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -245,13 +247,13 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: GestureDetector(
               onTap: () {
                 final label = a['label'] as String;
-                if (label == '매출 등록') _navigateToAddPage(transactionType: 'income');
-                else if (label == '지출 등록') _navigateToAddPage(transactionType: 'expense');
-                else if (label == '영수증 촬영') Navigator.push(context, MaterialPageRoute(builder: (_) => const CameraPage())).then((result) {
+                if (label == l10n.actionAddIncome) _navigateToAddPage(transactionType: 'income');
+                else if (label == l10n.actionAddExpense) _navigateToAddPage(transactionType: 'expense');
+                else if (label == l10n.actionScanReceipt) Navigator.push(context, MaterialPageRoute(builder: (_) => const CameraPage())).then((result) {
                   if (result is TransactionModel) _navigateToAddPage(initialData: result, isExistingRecord: false);
                   else _loadData();
                 });
-                else if (label == '세무 리포트') Navigator.push(context, MaterialPageRoute(builder: (_) => const TaxSummaryPage()));
+                else if (label == l10n.actionTaxReport) Navigator.push(context, MaterialPageRoute(builder: (_) => const TaxSummaryPage()));
               },
               child: Column(
                 children: [
@@ -289,10 +291,10 @@ class _HomePageState extends ConsumerState<HomePage> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          _buildSectionTitle(context, '최근 거래'),
+          _buildSectionTitle(context, AppLocalizations.of(context)!.recentTransactions),
           TextButton(
             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AllTransactionsPage(transactions: _transactions))),
-            child: const Text('전체 보기', style: TextStyle(color: Color(0xFF3182F6), fontSize: 13, fontWeight: FontWeight.w600)),
+            child: Text(AppLocalizations.of(context)!.viewAll, style: const TextStyle(color: Color(0xFF3182F6), fontSize: 13, fontWeight: FontWeight.w600)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -380,7 +382,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${now.month}월 예상 순이익',
+                AppLocalizations.of(context)!.heroNetProfit('${now.month}'),
                 style: TextStyle(fontSize: 13, color: Colors.white.withAlpha(160), fontWeight: FontWeight.w500),
               ),
               Text(
@@ -407,7 +409,9 @@ class _HomePageState extends ConsumerState<HomePage> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              isProfit ? '▲ 흑자 예상' : '▼ 적자 예상',
+              isProfit
+                  ? AppLocalizations.of(context)!.heroProfit
+                  : AppLocalizations.of(context)!.heroLoss,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -427,7 +431,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     Row(children: [
                       Container(width: 6, height: 6, decoration: const BoxDecoration(color: Color(0xFF2DB400), shape: BoxShape.circle)),
                       const SizedBox(width: 6),
-                      Text('예상 매출', style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(150))),
+                      Text(AppLocalizations.of(context)!.heroExpectedIncome, style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(150))),
                     ]),
                     const SizedBox(height: 4),
                     Text(currencyFormat.format(income),
@@ -445,7 +449,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       Row(children: [
                         Container(width: 6, height: 6, decoration: const BoxDecoration(color: Color(0xFFFF4D4F), shape: BoxShape.circle)),
                         const SizedBox(width: 6),
-                        Text('예상 지출', style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(150))),
+                        Text(AppLocalizations.of(context)!.heroExpectedExpense, style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(150))),
                       ]),
                       const SizedBox(height: 4),
                       Text(currencyFormat.format(expense),
@@ -480,8 +484,8 @@ class _HomePageState extends ConsumerState<HomePage> {
     }).toList();
 
     if (results.isEmpty) {
-      return const Center(
-        child: Text('검색 결과가 없습니다.', style: TextStyle(color: Colors.grey)),
+      return Center(
+        child: Text(AppLocalizations.of(context)!.noResults, style: const TextStyle(color: Colors.grey)),
       );
     }
 
@@ -532,7 +536,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 autofocus: true,
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(
-                  hintText: '상호, 메모, 금액 검색...',
+                  hintText: AppLocalizations.of(context)!.searchHint,
                   hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
                   border: InputBorder.none,
                 ),

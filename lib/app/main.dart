@@ -12,11 +12,13 @@ import '../features/onboarding/presentation/country_select_page.dart';
 
 import '../core/providers/theme_provider.dart';
 import '../core/providers/font_size_provider.dart';
+import '../core/providers/country_config_provider.dart';
 import '../core/config/country_tax_config.dart';
 
 import '../features/shell/main_shell_page.dart';
 import '../features/cards/services/native_channel_service.dart';
 import '../core/theme/app_typography.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,11 +71,16 @@ class MyApp extends ConsumerWidget {
     final themeMode = ref.watch(themeProvider);
     final fontSizeLevel = ref.watch(fontSizeProvider);
     final double textScale = getFontScale(fontSizeLevel);
+    final countryConfig = ref.watch(countryConfigProvider);
+    final locale = Locale(countryConfig.languageCode);
 
     return MaterialApp(
       title: 'BizExpense',
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
         useMaterial3: true,
@@ -122,15 +129,6 @@ class MyApp extends ConsumerWidget {
           child: child!,
         );
       },
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('ko', 'KR'),
-        Locale('en', 'US'),
-      ],
       home: startPage,
     );
   }

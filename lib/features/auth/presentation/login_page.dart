@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../user/presentation/user_type_page.dart';
 import 'signup_page.dart';
 import '../../shell/main_shell_page.dart';
@@ -50,8 +51,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   Future<void> _signIn() async {
     final email = _emailCtrl.text.trim();
     final password = _passwordCtrl.text.trim();
+    final l10n = AppLocalizations.of(context)!;
     if (email.isEmpty || password.isEmpty) {
-      _showError('이메일과 비밀번호를 입력해주세요.');
+      _showError(l10n.loginEmailRequired);
       return;
     }
     setState(() => _isLoading = true);
@@ -62,10 +64,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       );
       if (mounted && res.user != null) await _redirect(res.user!.id);
     } on AuthException {
-      _showError('이메일 또는 비밀번호를 확인해주세요.');
+      _showError(l10n.loginError);
     } catch (e) {
-      appLogger.e('로그인 오류', error: e);
-      _showError('오류가 발생했습니다. 다시 시도해주세요.');
+      appLogger.e('login error', error: e);
+      _showError(l10n.loginGenericError);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -170,7 +172,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '아직 계정이 없으신가요?',
+                          AppLocalizations.of(context)!.noAccount,
                           style: TextStyle(color: Colors.grey[500], fontSize: 14),
                         ),
                         TextButton(
@@ -179,9 +181,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             context,
                             MaterialPageRoute(builder: (_) => const SignupPage()),
                           ),
-                          child: const Text(
-                            '회원가입',
-                            style: TextStyle(
+                          child: Text(
+                            AppLocalizations.of(context)!.signUp,
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF1E88E5),
                               fontSize: 14,
@@ -227,7 +229,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         ),
         const SizedBox(height: 6),
         Text(
-          '사장님의 든든한 세무 파트너',
+          AppLocalizations.of(context)!.appTagline,
           style: TextStyle(
             fontSize: 14,
             color: Colors.white.withAlpha(180),
@@ -255,20 +257,20 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '로그인',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.of(context)!.login,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
-            '계속하려면 로그인해주세요.',
+            AppLocalizations.of(context)!.loginSubtitle,
             style: TextStyle(fontSize: 13, color: Colors.grey[500]),
           ),
           const SizedBox(height: 24),
 
           _buildField(
             controller: _emailCtrl,
-            label: '이메일',
+            label: AppLocalizations.of(context)!.email,
             icon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
             isDark: isDark,
@@ -277,7 +279,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
           _buildField(
             controller: _passwordCtrl,
-            label: '비밀번호',
+            label: AppLocalizations.of(context)!.password,
             icon: Icons.lock_outline,
             obscure: _obscurePassword,
             isDark: isDark,
@@ -294,7 +296,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           const SizedBox(height: 24),
 
           _buildGradientButton(
-            label: _isLoading ? '로그인 중...' : '로그인',
+            label: _isLoading
+                ? AppLocalizations.of(context)!.loginLoading
+                : AppLocalizations.of(context)!.login,
             isLoading: _isLoading,
             onTap: _signIn,
           ),
@@ -375,9 +379,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 height: 22,
                 child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
               )
-            : const Text(
-                '로그인',
-                style: TextStyle(
+            : Text(
+                label,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

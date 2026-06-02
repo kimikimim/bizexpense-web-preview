@@ -22,6 +22,7 @@ class CountryTaxConfig {
   final String yearPeriodFormat;
   final List<TaxFilingPeriod> filingPeriods;
   final List<String> nonDeductibleCategories;
+  final String languageCode;
 
   const CountryTaxConfig({
     required this.countryCode,
@@ -35,6 +36,7 @@ class CountryTaxConfig {
     required this.yearPeriodFormat,
     required this.filingPeriods,
     required this.nonDeductibleCategories,
+    this.languageCode = 'en',
   });
 
   TaxFilingPeriod currentPeriod() {
@@ -63,6 +65,7 @@ const Map<String, CountryTaxConfig> kCountryConfigs = {
     vatRate: 0.10,
     vatTerminology: '부가세',
     yearPeriodFormat: '{year}년 {period}',
+    languageCode: 'ko',
     filingPeriods: [
       TaxFilingPeriod(label: '1기', startMonth: 1, endMonth: 6),
       TaxFilingPeriod(label: '2기', startMonth: 7, endMonth: 12),
@@ -79,6 +82,7 @@ const Map<String, CountryTaxConfig> kCountryConfigs = {
     vatRate: 0.05,
     vatTerminology: 'VAT',
     yearPeriodFormat: '{year} {period}',
+    languageCode: 'ar',
     filingPeriods: [
       TaxFilingPeriod(label: 'Q1', startMonth: 1, endMonth: 3),
       TaxFilingPeriod(label: 'Q2', startMonth: 4, endMonth: 6),
@@ -141,6 +145,7 @@ const Map<String, CountryTaxConfig> kCountryConfigs = {
     vatRate: 0.15,
     vatTerminology: 'VAT',
     yearPeriodFormat: '{year} {period}',
+    languageCode: 'ar',
     filingPeriods: [
       TaxFilingPeriod(label: 'Q1', startMonth: 1, endMonth: 3),
       TaxFilingPeriod(label: 'Q2', startMonth: 4, endMonth: 6),
