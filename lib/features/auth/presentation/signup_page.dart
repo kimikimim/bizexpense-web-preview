@@ -133,13 +133,16 @@ class _SignupPageState extends State<SignupPage> {
 
       if (res.user == null) throw Exception('회원가입 실패');
 
+      final prefs = await SharedPreferences.getInstance();
+      final countryCode = prefs.getString('country_code') ?? 'KR';
+
       await supabase.from('profiles').upsert({
         'id': res.user!.id,
         'user_type': _userType,
+        'country_code': countryCode,
         'updated_at': DateTime.now().toIso8601String(),
       });
 
-      final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user_type', _userType);
 
       if (!mounted) return;
