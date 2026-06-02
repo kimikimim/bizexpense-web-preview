@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/providers/font_size_provider.dart';
+import '../../../core/providers/country_config_provider.dart';
+import '../../../core/config/country_tax_config.dart';
 
 import '../../transactions/presentation/my_business_page.dart';
 import '../../tax/presentation/tax_setup_page.dart';
@@ -38,6 +40,85 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void initState() {
     super.initState();
     _loadVersion();
+  }
+
+  void _showCountryPicker(BuildContext context, bool isDark) {
+    final countries = kCountryConfigs.values.toList();
+    final current = ref.read(countryConfigProvider);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: Text(
+                  '국가 / 지역 선택',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : const Color(0xFF191F28),
+                  ),
+                ),
+              ),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: countries.length,
+                separatorBuilder: (_, __) => Divider(
+                  height: 1,
+                  indent: 20,
+                  endIndent: 20,
+                  color: isDark ? Colors.white10 : Colors.grey.shade100,
+                ),
+                itemBuilder: (_, i) {
+                  final c = countries[i];
+                  final isSelected = c.countryCode == current.countryCode;
+                  return ListTile(
+                    leading: Text(c.flagEmoji, style: const TextStyle(fontSize: 24)),
+                    title: Text(
+                      c.countryName,
+                      style: TextStyle(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected ? const Color(0xFF3182F6) : null,
+                      ),
+                    ),
+                    subtitle: Text('${c.vatTerminology} ${(c.vatRate * 100).toStringAsFixed(0)}% · ${c.currencySymbol}'),
+                    trailing: isSelected
+                        ? const Icon(Icons.check_rounded, color: Color(0xFF3182F6))
+                        : null,
+                    onTap: () async {
+                      await ref.read(countryConfigProvider.notifier).setCountry(c.countryCode);
+                      if (context.mounted) Navigator.pop(ctx);
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _loadVersion() async {
@@ -87,6 +168,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final sectionColor = isDark ? Colors.grey[400] : Colors.blueGrey;
 
     final currentFontSizeLevel = ref.watch(fontSizeProvider);
+    final currentCountry = ref.watch(countryConfigProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -143,6 +225,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
           ),
           
+          ListTile(
+            leading: Text(currentCountry.flagEmoji, style: const TextStyle(fontSize: 22)),
+            title: const Text("국가 / 지역"),
+            subtitle: Text("${currentCountry.countryName} · ${currentCountry.vatTerminology} ${(currentCountry.vatRate * 100).toStringAsFixed(0)}%"),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+            onTap: () => _showCountryPicker(context, isDark),
+          ),
+
           const Divider(),
 
           Padding(
