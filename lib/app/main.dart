@@ -26,25 +26,30 @@ Future<void> main() async {
 
   await dotenv.load(fileName: ".env");
 
+  final prefs = await SharedPreferences.getInstance();
+  final savedCountry = prefs.getString('country_code') ?? 'KR';
+  final isME = savedCountry != 'KR';
+
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: isME
+        ? dotenv.env['SUPABASE_ME_URL']!
+        : dotenv.env['SUPABASE_KR_URL']!,
+    anonKey: isME
+        ? dotenv.env['SUPABASE_ME_ANON_KEY']!
+        : dotenv.env['SUPABASE_KR_ANON_KEY']!,
   );
 
   NativeChannelService().init();
-
-  final prefs = await SharedPreferences.getInstance();
 
   if (prefs.getBool('isDark') == null) {
     await prefs.setBool('isDark', false);
   }
 
-  final countryCode = prefs.getString('country_code');
   final userType = prefs.getString('user_type');
   final session = Supabase.instance.client.auth.currentSession;
 
   Widget startPage;
-  if (countryCode == null || !kCountryConfigs.containsKey(countryCode)) {
+  if (!kCountryConfigs.containsKey(savedCountry) || prefs.getString('country_code') == null) {
     startPage = const CountrySelectPage();
   } else if (session == null) {
     startPage = const LoginPage();
