@@ -19,6 +19,7 @@ ios/Runner/GoogleService-Info.plist
 # ▶ ENV / 보안 정보
 .env
 .env.*
+!build/web/assets/.env
 *.secret
 *.key
 *.pem
