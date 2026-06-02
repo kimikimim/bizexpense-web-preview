@@ -1,0 +1,36 @@
+# ▶ Flutter 기본
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.macos/
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+.dart_tool/
+
+# ▶ IDE
+.idea/
+.vscode/
+*.iml
+
+# ▶ 시스템 파일
+.DS_Store
+
+# ▶ ENV / 보안 정보
+.env
+.env.*
+*.secret
+*.key
+*.pem
+*.cert
+
+# ▶ Supabase
+supabase/.temp/
+supabase/.branches/
+supabase/.config/
+
+# ▶ Logs
+*.log
+
+# ▶ Generated
+pubspec.lock       # (라이브러리 고정하려면 지워도 됨)
+coverage/
