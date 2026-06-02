@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import '../../home/presentation/home_page.dart';
@@ -44,7 +45,7 @@ class _UserTypePageState extends State<UserTypePage> {
       );
     } catch (e) {
       appLogger.e("저장 에러: $e", error: e);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("설정 저장 중 오류가 발생했습니다.")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.userTypeSaveError)));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -62,7 +63,7 @@ class _UserTypePageState extends State<UserTypePage> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -72,15 +73,15 @@ class _UserTypePageState extends State<UserTypePage> {
           TextButton.icon(
             onPressed: _signOut,
             icon: const Icon(Icons.logout, size: 18, color: Colors.grey),
-            label: const Text("로그아웃", style: TextStyle(color: Colors.grey)),
+            label: Text(l10n.settingsLogout, style: const TextStyle(color: Colors.grey)),
           ),
         ],
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: _isSaving 
-              ? const Center(child: CircularProgressIndicator()) 
+          child: _isSaving
+              ? const Center(child: CircularProgressIndicator())
               : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,7 +95,7 @@ class _UserTypePageState extends State<UserTypePage> {
               ),
               const SizedBox(height: 12),
               Text(
-                "사용 용도를 선택해주세요.",
+                l10n.userTypeSelectPrompt,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.grey[700]),
               ),
@@ -102,18 +103,18 @@ class _UserTypePageState extends State<UserTypePage> {
 
               _buildTypeCard(
                 icon: Icons.person,
-                title: "개인용",
-                subtitle: "생활비, 용돈 관리",
+                title: l10n.userTypePersonal,
+                subtitle: l10n.userTypePersonalSub,
                 isSelected: false,
                 onTap: () => _saveTypeAndGoHome('personal'),
               ),
-              
+
               const SizedBox(height: 16),
 
               _buildTypeCard(
                 icon: Icons.store,
-                title: "사업자용",
-                subtitle: "경비 처리, 세금 관리",
+                title: l10n.userTypeBusiness,
+                subtitle: l10n.userTypeBusinessSub,
                 isSelected: _selectedMainType == 'business',
                 onTap: () {
                   setState(() {
@@ -132,9 +133,9 @@ class _UserTypePageState extends State<UserTypePage> {
                     padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
                     child: Column(
                       children: [
-                        _buildSubButton("👤 개인사업자", () => _saveTypeAndGoHome('business_individual')),
+                        _buildSubButton("👤 ${l10n.userTypeIndividual}", () => _saveTypeAndGoHome('business_individual')),
                         const SizedBox(height: 12),
-                        _buildSubButton("🏢 법인사업자", () => _saveTypeAndGoHome('business_corporate')),
+                        _buildSubButton("🏢 ${l10n.userTypeCorporate}", () => _saveTypeAndGoHome('business_corporate')),
                       ],
                     ),
                   ),

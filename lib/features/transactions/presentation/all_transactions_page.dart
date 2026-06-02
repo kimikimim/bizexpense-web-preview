@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../core/widgets/primary_button.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../../transactions/data/transaction_model.dart';
 import '../../transactions/data/transaction_repository.dart';
 import '../../../core/constants/category_icons.dart';
-import '../../transactions/presentation/transaction_list_item.dart';
 import 'add_transaction_page.dart';
 import 'transaction_list_item.dart';
 
@@ -278,8 +278,9 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
     
     final Set<String> allMethods =
         _source.map((e) => e.method).toSet();
+    final l10n = AppLocalizations.of(context)!;
     final Set<String> allCategories =
-        _source.map((e) => e.category ?? '미분류').toSet();
+        _source.map((e) => e.category ?? l10n.allTransactionsUncategorized).toSet();
 
     final result = await showModalBottomSheet<TransactionFilter>(
       context: context,
@@ -341,9 +342,9 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                         horizontal: 16, vertical: 8),
                     child: Row(
                       children: [
-                        const Text(
-                          "필터",
-                          style: TextStyle(
+                        Text(
+                          l10n.allTransactionsFilterTitle,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -360,7 +361,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                               TransactionFilter.initial(),
                             );
                           },
-                          child: const Text("초기화"),
+                          child: Text(l10n.allTransactionsFilterReset),
                         ),
                       ],
                     ),
@@ -376,7 +377,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                             CrossAxisAlignment.start,
                         children: [
                           
-                          buildSectionTitle("기간"),
+                          buildSectionTitle(l10n.allTransactionsPeriod),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(
@@ -387,7 +388,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                               children: [
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "전체",
+                                  label: l10n.allTransactionsPeriodAll,
                                   selected: localFilter
                                           .periodPreset ==
                                       PeriodPreset.all,
@@ -408,7 +409,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                                 ),
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "이번 달",
+                                  label: l10n.allTransactionsPeriodThisMonth,
                                   selected: localFilter
                                           .periodPreset ==
                                       PeriodPreset.thisMonth,
@@ -426,7 +427,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                                 ),
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "지난 달",
+                                  label: l10n.allTransactionsPeriodLastMonth,
                                   selected: localFilter
                                           .periodPreset ==
                                       PeriodPreset.lastMonth,
@@ -444,7 +445,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                                 ),
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "3개월",
+                                  label: l10n.allTransactionsPeriodThreeMonths,
                                   selected: localFilter
                                           .periodPreset ==
                                       PeriodPreset.threeMonths,
@@ -462,7 +463,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                                 ),
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "직접 선택",
+                                  label: l10n.allTransactionsPeriodCustom,
                                   selected: localFilter
                                           .periodPreset ==
                                       PeriodPreset.custom,
@@ -506,7 +507,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                             ),
                           ),
 
-                          buildSectionTitle("거래 유형"),
+                          buildSectionTitle(l10n.addTransactionType),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(
@@ -516,7 +517,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                               children: [
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "전체",
+                                  label: l10n.allTransactionsTypeAll,
                                   selected: localFilter
                                           .typeFilter ==
                                       TransactionTypeFilter.all,
@@ -533,7 +534,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                                 ),
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "수입",
+                                  label: l10n.allTransactionsTypeIncome,
                                   selected: localFilter
                                           .typeFilter ==
                                       TransactionTypeFilter
@@ -551,7 +552,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                                 ),
                                 _buildChoiceChip(
                                   context: context,
-                                  label: "지출",
+                                  label: l10n.allTransactionsTypeExpense,
                                   selected: localFilter
                                           .typeFilter ==
                                       TransactionTypeFilter
@@ -571,7 +572,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                             ),
                           ),
 
-                          buildSectionTitle("결제 수단"),
+                          buildSectionTitle(l10n.allTransactionsFilterPaymentMethod),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(
@@ -611,7 +612,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                             ),
                           ),
 
-                          buildSectionTitle("카테고리"),
+                          buildSectionTitle(l10n.allTransactionsFilterCategory),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(
@@ -651,9 +652,9 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                             ),
                           ),
 
-                          buildSectionTitle("세무 옵션"),
+                          buildSectionTitle(l10n.allTransactionsFilterTaxOptions),
                           SwitchListTile(
-                            title: const Text("영수증 없는 건만"),
+                            title: Text(l10n.allTransactionsFilterNoReceipt),
                             value:
                                 localFilter.onlyNoReceipt,
                             onChanged: (v) {
@@ -666,7 +667,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                           ),
                           SwitchListTile(
                             title:
-                                const Text("부가세 공제 가능만"),
+                                Text(l10n.allTransactionsFilterTaxDeductible),
                             value: localFilter
                                 .onlyTaxDeductible,
                             onChanged: (v) {
@@ -679,7 +680,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                             },
                           ),
 
-                          buildSectionTitle("정렬"),
+                          buildSectionTitle(l10n.allTransactionsFilterSort),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(
@@ -697,26 +698,26 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                                   ),
                                 ),
                               ),
-                              items: const [
+                              items: [
                                 DropdownMenuItem(
                                   value: SortOption.latest,
-                                  child: Text("최신순"),
+                                  child: Text(l10n.allTransactionsSortLatest),
                                 ),
                                 DropdownMenuItem(
                                   value: SortOption.oldest,
-                                  child: Text("과거순"),
+                                  child: Text(l10n.allTransactionsSortOldest),
                                 ),
                                 DropdownMenuItem(
                                   value:
                                       SortOption.amountDesc,
                                   child:
-                                      Text("금액 높은순"),
+                                      Text(l10n.allTransactionsSortAmountDesc),
                                 ),
                                 DropdownMenuItem(
                                   value:
                                       SortOption.amountAsc,
                                   child:
-                                      Text("금액 낮은순"),
+                                      Text(l10n.allTransactionsSortAmountAsc),
                                 ),
                               ],
                               onChanged: (val) {
@@ -742,7 +743,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                           const EdgeInsets.fromLTRB(
                               16, 8, 16, 16),
                       child: PrimaryButton(
-                        label: "필터 적용하기",
+                        label: l10n.allTransactionsFilterApply,
                         onPressed: () {
                           Navigator.pop(context, localFilter);
                         },
@@ -794,17 +795,17 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10nBuild = AppLocalizations.of(context)!;
     final grouped = _groupByDate(_filtered);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("전체 내역"),
+        title: Text(l10nBuild.allTransactionsTitle),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          
           Container(
             padding:
                 const EdgeInsets.fromLTRB(16, 8, 16, 12),
@@ -818,7 +819,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                     decoration: InputDecoration(
                       isDense: true,
                       prefixIcon: const Icon(Icons.search),
-                      hintText: "상호, 메모, 카테고리, 금액 검색",
+                      hintText: l10nBuild.allTransactionsSearchHint,
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear, size: 18),
@@ -881,7 +882,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                             color: Colors.white, size: 20),
                         const SizedBox(width: 4),
                         Text(
-                          "필터",
+                          l10nBuild.allTransactionsFilter,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -918,8 +919,8 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
           const Divider(height: 1),
           Expanded(
             child: grouped.isEmpty
-                ? const Center(
-                    child: Text("내역이 없습니다."),
+                ? Center(
+                    child: Text(l10nBuild.allTransactionsNoResults),
                   )
                 : ListView.builder(
                     itemCount: grouped.length,
@@ -957,7 +958,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
   
                             final String categoryKey =
                                 (tx.category == null || tx.category!.trim().isEmpty)
-                                    ? '기타'
+                                    ? l10nBuild.allTransactionsUncategorized
                                     : tx.category!;
                             final icon = categoryIcons[categoryKey] ?? Icons.receipt_long;
 

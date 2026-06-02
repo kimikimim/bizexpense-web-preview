@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/providers/font_size_provider.dart';
@@ -72,7 +73,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                 child: Text(
-                  '국가 / 지역 선택',
+                  AppLocalizations.of(ctx)!.settingsCountryPickerTitle,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -135,7 +136,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("링크를 열 수 없습니다.")));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.settingsLinkError)));
     }
   }
 
@@ -152,7 +153,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     if (await canLaunchUrl(emailLaunchUri)) {
       await launchUrl(emailLaunchUri);
     } else {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("기본 메일 앱을 찾을 수 없습니다.")));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.settingsMailError)));
     }
   }
 
@@ -164,6 +165,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final sectionColor = isDark ? Colors.grey[400] : Colors.blueGrey;
 
@@ -173,7 +175,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("설정"),
+        title: Text(l10n.settingsTitle),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
       ),
@@ -183,7 +185,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
           Padding(
             padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text("화면 설정", style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
+            child: Text(l10n.settingsDisplaySettings, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
           ),
           Container(
             color: isDark ? Colors.grey[900] : Colors.white,
@@ -194,9 +196,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("글자 크기", style: TextStyle(fontSize: 16)),
+                    Text(l10n.settingsFontSizeLabel, style: const TextStyle(fontSize: 16)),
                     Text(
-                      _getFontSizeLabel(currentFontSizeLevel), 
+                      _getFontSizeLabel(currentFontSizeLevel, l10n),
                       style: TextStyle(color: Colors.blue[400], fontWeight: FontWeight.bold)
                     ),
                   ],
@@ -207,27 +209,26 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   max: 5,
                   divisions: 4,
                   activeColor: Colors.blueGrey,
-                  label: _getFontSizeLabel(currentFontSizeLevel),
+                  label: _getFontSizeLabel(currentFontSizeLevel, l10n),
                   onChanged: (value) {
-                    
                     ref.read(fontSizeProvider.notifier).setFontSize(value.toInt());
                   },
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("작게", style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    Text("보통", style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    Text("크게", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(l10n.settingsSmall, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(l10n.settingsMedium, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(l10n.settingsLarge, style: const TextStyle(fontSize: 12, color: Colors.grey)),
                   ],
                 )
               ],
             ),
           ),
-          
+
           ListTile(
             leading: Text(currentCountry.flagEmoji, style: const TextStyle(fontSize: 22)),
-            title: const Text("국가 / 지역"),
+            title: Text(l10n.settingsCountryRegion),
             subtitle: Text("${currentCountry.countryName} · ${currentCountry.vatTerminology} ${(currentCountry.vatRate * 100).toStringAsFixed(0)}%"),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () => _showCountryPicker(context, isDark),
@@ -237,12 +238,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text("사업자 관리", style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
+            child: Text(l10n.settingsBusinessManagement, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
           ),
           ListTile(
             leading: const Icon(Icons.person_pin, color: Colors.indigo),
-            title: const Text("내 사업자 정보 수정"),
-            subtitle: const Text("상호명, 사업자번호, 주소 등"),
+            title: Text(l10n.settingsMyBusinessInfo),
+            subtitle: Text(l10n.settingsMyBusinessInfoSub),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) => MyBusinessPage()));
@@ -250,8 +251,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           ListTile(
             leading: const Icon(Icons.calendar_month, color: Colors.indigo),
-            title: const Text("세무 일정 설정"),
-            subtitle: const Text("사업자 유형, 과세 유형 변경"),
+            title: Text(l10n.settingsTaxScheduleSetup),
+            subtitle: Text(l10n.settingsTaxScheduleSetupSub),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) => TaxSetupPage()));
@@ -262,19 +263,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text("데이터 관리", style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
+            child: Text(l10n.menuDataManagement, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
           ),
           ListTile(
             leading: const Icon(Icons.cloud_upload, color: Colors.green),
-            title: const Text("데이터 백업"),
-            subtitle: const Text("클라우드에 자동 백업"),
+            title: Text(l10n.settingsDataBackup),
+            subtitle: Text(l10n.settingsDataBackupSub),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () async {
               final success = await _backupService.autoBackup();
               if (mounted) {
+                final l10n2 = AppLocalizations.of(context)!;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(success ? "백업이 완료되었습니다!" : "백업에 실패했습니다."),
+                    content: Text(success ? l10n2.settingsBackupSuccess : l10n2.settingsBackupFailed),
                     backgroundColor: success ? Colors.green : Colors.red,
                   ),
                 );
@@ -283,22 +285,22 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           ListTile(
             leading: const Icon(Icons.file_download_outlined, color: Colors.blue),
-            title: const Text("백업 파일 다운로드"),
-            subtitle: const Text("로컬에 백업 파일 저장"),
+            title: Text(l10n.settingsBackupFileDownload),
+            subtitle: Text(l10n.settingsBackupFileDownloadSub),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () async {
               final backupJson = await _backupService.createBackupFile();
               if (backupJson != null) {
-                await Share.share(backupJson, subject: 'BizExpense 백업 파일');
+                await Share.share(backupJson, subject: 'BizExpense Backup');
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("백업 파일을 공유했습니다.")),
+                    SnackBar(content: Text(AppLocalizations.of(context)!.settingsBackupShared)),
                   );
                 }
               } else {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("백업 파일 생성에 실패했습니다.")),
+                    SnackBar(content: Text(AppLocalizations.of(context)!.settingsBackupShareFailed)),
                   );
                 }
               }
@@ -306,8 +308,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           ListTile(
             leading: const Icon(Icons.restore, color: Colors.orange),
-            title: const Text("데이터 복원"),
-            subtitle: const Text("백업 파일에서 데이터 복원"),
+            title: Text(l10n.settingsDataRestore),
+            subtitle: Text(l10n.settingsDataRestoreSub),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () async {
               try {
@@ -320,24 +322,22 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   String backupJson;
                   
                   if (kIsWeb) {
-                    
                     final bytes = result.files.single.bytes;
                     if (bytes == null) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("파일을 읽을 수 없습니다.")),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.settingsFileNotReadable)),
                         );
                       }
                       return;
                     }
                     backupJson = utf8.decode(bytes);
                   } else {
-                    
                     final path = result.files.single.path;
                     if (path == null) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("파일 경로를 찾을 수 없습니다.")),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.settingsFilePathNotFound)),
                         );
                       }
                       return;
@@ -345,31 +345,35 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     final file = File(path);
                     backupJson = await file.readAsString();
                   }
-                  
+
                   final confirm = await showDialog<bool>(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text("데이터 복원"),
-                      content: const Text("기존 데이터가 삭제되고 백업 데이터로 대체됩니다. 계속하시겠습니까?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text("취소"),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text("복원", style: TextStyle(color: Colors.red)),
-                        ),
-                      ],
-                    ),
+                    builder: (context) {
+                      final dl = AppLocalizations.of(context)!;
+                      return AlertDialog(
+                        title: Text(dl.settingsRestoreDialogTitle),
+                        content: Text(dl.settingsRestoreDialogContent),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: Text(dl.cancel),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: Text(dl.settingsRestoreConfirm, style: const TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      );
+                    },
                   );
-                  
+
                   if (confirm == true) {
                     final success = await _backupService.restoreFromBackup(backupJson);
                     if (mounted) {
+                      final l10n2 = AppLocalizations.of(context)!;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(success ? "복원이 완료되었습니다!" : "복원에 실패했습니다."),
+                          content: Text(success ? l10n2.settingsRestoreSuccess : l10n2.settingsRestoreFailed),
                           backgroundColor: success ? Colors.green : Colors.red,
                         ),
                       );
@@ -379,7 +383,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               } catch (e) {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("파일 읽기 실패: $e")),
+                    SnackBar(content: Text(AppLocalizations.of(context)!.settingsFileReadFailed(e.toString()))),
                   );
                 }
               }
@@ -387,15 +391,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           ListTile(
             leading: const Icon(Icons.account_balance_wallet, color: Colors.indigo),
-            title: const Text("세무 정산용 엑셀"),
-            subtitle: const Text("국세청 전자신고용 파일 생성"),
+            title: Text(l10n.settingsTaxSettlementExcel),
+            subtitle: Text(l10n.settingsTaxSettlementExcelSub),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () async {
               final transactions = await _transactionRepository.getTransactions();
               if (transactions.isEmpty) {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("내보낼 데이터가 없습니다.")),
+                    SnackBar(content: Text(AppLocalizations.of(context)!.noDataToExport)),
                   );
                 }
                 return;
@@ -403,7 +407,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               await _excelService.exportForAccounting(transactions);
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("세무 정산용 엑셀 파일이 생성되었습니다.")),
+                  SnackBar(content: Text(AppLocalizations.of(context)!.exportExcelSuccess)),
                 );
               }
             },
@@ -413,18 +417,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text("고객센터", style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
+            child: Text(l10n.settingsSupport, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
           ),
           ListTile(
             leading: const Icon(Icons.chat_bubble_outline, color: Colors.amber),
-            title: const Text("카카오톡 1:1 문의"),
-            subtitle: const Text("가장 빠르게 답변을 받을 수 있어요"),
+            title: Text(l10n.settingsKakaoInquiry),
+            subtitle: Text(l10n.settingsKakaoInquirySub),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () => _launchUrl(_kakaoOpenChatUrl),
           ),
           ListTile(
             leading: const Icon(Icons.email_outlined, color: Colors.blue),
-            title: const Text("이메일 문의"),
+            title: Text(l10n.settingsEmailInquiry),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: _sendEmail,
           ),
@@ -433,32 +437,32 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text("약관 및 정책", style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
+            child: Text(l10n.settingsTermsAndPolicy, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
           ),
           ListTile(
             leading: const Icon(Icons.description_outlined),
-            title: const Text("서비스 이용약관"),
+            title: Text(l10n.settingsTermsOfService),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () => _launchUrl(_termsUrl),
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text("개인정보 처리방침"),
+            title: Text(l10n.settingsPrivacyPolicy),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () => _launchUrl(_privacyUrl),
           ),
           ListTile(
             leading: const Icon(Icons.policy_outlined),
-            title: const Text("오픈소스 라이선스"),
+            title: Text(l10n.settingsOpenSourceLicense),
             trailing: const Icon(Icons.arrow_forward_ios, size: 14),
             onTap: () => showLicensePage(context: context, applicationName: "BizExpense", applicationVersion: _appVersion),
           ),
-          
+
           const Divider(),
-          
+
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text("앱 버전"),
+            title: Text(l10n.settingsAppVersion),
             trailing: Text(_appVersion, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
           ),
           
@@ -468,14 +472,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     );
   }
 
-  String _getFontSizeLabel(int level) {
+  String _getFontSizeLabel(int level, AppLocalizations l10n) {
     switch (level) {
-      case 1: return "매우 작게";
-      case 2: return "작게";
-      case 3: return "보통";
-      case 4: return "크게";
-      case 5: return "매우 크게";
-      default: return "보통";
+      case 1: return l10n.settingsFontSizeVerySmall;
+      case 2: return l10n.settingsFontSizeSmall;
+      case 3: return l10n.settingsFontSizeNormal;
+      case 4: return l10n.settingsFontSizeLarge;
+      case 5: return l10n.settingsFontSizeVeryLarge;
+      default: return l10n.settingsFontSizeNormal;
     }
   }
 }

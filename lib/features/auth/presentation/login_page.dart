@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import 'package:expense_pro/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../user/presentation/user_type_page.dart';
 import 'signup_page.dart';
 import '../../shell/main_shell_page.dart';
@@ -159,9 +160,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
                   const SizedBox(height: 24),
 
-                  FadeTransition(
-                    opacity: _fadeAnim,
-                    child: _buildKakaoButton(),
+                  FutureBuilder<bool>(
+                    future: SharedPreferences.getInstance()
+                        .then((p) => (p.getString('country_code') ?? 'KR') == 'KR'),
+                    builder: (context, snap) {
+                      if (snap.data != true) return const SizedBox.shrink();
+                      return FadeTransition(
+                        opacity: _fadeAnim,
+                        child: _buildKakaoButton(),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 20),

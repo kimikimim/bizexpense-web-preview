@@ -24,9 +24,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTax => 'Tax';
 
   @override
-  String get navCommunity => 'Community';
-
-  @override
   String get navMenu => 'Menu';
 
   @override
@@ -332,4 +329,651 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentMethod => 'Payment Method';
+
+  @override
+  String get menuAll => 'All';
+
+  @override
+  String get menuBusinessManagement => 'Business Management';
+
+  @override
+  String get menuStatisticsAnalysis => 'Statistics & Analytics';
+
+  @override
+  String get menuStatisticsAnalysisSub =>
+      'Revenue & expense trends, category analysis';
+
+  @override
+  String get menuProfileSettings => 'Profile Settings';
+
+  @override
+  String get menuProfileSettingsSub => 'Name, age, nickname management';
+
+  @override
+  String get menuTaxReport => 'Tax Report';
+
+  @override
+  String get menuTaxReportSub => 'Quarterly VAT & income tax report';
+
+  @override
+  String get menuTaxSchedule => 'Tax Schedule';
+
+  @override
+  String get menuTaxScheduleSub =>
+      'VAT / income tax filing deadline management';
+
+  @override
+  String get menuRecurring => 'Recurring Transactions';
+
+  @override
+  String get menuRecurringSub =>
+      'Auto-register rent, subscriptions, payroll, etc.';
+
+  @override
+  String get menuInvoice => 'Issue Invoice';
+
+  @override
+  String get menuInvoiceSub => 'Create invoices to send to clients';
+
+  @override
+  String get menuDataManagement => 'Data Management';
+
+  @override
+  String get menuExportExcel => 'Export to Excel';
+
+  @override
+  String get menuExportExcelSub =>
+      'Generate Excel file with all revenue & expenses';
+
+  @override
+  String get menuTaxExcel => 'Tax Settlement Excel';
+
+  @override
+  String get menuTaxExcelSub => 'Save in NTS e-filing format';
+
+  @override
+  String get menuPreferences => 'Preferences';
+
+  @override
+  String get menuDarkMode => 'Dark Mode';
+
+  @override
+  String get menuSettings => 'Settings';
+
+  @override
+  String get menuSettingsSub => 'Font size, business info, data backup';
+
+  @override
+  String get menuLogout => 'Sign Out';
+
+  @override
+  String get menuLogoutSub => 'Sign out from this device only';
+
+  @override
+  String get menuFrequentlyUsed => 'Quick Access';
+
+  @override
+  String get menuStatisticsShort => 'Stats';
+
+  @override
+  String get menuTaxReportShort => 'Tax\nReport';
+
+  @override
+  String get menuTaxScheduleShort => 'Tax\nSchedule';
+
+  @override
+  String get menuSettingsShort => 'Settings';
+
+  @override
+  String get menuManagingBusiness => 'Managing business';
+
+  @override
+  String get logoutDialogTitle => 'Sign Out';
+
+  @override
+  String get logoutDialogContent => 'Are you sure you want to sign out?';
+
+  @override
+  String get logoutConfirm => 'Sign Out';
+
+  @override
+  String get noDataToExport => 'No data to export.';
+
+  @override
+  String get exportExcelSuccess =>
+      'Tax settlement Excel file has been created.';
+
+  @override
+  String get exportExcelBasicSuccess => 'Excel file has been created.';
+
+  @override
+  String get exportExcelError => 'An error occurred during export.';
+
+  @override
+  String get settingsDisplaySettings => 'Display Settings';
+
+  @override
+  String get settingsFontSizeLabel => 'Font Size';
+
+  @override
+  String get settingsFontSizeVerySmall => 'Very Small';
+
+  @override
+  String get settingsFontSizeSmall => 'Small';
+
+  @override
+  String get settingsFontSizeNormal => 'Normal';
+
+  @override
+  String get settingsFontSizeLarge => 'Large';
+
+  @override
+  String get settingsFontSizeVeryLarge => 'Very Large';
+
+  @override
+  String get settingsBusinessManagement => 'Business Management';
+
+  @override
+  String get settingsMyBusinessInfo => 'My Business Info';
+
+  @override
+  String get settingsMyBusinessInfoSub =>
+      'Business name, registration number, address, etc.';
+
+  @override
+  String get settingsTaxScheduleSetup => 'Tax Schedule Setup';
+
+  @override
+  String get settingsTaxScheduleSetupSub => 'Change business type, tax type';
+
+  @override
+  String get settingsDataBackup => 'Data Backup';
+
+  @override
+  String get settingsDataBackupSub => 'Auto backup to cloud';
+
+  @override
+  String get settingsBackupFileDownload => 'Download Backup File';
+
+  @override
+  String get settingsBackupFileDownloadSub => 'Save backup file locally';
+
+  @override
+  String get settingsDataRestore => 'Data Restore';
+
+  @override
+  String get settingsDataRestoreSub => 'Restore data from backup file';
+
+  @override
+  String get settingsTaxSettlementExcel => 'Tax Settlement Excel';
+
+  @override
+  String get settingsTaxSettlementExcelSub =>
+      'Generate NTS e-filing format file';
+
+  @override
+  String get settingsSupport => 'Customer Support';
+
+  @override
+  String get settingsKakaoInquiry => 'KakaoTalk 1:1 Inquiry';
+
+  @override
+  String get settingsKakaoInquirySub => 'Get the fastest response';
+
+  @override
+  String get settingsEmailInquiry => 'Email Inquiry';
+
+  @override
+  String get settingsTermsAndPolicy => 'Terms & Policies';
+
+  @override
+  String get settingsTermsOfService => 'Terms of Service';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsOpenSourceLicense => 'Open Source Licenses';
+
+  @override
+  String get settingsAppVersion => 'App Version';
+
+  @override
+  String get settingsCountryPickerTitleAlt => 'Country / Region';
+
+  @override
+  String get settingsLinkError => 'Cannot open link.';
+
+  @override
+  String get settingsMailError => 'Cannot find default mail app.';
+
+  @override
+  String get settingsBackupSuccess => 'Backup complete!';
+
+  @override
+  String get settingsBackupFailed => 'Backup failed.';
+
+  @override
+  String get settingsBackupShared => 'Backup file shared.';
+
+  @override
+  String get settingsBackupShareFailed => 'Failed to create backup file.';
+
+  @override
+  String get settingsRestoreDialogTitle => 'Restore Data';
+
+  @override
+  String get settingsRestoreDialogContent =>
+      'Existing data will be deleted and replaced with backup data. Continue?';
+
+  @override
+  String get settingsRestoreConfirm => 'Restore';
+
+  @override
+  String get settingsRestoreSuccess => 'Restore complete!';
+
+  @override
+  String get settingsRestoreFailed => 'Restore failed.';
+
+  @override
+  String settingsFileReadFailed(String error) {
+    return 'File read failed: $error';
+  }
+
+  @override
+  String get settingsFileNotReadable => 'Cannot read file.';
+
+  @override
+  String get settingsFilePathNotFound => 'File path not found.';
+
+  @override
+  String get userTypeSelectPrompt => 'Please choose your purpose.';
+
+  @override
+  String get userTypePersonal => 'Personal';
+
+  @override
+  String get userTypePersonalSub => 'Living expenses, allowance management';
+
+  @override
+  String get userTypeBusiness => 'Business';
+
+  @override
+  String get userTypeBusinessSub => 'Expense management, tax management';
+
+  @override
+  String get userTypeIndividual => 'Sole Proprietor';
+
+  @override
+  String get userTypeCorporate => 'Corporation';
+
+  @override
+  String get userTypeSaveError => 'An error occurred while saving settings.';
+
+  @override
+  String get addTransactionNew => 'New Entry';
+
+  @override
+  String get addTransactionEdit => 'Edit Entry';
+
+  @override
+  String get addTransactionType => 'Transaction Type';
+
+  @override
+  String get addTransactionInfo => 'Transaction Info';
+
+  @override
+  String get addTransactionExpense => 'Expense';
+
+  @override
+  String get addTransactionIncome => 'Income';
+
+  @override
+  String get addTransactionStoreName => 'Business Name';
+
+  @override
+  String get addTransactionStoreNameRequired => 'Required field';
+
+  @override
+  String get addTransactionAmountLabel => 'Amount';
+
+  @override
+  String get addTransactionAmountUnit => 'KRW';
+
+  @override
+  String get addTransactionAmountRequired => 'Required field';
+
+  @override
+  String get addTransactionPaymentMethod => 'Payment Method';
+
+  @override
+  String get addTransactionDepositMethod => 'Deposit Method';
+
+  @override
+  String get addTransactionInstallment => 'Installment Months';
+
+  @override
+  String get addTransactionInstallmentOnce => 'Full Payment';
+
+  @override
+  String get addTransactionInstallmentCustom => 'Enter Directly';
+
+  @override
+  String addTransactionInstallmentMonths(String n) {
+    return '$n months';
+  }
+
+  @override
+  String get addTransactionCashReceiptBusiness => 'Business Expense Proof';
+
+  @override
+  String get addTransactionCashReceiptPersonal => 'Income Deduction';
+
+  @override
+  String get addTransactionApprovalNumber => 'Approval Number (Optional)';
+
+  @override
+  String get addTransactionCategoryLabel => 'Category';
+
+  @override
+  String get addTransactionCategoryDirectInput => 'Enter directly';
+
+  @override
+  String get addTransactionTaxSettings => 'Tax Settings';
+
+  @override
+  String get addTransactionVatDeductible => 'VAT Deductible';
+
+  @override
+  String get addTransactionBusinessExpense =>
+      'This expense is business-related';
+
+  @override
+  String get addTransactionBusinessExpenseOnSub =>
+      'Included in VAT refund calculation as business expense';
+
+  @override
+  String get addTransactionBusinessExpenseOffSub =>
+      'Marked as personal/non-deductible (excluded from VAT refund)';
+
+  @override
+  String get addTransactionMemoLabel => 'Memo';
+
+  @override
+  String get addTransactionMemoHint => 'Enter details';
+
+  @override
+  String get addTransactionMemoHintEntertainment => 'Enter attendees, purpose';
+
+  @override
+  String get addTransactionSaving => 'Saving...';
+
+  @override
+  String get addTransactionSave => 'Save';
+
+  @override
+  String get addTransactionSaved => 'Saved!';
+
+  @override
+  String get addTransactionDeleted => 'Deleted.';
+
+  @override
+  String get addTransactionLoginRequired =>
+      'Login required. Please sign in again.';
+
+  @override
+  String get addTransactionImageUploadFailed => 'Image upload failed';
+
+  @override
+  String get addTransactionReceiptPrompt => 'Please attach a receipt photo';
+
+  @override
+  String get addTransactionReceiptRequired => 'Receipt Required';
+
+  @override
+  String get addTransactionReceiptRequiredContent =>
+      'Based on payment method and amount,\nthis transaction requires a receipt to be kept by tax law.\n\nSave without receipt?';
+
+  @override
+  String get addTransactionReceiptAttach => 'Attach Receipt';
+
+  @override
+  String get addTransactionSaveAnyway => 'Save Anyway';
+
+  @override
+  String get addTransactionCorporateReceiptWarning => 'Missing Proof Notice';
+
+  @override
+  String get addTransactionCorporateReceiptContent =>
+      'Corporate expenses generally require receipts.\nSave without a photo?';
+
+  @override
+  String get addTransactionDeleteConfirmTitle => 'Delete this entry?';
+
+  @override
+  String get addTransactionDeleteConfirmContent =>
+      'This entry will be permanently deleted.';
+
+  @override
+  String get addTransactionReceiptTake => 'Take Photo';
+
+  @override
+  String get addTransactionReceiptFromGallery => 'Choose from Gallery';
+
+  @override
+  String get addTransactionUncategorized => 'Uncategorized';
+
+  @override
+  String get allTransactionsTitle => 'All Transactions';
+
+  @override
+  String get allTransactionsSearchHint =>
+      'Search by name, memo, category, amount';
+
+  @override
+  String get allTransactionsFilter => 'Filter';
+
+  @override
+  String get allTransactionsFilterTitle => 'Filter';
+
+  @override
+  String get allTransactionsFilterReset => 'Reset';
+
+  @override
+  String get allTransactionsFilterApply => 'Apply Filter';
+
+  @override
+  String get allTransactionsNoResults => 'No entries found.';
+
+  @override
+  String get allTransactionsPeriod => 'Period';
+
+  @override
+  String get allTransactionsPeriodAll => 'All';
+
+  @override
+  String get allTransactionsPeriodThisMonth => 'This Month';
+
+  @override
+  String get allTransactionsPeriodLastMonth => 'Last Month';
+
+  @override
+  String get allTransactionsPeriodThreeMonths => '3 Months';
+
+  @override
+  String get allTransactionsPeriodCustom => 'Custom';
+
+  @override
+  String get allTransactionsTypeAll => 'All';
+
+  @override
+  String get allTransactionsTypeIncome => 'Income';
+
+  @override
+  String get allTransactionsTypeExpense => 'Expense';
+
+  @override
+  String get allTransactionsFilterPaymentMethod => 'Payment Method';
+
+  @override
+  String get allTransactionsFilterCategory => 'Category';
+
+  @override
+  String get allTransactionsFilterTaxOptions => 'Tax Options';
+
+  @override
+  String get allTransactionsFilterNoReceipt => 'No receipt only';
+
+  @override
+  String get allTransactionsFilterTaxDeductible => 'VAT deductible only';
+
+  @override
+  String get allTransactionsFilterSort => 'Sort';
+
+  @override
+  String get allTransactionsSortLatest => 'Latest';
+
+  @override
+  String get allTransactionsSortOldest => 'Oldest';
+
+  @override
+  String get allTransactionsSortAmountDesc => 'Highest Amount';
+
+  @override
+  String get allTransactionsSortAmountAsc => 'Lowest Amount';
+
+  @override
+  String get allTransactionsUncategorized => 'Uncategorized';
+
+  @override
+  String get statisticsTitle => 'Statistics / Tax Report';
+
+  @override
+  String get statisticsTaxReportTab => 'Tax Report';
+
+  @override
+  String get statisticsExpenseTab => 'Expense Statistics';
+
+  @override
+  String get statisticsThisMonthTaxScore => 'This Month\'s Tax Score';
+
+  @override
+  String get statisticsDeductibleRatio => 'Deductible Expense Ratio';
+
+  @override
+  String get statisticsReceiptCoverage => 'Receipt Coverage';
+
+  @override
+  String get statisticsBigNoReceipt => '100K+ Missing Receipts';
+
+  @override
+  String get statisticsDeductibleSection =>
+      'Deductible / Non-Deductible Expenses';
+
+  @override
+  String get statisticsDeductible => 'Deductible';
+
+  @override
+  String get statisticsNonDeductible => 'Non-Deductible / Personal';
+
+  @override
+  String statisticsDeductiblePercent(String percent) {
+    return 'About $percent% of this month\'s expenses are tax-deductible.';
+  }
+
+  @override
+  String get statisticsTopRiskCategories => 'Top 3 High-Risk Categories';
+
+  @override
+  String get statisticsReceiptSection => 'Receipt Coverage';
+
+  @override
+  String get statisticsNoExpenseThisMonth => 'No expenses recorded this month.';
+
+  @override
+  String statisticsTotalExpense(String amount) {
+    return 'Total Expense $amount';
+  }
+
+  @override
+  String get statisticsTaxSafe => 'Safe';
+
+  @override
+  String get statisticsTaxNormal => 'Normal';
+
+  @override
+  String get statisticsTaxWarning => 'Warning';
+
+  @override
+  String get statisticsTaxSafeComment => 'Overall tax risk is low.';
+
+  @override
+  String get statisticsTaxNormalComment =>
+      'Manage a few risk points for better results.';
+
+  @override
+  String get statisticsTaxWarningComment =>
+      'Check non-deductible expenses and missing receipts.';
+
+  @override
+  String get taxReportTitle => 'Tax Report';
+
+  @override
+  String get taxReportVatRefundEstimate => 'Estimated VAT Refund This Quarter';
+
+  @override
+  String get taxReportVatPaymentEstimate =>
+      'Estimated VAT Payment This Quarter';
+
+  @override
+  String get taxReportEstimateNote =>
+      'Estimated based on revenue and expenses entered in the app';
+
+  @override
+  String get taxReportMonthlyExpenseBreakdown =>
+      'This Month\'s Expense Breakdown';
+
+  @override
+  String get taxReportDeductibleExpense => 'Deductible Expenses';
+
+  @override
+  String get taxReportNonDeductibleExpense =>
+      'Non-Deductible / Personal Expenses';
+
+  @override
+  String get taxReportReceiptStatus => 'Receipt Status';
+
+  @override
+  String get taxReportAllReceiptsRegistered =>
+      'All required receipts are registered';
+
+  @override
+  String taxReportMissingReceipts(String count) {
+    return 'Among expenses requiring receipts,\n$count have not been registered yet';
+  }
+
+  @override
+  String taxReportMissingAmount(String amount) {
+    return 'Missing amount: $amount';
+  }
+
+  @override
+  String taxReportNonDeductibleRatio(String ratio) {
+    return 'Non-Deductible Ratio: $ratio%';
+  }
+
+  @override
+  String get taxReportNoDataYet => 'Almost no expense data this month yet.';
+
+  @override
+  String get taxReportNonDeductibleLow =>
+      'Non-deductible ratio is low — relatively stable.';
+
+  @override
+  String get taxReportNonDeductibleMedium =>
+      'Non-deductible ratio is a bit high. Consider separating personal expenses.';
+
+  @override
+  String get taxReportNonDeductibleHigh =>
+      'Non-deductible ratio is quite high. You may need a tax consultant.';
 }

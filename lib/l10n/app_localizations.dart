@@ -128,12 +128,6 @@ abstract class AppLocalizations {
   /// **'Tax'**
   String get navTax;
 
-  /// No description provided for @navCommunity.
-  ///
-  /// In en, this message translates to:
-  /// **'Community'**
-  String get navCommunity;
-
   /// No description provided for @navMenu.
   ///
   /// In en, this message translates to:
@@ -727,6 +721,1218 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Payment Method'**
   String get paymentMethod;
+
+  /// No description provided for @menuAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get menuAll;
+
+  /// No description provided for @menuBusinessManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Management'**
+  String get menuBusinessManagement;
+
+  /// No description provided for @menuStatisticsAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics & Analytics'**
+  String get menuStatisticsAnalysis;
+
+  /// No description provided for @menuStatisticsAnalysisSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue & expense trends, category analysis'**
+  String get menuStatisticsAnalysisSub;
+
+  /// No description provided for @menuProfileSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Settings'**
+  String get menuProfileSettings;
+
+  /// No description provided for @menuProfileSettingsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, age, nickname management'**
+  String get menuProfileSettingsSub;
+
+  /// No description provided for @menuTaxReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Report'**
+  String get menuTaxReport;
+
+  /// No description provided for @menuTaxReportSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly VAT & income tax report'**
+  String get menuTaxReportSub;
+
+  /// No description provided for @menuTaxSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Schedule'**
+  String get menuTaxSchedule;
+
+  /// No description provided for @menuTaxScheduleSub.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT / income tax filing deadline management'**
+  String get menuTaxScheduleSub;
+
+  /// No description provided for @menuRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring Transactions'**
+  String get menuRecurring;
+
+  /// No description provided for @menuRecurringSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-register rent, subscriptions, payroll, etc.'**
+  String get menuRecurringSub;
+
+  /// No description provided for @menuInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue Invoice'**
+  String get menuInvoice;
+
+  /// No description provided for @menuInvoiceSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Create invoices to send to clients'**
+  String get menuInvoiceSub;
+
+  /// No description provided for @menuDataManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Management'**
+  String get menuDataManagement;
+
+  /// No description provided for @menuExportExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to Excel'**
+  String get menuExportExcel;
+
+  /// No description provided for @menuExportExcelSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Excel file with all revenue & expenses'**
+  String get menuExportExcelSub;
+
+  /// No description provided for @menuTaxExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Settlement Excel'**
+  String get menuTaxExcel;
+
+  /// No description provided for @menuTaxExcelSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Save in NTS e-filing format'**
+  String get menuTaxExcelSub;
+
+  /// No description provided for @menuPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get menuPreferences;
+
+  /// No description provided for @menuDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get menuDarkMode;
+
+  /// No description provided for @menuSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get menuSettings;
+
+  /// No description provided for @menuSettingsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Font size, business info, data backup'**
+  String get menuSettingsSub;
+
+  /// No description provided for @menuLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get menuLogout;
+
+  /// No description provided for @menuLogoutSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out from this device only'**
+  String get menuLogoutSub;
+
+  /// No description provided for @menuFrequentlyUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Access'**
+  String get menuFrequentlyUsed;
+
+  /// No description provided for @menuStatisticsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get menuStatisticsShort;
+
+  /// No description provided for @menuTaxReportShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax\nReport'**
+  String get menuTaxReportShort;
+
+  /// No description provided for @menuTaxScheduleShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax\nSchedule'**
+  String get menuTaxScheduleShort;
+
+  /// No description provided for @menuSettingsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get menuSettingsShort;
+
+  /// No description provided for @menuManagingBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Managing business'**
+  String get menuManagingBusiness;
+
+  /// No description provided for @logoutDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get logoutDialogTitle;
+
+  /// No description provided for @logoutDialogContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get logoutDialogContent;
+
+  /// No description provided for @logoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get logoutConfirm;
+
+  /// No description provided for @noDataToExport.
+  ///
+  /// In en, this message translates to:
+  /// **'No data to export.'**
+  String get noDataToExport;
+
+  /// No description provided for @exportExcelSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax settlement Excel file has been created.'**
+  String get exportExcelSuccess;
+
+  /// No description provided for @exportExcelBasicSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Excel file has been created.'**
+  String get exportExcelBasicSuccess;
+
+  /// No description provided for @exportExcelError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred during export.'**
+  String get exportExcelError;
+
+  /// No description provided for @settingsDisplaySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Settings'**
+  String get settingsDisplaySettings;
+
+  /// No description provided for @settingsFontSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Size'**
+  String get settingsFontSizeLabel;
+
+  /// No description provided for @settingsFontSizeVerySmall.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Small'**
+  String get settingsFontSizeVerySmall;
+
+  /// No description provided for @settingsFontSizeSmall.
+  ///
+  /// In en, this message translates to:
+  /// **'Small'**
+  String get settingsFontSizeSmall;
+
+  /// No description provided for @settingsFontSizeNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get settingsFontSizeNormal;
+
+  /// No description provided for @settingsFontSizeLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get settingsFontSizeLarge;
+
+  /// No description provided for @settingsFontSizeVeryLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Large'**
+  String get settingsFontSizeVeryLarge;
+
+  /// No description provided for @settingsBusinessManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Management'**
+  String get settingsBusinessManagement;
+
+  /// No description provided for @settingsMyBusinessInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'My Business Info'**
+  String get settingsMyBusinessInfo;
+
+  /// No description provided for @settingsMyBusinessInfoSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Business name, registration number, address, etc.'**
+  String get settingsMyBusinessInfoSub;
+
+  /// No description provided for @settingsTaxScheduleSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Schedule Setup'**
+  String get settingsTaxScheduleSetup;
+
+  /// No description provided for @settingsTaxScheduleSetupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Change business type, tax type'**
+  String get settingsTaxScheduleSetupSub;
+
+  /// No description provided for @settingsDataBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Backup'**
+  String get settingsDataBackup;
+
+  /// No description provided for @settingsDataBackupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto backup to cloud'**
+  String get settingsDataBackupSub;
+
+  /// No description provided for @settingsBackupFileDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Backup File'**
+  String get settingsBackupFileDownload;
+
+  /// No description provided for @settingsBackupFileDownloadSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Save backup file locally'**
+  String get settingsBackupFileDownloadSub;
+
+  /// No description provided for @settingsDataRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Restore'**
+  String get settingsDataRestore;
+
+  /// No description provided for @settingsDataRestoreSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore data from backup file'**
+  String get settingsDataRestoreSub;
+
+  /// No description provided for @settingsTaxSettlementExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Settlement Excel'**
+  String get settingsTaxSettlementExcel;
+
+  /// No description provided for @settingsTaxSettlementExcelSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate NTS e-filing format file'**
+  String get settingsTaxSettlementExcelSub;
+
+  /// No description provided for @settingsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Support'**
+  String get settingsSupport;
+
+  /// No description provided for @settingsKakaoInquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'KakaoTalk 1:1 Inquiry'**
+  String get settingsKakaoInquiry;
+
+  /// No description provided for @settingsKakaoInquirySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the fastest response'**
+  String get settingsKakaoInquirySub;
+
+  /// No description provided for @settingsEmailInquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Inquiry'**
+  String get settingsEmailInquiry;
+
+  /// No description provided for @settingsTermsAndPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Policies'**
+  String get settingsTermsAndPolicy;
+
+  /// No description provided for @settingsTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get settingsTermsOfService;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsOpenSourceLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Source Licenses'**
+  String get settingsOpenSourceLicense;
+
+  /// No description provided for @settingsAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get settingsAppVersion;
+
+  /// No description provided for @settingsCountryPickerTitleAlt.
+  ///
+  /// In en, this message translates to:
+  /// **'Country / Region'**
+  String get settingsCountryPickerTitleAlt;
+
+  /// No description provided for @settingsLinkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot open link.'**
+  String get settingsLinkError;
+
+  /// No description provided for @settingsMailError.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot find default mail app.'**
+  String get settingsMailError;
+
+  /// No description provided for @settingsBackupSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup complete!'**
+  String get settingsBackupSuccess;
+
+  /// No description provided for @settingsBackupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed.'**
+  String get settingsBackupFailed;
+
+  /// No description provided for @settingsBackupShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file shared.'**
+  String get settingsBackupShared;
+
+  /// No description provided for @settingsBackupShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create backup file.'**
+  String get settingsBackupShareFailed;
+
+  /// No description provided for @settingsRestoreDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Data'**
+  String get settingsRestoreDialogTitle;
+
+  /// No description provided for @settingsRestoreDialogContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing data will be deleted and replaced with backup data. Continue?'**
+  String get settingsRestoreDialogContent;
+
+  /// No description provided for @settingsRestoreConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get settingsRestoreConfirm;
+
+  /// No description provided for @settingsRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore complete!'**
+  String get settingsRestoreSuccess;
+
+  /// No description provided for @settingsRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore failed.'**
+  String get settingsRestoreFailed;
+
+  /// No description provided for @settingsFileReadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'File read failed: {error}'**
+  String settingsFileReadFailed(String error);
+
+  /// No description provided for @settingsFileNotReadable.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot read file.'**
+  String get settingsFileNotReadable;
+
+  /// No description provided for @settingsFilePathNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'File path not found.'**
+  String get settingsFilePathNotFound;
+
+  /// No description provided for @userTypeSelectPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose your purpose.'**
+  String get userTypeSelectPrompt;
+
+  /// No description provided for @userTypePersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get userTypePersonal;
+
+  /// No description provided for @userTypePersonalSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Living expenses, allowance management'**
+  String get userTypePersonalSub;
+
+  /// No description provided for @userTypeBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get userTypeBusiness;
+
+  /// No description provided for @userTypeBusinessSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense management, tax management'**
+  String get userTypeBusinessSub;
+
+  /// No description provided for @userTypeIndividual.
+  ///
+  /// In en, this message translates to:
+  /// **'Sole Proprietor'**
+  String get userTypeIndividual;
+
+  /// No description provided for @userTypeCorporate.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporation'**
+  String get userTypeCorporate;
+
+  /// No description provided for @userTypeSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while saving settings.'**
+  String get userTypeSaveError;
+
+  /// No description provided for @addTransactionNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New Entry'**
+  String get addTransactionNew;
+
+  /// No description provided for @addTransactionEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Entry'**
+  String get addTransactionEdit;
+
+  /// No description provided for @addTransactionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Type'**
+  String get addTransactionType;
+
+  /// No description provided for @addTransactionInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Info'**
+  String get addTransactionInfo;
+
+  /// No description provided for @addTransactionExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get addTransactionExpense;
+
+  /// No description provided for @addTransactionIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get addTransactionIncome;
+
+  /// No description provided for @addTransactionStoreName.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Name'**
+  String get addTransactionStoreName;
+
+  /// No description provided for @addTransactionStoreNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required field'**
+  String get addTransactionStoreNameRequired;
+
+  /// No description provided for @addTransactionAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get addTransactionAmountLabel;
+
+  /// No description provided for @addTransactionAmountUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'KRW'**
+  String get addTransactionAmountUnit;
+
+  /// No description provided for @addTransactionAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required field'**
+  String get addTransactionAmountRequired;
+
+  /// No description provided for @addTransactionPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get addTransactionPaymentMethod;
+
+  /// No description provided for @addTransactionDepositMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit Method'**
+  String get addTransactionDepositMethod;
+
+  /// No description provided for @addTransactionInstallment.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment Months'**
+  String get addTransactionInstallment;
+
+  /// No description provided for @addTransactionInstallmentOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Payment'**
+  String get addTransactionInstallmentOnce;
+
+  /// No description provided for @addTransactionInstallmentCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Directly'**
+  String get addTransactionInstallmentCustom;
+
+  /// No description provided for @addTransactionInstallmentMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} months'**
+  String addTransactionInstallmentMonths(String n);
+
+  /// No description provided for @addTransactionCashReceiptBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Expense Proof'**
+  String get addTransactionCashReceiptBusiness;
+
+  /// No description provided for @addTransactionCashReceiptPersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Deduction'**
+  String get addTransactionCashReceiptPersonal;
+
+  /// No description provided for @addTransactionApprovalNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Approval Number (Optional)'**
+  String get addTransactionApprovalNumber;
+
+  /// No description provided for @addTransactionCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get addTransactionCategoryLabel;
+
+  /// No description provided for @addTransactionCategoryDirectInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter directly'**
+  String get addTransactionCategoryDirectInput;
+
+  /// No description provided for @addTransactionTaxSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Settings'**
+  String get addTransactionTaxSettings;
+
+  /// No description provided for @addTransactionVatDeductible.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT Deductible'**
+  String get addTransactionVatDeductible;
+
+  /// No description provided for @addTransactionBusinessExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'This expense is business-related'**
+  String get addTransactionBusinessExpense;
+
+  /// No description provided for @addTransactionBusinessExpenseOnSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Included in VAT refund calculation as business expense'**
+  String get addTransactionBusinessExpenseOnSub;
+
+  /// No description provided for @addTransactionBusinessExpenseOffSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as personal/non-deductible (excluded from VAT refund)'**
+  String get addTransactionBusinessExpenseOffSub;
+
+  /// No description provided for @addTransactionMemoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Memo'**
+  String get addTransactionMemoLabel;
+
+  /// No description provided for @addTransactionMemoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter details'**
+  String get addTransactionMemoHint;
+
+  /// No description provided for @addTransactionMemoHintEntertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter attendees, purpose'**
+  String get addTransactionMemoHintEntertainment;
+
+  /// No description provided for @addTransactionSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get addTransactionSaving;
+
+  /// No description provided for @addTransactionSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get addTransactionSave;
+
+  /// No description provided for @addTransactionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved!'**
+  String get addTransactionSaved;
+
+  /// No description provided for @addTransactionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted.'**
+  String get addTransactionDeleted;
+
+  /// No description provided for @addTransactionLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Login required. Please sign in again.'**
+  String get addTransactionLoginRequired;
+
+  /// No description provided for @addTransactionImageUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Image upload failed'**
+  String get addTransactionImageUploadFailed;
+
+  /// No description provided for @addTransactionReceiptPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please attach a receipt photo'**
+  String get addTransactionReceiptPrompt;
+
+  /// No description provided for @addTransactionReceiptRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt Required'**
+  String get addTransactionReceiptRequired;
+
+  /// No description provided for @addTransactionReceiptRequiredContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on payment method and amount,\nthis transaction requires a receipt to be kept by tax law.\n\nSave without receipt?'**
+  String get addTransactionReceiptRequiredContent;
+
+  /// No description provided for @addTransactionReceiptAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach Receipt'**
+  String get addTransactionReceiptAttach;
+
+  /// No description provided for @addTransactionSaveAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Anyway'**
+  String get addTransactionSaveAnyway;
+
+  /// No description provided for @addTransactionCorporateReceiptWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Proof Notice'**
+  String get addTransactionCorporateReceiptWarning;
+
+  /// No description provided for @addTransactionCorporateReceiptContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate expenses generally require receipts.\nSave without a photo?'**
+  String get addTransactionCorporateReceiptContent;
+
+  /// No description provided for @addTransactionDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this entry?'**
+  String get addTransactionDeleteConfirmTitle;
+
+  /// No description provided for @addTransactionDeleteConfirmContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry will be permanently deleted.'**
+  String get addTransactionDeleteConfirmContent;
+
+  /// No description provided for @addTransactionReceiptTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get addTransactionReceiptTake;
+
+  /// No description provided for @addTransactionReceiptFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get addTransactionReceiptFromGallery;
+
+  /// No description provided for @addTransactionUncategorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncategorized'**
+  String get addTransactionUncategorized;
+
+  /// No description provided for @allTransactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All Transactions'**
+  String get allTransactionsTitle;
+
+  /// No description provided for @allTransactionsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, memo, category, amount'**
+  String get allTransactionsSearchHint;
+
+  /// No description provided for @allTransactionsFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get allTransactionsFilter;
+
+  /// No description provided for @allTransactionsFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get allTransactionsFilterTitle;
+
+  /// No description provided for @allTransactionsFilterReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get allTransactionsFilterReset;
+
+  /// No description provided for @allTransactionsFilterApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Filter'**
+  String get allTransactionsFilterApply;
+
+  /// No description provided for @allTransactionsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries found.'**
+  String get allTransactionsNoResults;
+
+  /// No description provided for @allTransactionsPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get allTransactionsPeriod;
+
+  /// No description provided for @allTransactionsPeriodAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allTransactionsPeriodAll;
+
+  /// No description provided for @allTransactionsPeriodThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get allTransactionsPeriodThisMonth;
+
+  /// No description provided for @allTransactionsPeriodLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Month'**
+  String get allTransactionsPeriodLastMonth;
+
+  /// No description provided for @allTransactionsPeriodThreeMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'3 Months'**
+  String get allTransactionsPeriodThreeMonths;
+
+  /// No description provided for @allTransactionsPeriodCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get allTransactionsPeriodCustom;
+
+  /// No description provided for @allTransactionsTypeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allTransactionsTypeAll;
+
+  /// No description provided for @allTransactionsTypeIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get allTransactionsTypeIncome;
+
+  /// No description provided for @allTransactionsTypeExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get allTransactionsTypeExpense;
+
+  /// No description provided for @allTransactionsFilterPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get allTransactionsFilterPaymentMethod;
+
+  /// No description provided for @allTransactionsFilterCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get allTransactionsFilterCategory;
+
+  /// No description provided for @allTransactionsFilterTaxOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Options'**
+  String get allTransactionsFilterTaxOptions;
+
+  /// No description provided for @allTransactionsFilterNoReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'No receipt only'**
+  String get allTransactionsFilterNoReceipt;
+
+  /// No description provided for @allTransactionsFilterTaxDeductible.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT deductible only'**
+  String get allTransactionsFilterTaxDeductible;
+
+  /// No description provided for @allTransactionsFilterSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get allTransactionsFilterSort;
+
+  /// No description provided for @allTransactionsSortLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest'**
+  String get allTransactionsSortLatest;
+
+  /// No description provided for @allTransactionsSortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest'**
+  String get allTransactionsSortOldest;
+
+  /// No description provided for @allTransactionsSortAmountDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Amount'**
+  String get allTransactionsSortAmountDesc;
+
+  /// No description provided for @allTransactionsSortAmountAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest Amount'**
+  String get allTransactionsSortAmountAsc;
+
+  /// No description provided for @allTransactionsUncategorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncategorized'**
+  String get allTransactionsUncategorized;
+
+  /// No description provided for @statisticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics / Tax Report'**
+  String get statisticsTitle;
+
+  /// No description provided for @statisticsTaxReportTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Report'**
+  String get statisticsTaxReportTab;
+
+  /// No description provided for @statisticsExpenseTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Statistics'**
+  String get statisticsExpenseTab;
+
+  /// No description provided for @statisticsThisMonthTaxScore.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month\'s Tax Score'**
+  String get statisticsThisMonthTaxScore;
+
+  /// No description provided for @statisticsDeductibleRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'Deductible Expense Ratio'**
+  String get statisticsDeductibleRatio;
+
+  /// No description provided for @statisticsReceiptCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt Coverage'**
+  String get statisticsReceiptCoverage;
+
+  /// No description provided for @statisticsBigNoReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'100K+ Missing Receipts'**
+  String get statisticsBigNoReceipt;
+
+  /// No description provided for @statisticsDeductibleSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Deductible / Non-Deductible Expenses'**
+  String get statisticsDeductibleSection;
+
+  /// No description provided for @statisticsDeductible.
+  ///
+  /// In en, this message translates to:
+  /// **'Deductible'**
+  String get statisticsDeductible;
+
+  /// No description provided for @statisticsNonDeductible.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-Deductible / Personal'**
+  String get statisticsNonDeductible;
+
+  /// No description provided for @statisticsDeductiblePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'About {percent}% of this month\'s expenses are tax-deductible.'**
+  String statisticsDeductiblePercent(String percent);
+
+  /// No description provided for @statisticsTopRiskCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Top 3 High-Risk Categories'**
+  String get statisticsTopRiskCategories;
+
+  /// No description provided for @statisticsReceiptSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt Coverage'**
+  String get statisticsReceiptSection;
+
+  /// No description provided for @statisticsNoExpenseThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses recorded this month.'**
+  String get statisticsNoExpenseThisMonth;
+
+  /// No description provided for @statisticsTotalExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Expense {amount}'**
+  String statisticsTotalExpense(String amount);
+
+  /// No description provided for @statisticsTaxSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe'**
+  String get statisticsTaxSafe;
+
+  /// No description provided for @statisticsTaxNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get statisticsTaxNormal;
+
+  /// No description provided for @statisticsTaxWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get statisticsTaxWarning;
+
+  /// No description provided for @statisticsTaxSafeComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall tax risk is low.'**
+  String get statisticsTaxSafeComment;
+
+  /// No description provided for @statisticsTaxNormalComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage a few risk points for better results.'**
+  String get statisticsTaxNormalComment;
+
+  /// No description provided for @statisticsTaxWarningComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Check non-deductible expenses and missing receipts.'**
+  String get statisticsTaxWarningComment;
+
+  /// No description provided for @taxReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Report'**
+  String get taxReportTitle;
+
+  /// No description provided for @taxReportVatRefundEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated VAT Refund This Quarter'**
+  String get taxReportVatRefundEstimate;
+
+  /// No description provided for @taxReportVatPaymentEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated VAT Payment This Quarter'**
+  String get taxReportVatPaymentEstimate;
+
+  /// No description provided for @taxReportEstimateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated based on revenue and expenses entered in the app'**
+  String get taxReportEstimateNote;
+
+  /// No description provided for @taxReportMonthlyExpenseBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month\'s Expense Breakdown'**
+  String get taxReportMonthlyExpenseBreakdown;
+
+  /// No description provided for @taxReportDeductibleExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Deductible Expenses'**
+  String get taxReportDeductibleExpense;
+
+  /// No description provided for @taxReportNonDeductibleExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-Deductible / Personal Expenses'**
+  String get taxReportNonDeductibleExpense;
+
+  /// No description provided for @taxReportReceiptStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt Status'**
+  String get taxReportReceiptStatus;
+
+  /// No description provided for @taxReportAllReceiptsRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'All required receipts are registered'**
+  String get taxReportAllReceiptsRegistered;
+
+  /// No description provided for @taxReportMissingReceipts.
+  ///
+  /// In en, this message translates to:
+  /// **'Among expenses requiring receipts,\n{count} have not been registered yet'**
+  String taxReportMissingReceipts(String count);
+
+  /// No description provided for @taxReportMissingAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing amount: {amount}'**
+  String taxReportMissingAmount(String amount);
+
+  /// No description provided for @taxReportNonDeductibleRatio.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-Deductible Ratio: {ratio}%'**
+  String taxReportNonDeductibleRatio(String ratio);
+
+  /// No description provided for @taxReportNoDataYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost no expense data this month yet.'**
+  String get taxReportNoDataYet;
+
+  /// No description provided for @taxReportNonDeductibleLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-deductible ratio is low — relatively stable.'**
+  String get taxReportNonDeductibleLow;
+
+  /// No description provided for @taxReportNonDeductibleMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-deductible ratio is a bit high. Consider separating personal expenses.'**
+  String get taxReportNonDeductibleMedium;
+
+  /// No description provided for @taxReportNonDeductibleHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-deductible ratio is quite high. You may need a tax consultant.'**
+  String get taxReportNonDeductibleHigh;
 }
 
 class _AppLocalizationsDelegate

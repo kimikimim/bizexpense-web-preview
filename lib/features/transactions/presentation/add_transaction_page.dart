@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -236,23 +237,26 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('삭제하시겠습니까?'),
-        content: const Text('이 내역은 영구적으로 삭제됩니다.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('취소'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              '삭제',
-              style: TextStyle(color: Colors.red),
+      builder: (context) {
+        final dl = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(dl.addTransactionDeleteConfirmTitle),
+          content: Text(dl.addTransactionDeleteConfirmContent),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(dl.cancel),
             ),
-          ),
-        ],
-      ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(
+                dl.delete,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
     );
 
     if (confirm != true) return;
@@ -264,7 +268,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('삭제되었습니다.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.addTransactionDeleted)),
       );
       Navigator.pop(context, true);
     }
@@ -313,7 +317,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
     if (_storeController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('상호명을 입력해주세요.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.addTransactionStoreName)),
       );
       return;
     }
@@ -328,60 +332,53 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         _needsReceiptForCurrentForm()) {
       final confirm = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('⚠️ 영수증 필수 거래입니다'),
-          content: const Text(
-            '결제수단과 금액 기준으로 볼 때,\n'
-            '이 거래는 세법상 영수증을 반드시 보관해야 하는 거래로 보여요.\n\n'
-            '그래도 영수증 없이 그냥 저장할까요?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () =>
-                  Navigator.pop(context, false),
-              child: const Text('영수증 첨부하기'),
-            ),
-            TextButton(
-              onPressed: () =>
-                  Navigator.pop(context, true),
-              child: const Text(
-                '그냥 저장',
-                style: TextStyle(color: Colors.red),
+        builder: (context) {
+          final dl = AppLocalizations.of(context)!;
+          return AlertDialog(
+            title: Text('⚠️ ${dl.addTransactionReceiptRequired}'),
+            content: Text(dl.addTransactionReceiptRequiredContent),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(dl.addTransactionReceiptAttach),
               ),
-            ),
-          ],
-        ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  dl.addTransactionSaveAnyway,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          );
+        },
       );
       if (confirm != true) return;
-    }
-    
-    else if (!hasExistingReceipt &&
+    } else if (!hasExistingReceipt &&
         !hasNewImage &&
         _userType.contains('corporate')) {
       final confirm = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('⚠️ 증빙 누락 안내'),
-          content: const Text(
-            '법인 비용은 웬만하면 영수증이 있어야 해요.\n'
-            '사진 없이 그냥 저장하시겠습니까?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () =>
-                  Navigator.pop(context, false),
-              child: const Text('영수증 첨부하기'),
-            ),
-            TextButton(
-              onPressed: () =>
-                  Navigator.pop(context, true),
-              child: const Text(
-                '그냥 저장',
-                style: TextStyle(color: Colors.red),
+        builder: (context) {
+          final dl = AppLocalizations.of(context)!;
+          return AlertDialog(
+            title: Text('⚠️ ${dl.addTransactionCorporateReceiptWarning}'),
+            content: Text(dl.addTransactionCorporateReceiptContent),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(dl.addTransactionReceiptAttach),
               ),
-            ),
-          ],
-        ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  dl.addTransactionSaveAnyway,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          );
+        },
       );
       if (confirm != true) return;
     }
@@ -398,7 +395,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         setState(() => _isLoading = false);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('이미지 업로드 실패')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.addTransactionImageUploadFailed)),
           );
         }
         return;
@@ -440,11 +437,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     final currentUser = supabase.auth.currentUser;
 
     if (currentUser == null) {
-      
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('로그인이 필요합니다. 다시 로그인해주세요.')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.addTransactionLoginRequired)),
         );
         Navigator.pop(context, false);
       }
@@ -458,7 +454,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       amount: amount,
       storeName: _storeController.text,
       category: _categoryController.text.isEmpty
-          ? '미분류'
+          ? AppLocalizations.of(context)!.addTransactionUncategorized
           : _categoryController.text,
       method: methodToSave,
       receiptUrl: finalReceiptUrl,
@@ -483,7 +479,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('저장되었습니다!')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.addTransactionSaved)),
       );
       Navigator.pop(context, true);
     }
@@ -577,7 +573,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '영수증 사진을 등록해주세요',
+                          AppLocalizations.of(context)!.addTransactionReceiptPrompt,
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 14,
@@ -623,7 +619,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     Icons.camera_alt_outlined,
                     size: 20,
                   ),
-                  label: const Text('촬영하기'),
+                  label: Text(AppLocalizations.of(context)!.addTransactionReceiptTake),
                   style: TextButton.styleFrom(
                     padding:
                         const EdgeInsets.symmetric(vertical: 16),
@@ -643,7 +639,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     Icons.photo_library_outlined,
                     size: 20,
                   ),
-                  label: const Text('앨범에서 선택'),
+                  label: Text(AppLocalizations.of(context)!.addTransactionReceiptFromGallery),
                   style: TextButton.styleFrom(
                     padding:
                         const EdgeInsets.symmetric(vertical: 16),
@@ -675,7 +671,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          widget.initialData == null ? '새 내역 입력' : '내역 수정',
+          widget.initialData == null
+              ? AppLocalizations.of(context)!.addTransactionNew
+              : AppLocalizations.of(context)!.addTransactionEdit,
         ),
         backgroundColor:
             Theme.of(context).appBarTheme.backgroundColor,
@@ -732,7 +730,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
                     _buildReceiptSection(),
 
-                    _buildSectionTitle('거래 유형'),
+                    _buildSectionTitle(AppLocalizations.of(context)!.addTransactionType),
                     Container(
                       margin:
                           const EdgeInsets.only(bottom: 16),
@@ -798,7 +796,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     const SizedBox(
                                         height: 4),
                                     Text(
-                                      '지출',
+                                      AppLocalizations.of(context)!.addTransactionExpense,
                                       style: TextStyle(
                                         color: _transactionType ==
                                                 'expense'
@@ -870,7 +868,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     const SizedBox(
                                         height: 4),
                                     Text(
-                                      '수입',
+                                      AppLocalizations.of(context)!.addTransactionIncome,
                                       style: TextStyle(
                                         color: _transactionType ==
                                                 'income'
@@ -895,7 +893,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       ),
                     ),
 
-                    _buildSectionTitle('거래 정보'),
+                    _buildSectionTitle(AppLocalizations.of(context)!.addTransactionInfo),
                     _buildInputCard(
                       child: Autocomplete<String>(
                         initialValue:
@@ -924,7 +922,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 color: textColor),
                             decoration:
                                 InputDecoration(
-                              labelText: '상호명',
+                              labelText: AppLocalizations.of(context)!.addTransactionStoreName,
                               border:
                                   InputBorder.none,
                               icon: Icon(
@@ -938,7 +936,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             validator: (val) =>
                                 val == null ||
                                         val.isEmpty
-                                    ? '필수 입력입니다'
+                                    ? AppLocalizations.of(context)!.addTransactionStoreNameRequired
                                     : null,
                           );
                         },
@@ -951,8 +949,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         style:
                             TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          labelText: '금액',
-                          suffixText: '원',
+                          labelText: AppLocalizations.of(context)!.addTransactionAmountLabel,
+                          suffixText: AppLocalizations.of(context)!.addTransactionAmountUnit,
                           border: InputBorder.none,
                           icon: Icon(
                             Icons.attach_money,
@@ -968,15 +966,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             TextInputType.number,
                         validator: (val) => val == null ||
                                 val.isEmpty
-                            ? '필수 입력입니다'
+                            ? AppLocalizations.of(context)!.addTransactionAmountRequired
                             : null,
                       ),
                     ),
 
                     _buildSectionTitle(
                       _transactionType == 'income'
-                          ? '입금 방법'
-                          : '결제 수단',
+                          ? AppLocalizations.of(context)!.addTransactionDepositMethod
+                          : AppLocalizations.of(context)!.addTransactionPaymentMethod,
                     ),
                     _buildInputCard(
                       child: DropdownButtonFormField<
@@ -1049,7 +1047,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 ),
                                 decoration:
                                     InputDecoration(
-                                  labelText: '할부 개월',
+                                  labelText: AppLocalizations.of(context)!.addTransactionInstallment,
                                   border:
                                       InputBorder
                                           .none,
@@ -1061,7 +1059,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   DropdownMenuItem(
                                     value: '1',
                                     child: Text(
-                                      '일시불',
+                                      AppLocalizations.of(context)!.addTransactionInstallmentOnce,
                                       style: TextStyle(
                                           color:
                                               textColor),
@@ -1077,7 +1075,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                             DropdownMenuItem(
                                           value: m,
                                           child: Text(
-                                            '$m개월',
+                                            AppLocalizations.of(context)!.addTransactionInstallmentMonths(m),
                                             style: TextStyle(
                                                 color:
                                                     textColor),
@@ -1087,7 +1085,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   DropdownMenuItem(
                                     value: 'custom',
                                     child: Text(
-                                      '직접 입력',
+                                      AppLocalizations.of(context)!.addTransactionInstallmentCustom,
                                       style: TextStyle(
                                           color:
                                               textColor),
@@ -1151,7 +1149,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                       Colors.blueGrey,
                                 ),
                                 Text(
-                                  '지출증빙 (사업자)',
+                                  AppLocalizations.of(context)!.addTransactionCashReceiptBusiness,
                                   style: TextStyle(
                                       color:
                                           textColor),
@@ -1174,7 +1172,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                       Colors.blueGrey,
                                 ),
                                 Text(
-                                  '소득공제 (개인)',
+                                  AppLocalizations.of(context)!.addTransactionCashReceiptPersonal,
                                   style: TextStyle(
                                       color:
                                           textColor),
@@ -1190,7 +1188,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               decoration:
                                   InputDecoration(
                                 labelText:
-                                    '승인번호 (선택)',
+                                    AppLocalizations.of(context)!.addTransactionApprovalNumber,
                                 border:
                                     InputBorder.none,
                                 icon: Icon(
@@ -1211,7 +1209,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       ),
                     ],
 
-                    _buildSectionTitle('카테고리'),
+                    _buildSectionTitle(AppLocalizations.of(context)!.addTransactionCategoryLabel),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -1282,7 +1280,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         style:
                             TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          hintText: '직접 입력',
+                          hintText: AppLocalizations.of(context)!.addTransactionCategoryDirectInput,
                           border: InputBorder.none,
                           icon: Icon(
                             Icons.category_outlined,
@@ -1300,10 +1298,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     if (isBusiness &&
                         _transactionType ==
                             'expense') ...[
-                      _buildSectionTitle('세무 설정'),
+                      _buildSectionTitle(AppLocalizations.of(context)!.addTransactionTaxSettings),
                       SwitchListTile(
                         title: Text(
-                          '부가세 공제 가능',
+                          AppLocalizations.of(context)!.addTransactionVatDeductible,
                           style: TextStyle(
                               color: textColor),
                         ),
@@ -1321,16 +1319,16 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         },
                       ),
                       SwitchListTile(
-                        title: const Text(
-                          '이 지출은 사업 관련 비용이에요',
-                          style: TextStyle(
+                        title: Text(
+                          AppLocalizations.of(context)!.addTransactionBusinessExpense,
+                          style: const TextStyle(
                             fontSize: 14,
                           ),
                         ),
                         subtitle: Text(
                           _isVatExempt
-                              ? '개인/공제 제외 지출로 표시됩니다 (부가세 환급 계산에서 제외)'
-                              : '사업 관련 지출로 보고 부가세 환급 계산에 포함합니다',
+                              ? AppLocalizations.of(context)!.addTransactionBusinessExpenseOffSub
+                              : AppLocalizations.of(context)!.addTransactionBusinessExpenseOnSub,
                           style: const TextStyle(
                             fontSize: 12,
                           ),
@@ -1357,11 +1355,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         style:
                             TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          labelText: '메모',
+                          labelText: AppLocalizations.of(context)!.addTransactionMemoLabel,
                           hintText: (isBusiness &&
                                   isEntertainment)
-                              ? '참석자, 목적 입력'
-                              : '내용 입력',
+                              ? AppLocalizations.of(context)!.addTransactionMemoHintEntertainment
+                              : AppLocalizations.of(context)!.addTransactionMemoHint,
                           hintStyle: TextStyle(
                             color: (isBusiness &&
                                     isEntertainment)
@@ -1384,7 +1382,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     const SizedBox(height: 40),
 
                     PrimaryButton(
-                      label: _isLoading ? '저장 중...' : '저장하기',
+                      label: _isLoading
+                          ? AppLocalizations.of(context)!.addTransactionSaving
+                          : AppLocalizations.of(context)!.addTransactionSave,
                       isLoading: _isLoading,
                       onPressed: _save,
                     ),

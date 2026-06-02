@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:characters/characters.dart'; 
+import 'package:characters/characters.dart';
 
 import '../../core/providers/theme_provider.dart';
 import '../../core/utils/excel_service.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../transactions/data/transaction_repository.dart';
 import '../transactions/data/transaction_model.dart';
@@ -31,21 +32,22 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
   bool _isExporting = false;
 
   Future<void> _logout() async {
+    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('로그아웃'),
-        content: const Text('정말 로그아웃 하시겠습니까?'),
+        title: Text(l10n.logoutDialogTitle),
+        content: Text(l10n.logoutDialogContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('취소'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              '로그아웃',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              l10n.logoutConfirm,
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],
@@ -73,22 +75,22 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
       final repo = TransactionRepository();
       final List<TransactionModel> txs = await repo.getTransactions();
 
+      final l10n = AppLocalizations.of(context)!;
       if (txs.isEmpty) {
-        _showSnackBar('내보낼 데이터가 없습니다.');
+        _showSnackBar(l10n.noDataToExport);
       } else {
         final excel = ExcelService();
         if (forAccounting) {
-          
           await excel.exportForAccounting(txs);
-          _showSnackBar('세무 정산용 엑셀 파일이 생성되었습니다.');
+          _showSnackBar(l10n.exportExcelSuccess);
         } else {
-          
           await excel.exportToExcel(txs);
-          _showSnackBar('엑셀 파일이 생성되었습니다.');
+          _showSnackBar(l10n.exportExcelBasicSuccess);
         }
       }
     } catch (e) {
-      _showSnackBar('엑셀 내보내기 중 오류가 발생했습니다.');
+      final l10n = AppLocalizations.of(context)!;
+      _showSnackBar(l10n.exportExcelError);
     } finally {
       if (mounted) {
         setState(() => _isExporting = false);
@@ -104,27 +106,27 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeMode = ref.watch(themeProvider);
     final user = Supabase.instance.client.auth.currentUser;
 
-    final displayName = (user?.userMetadata?['name'] as String?) ?? '사장님';
+    final displayName = (user?.userMetadata?['name'] as String?) ?? 'Boss';
     final email = user?.email ?? '';
     final nickname = (user?.userMetadata?['nickname'] as String?) ?? '';
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          '전체',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          l10n.menuAll,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          
           _buildProfileHeader(
             isDark: isDark,
             name: displayName,
@@ -134,19 +136,19 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
 
           const SizedBox(height: 16),
 
-          _buildQuickAppsSection(isDark),
+          _buildQuickAppsSection(isDark, l10n),
 
           const SizedBox(height: 24),
 
-          _buildSectionTitle('사업 관리'),
+          _buildSectionTitle(l10n.menuBusinessManagement),
           _buildMenuCard(
             isDark: isDark,
             children: [
               _buildMenuTile(
                 icon: Icons.bar_chart,
                 iconColor: Colors.blue,
-                title: '통계 분석',
-                subtitle: '매출·지출 트렌드, 카테고리별 분석',
+                title: l10n.menuStatisticsAnalysis,
+                subtitle: l10n.menuStatisticsAnalysisSub,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -159,8 +161,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.person_outline,
                 iconColor: Colors.blueGrey,
-                title: '프로필 설정',
-                subtitle: '이름, 나이, 닉네임 관리',
+                title: l10n.menuProfileSettings,
+                subtitle: l10n.menuProfileSettingsSub,
                 onTap: () async {
                   final changed = await Navigator.push<bool>(
                     context,
@@ -177,8 +179,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.receipt_long,
                 iconColor: Colors.purple,
-                title: '세무 리포트',
-                subtitle: '분기별 부가세·종합소득세 리포트',
+                title: l10n.menuTaxReport,
+                subtitle: l10n.menuTaxReportSub,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -191,8 +193,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.calendar_today,
                 iconColor: Colors.orange,
-                title: '세무 일정',
-                subtitle: '부가세 / 종소세 신고 마감일 관리',
+                title: l10n.menuTaxSchedule,
+                subtitle: l10n.menuTaxScheduleSub,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -205,8 +207,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.repeat,
                 iconColor: Colors.teal,
-                title: '정기 거래 관리',
-                subtitle: '월세·구독료·급여 등 자동 등록 설정',
+                title: l10n.menuRecurring,
+                subtitle: l10n.menuRecurringSub,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -219,8 +221,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.description_outlined,
                 iconColor: Colors.indigo,
-                title: '견적서 발행',
-                subtitle: '거래처에 보낼 견적서 만들기',
+                title: l10n.menuInvoice,
+                subtitle: l10n.menuInvoiceSub,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -235,15 +237,15 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
 
           const SizedBox(height: 24),
 
-          _buildSectionTitle('데이터 관리'),
+          _buildSectionTitle(l10n.menuDataManagement),
           _buildMenuCard(
             isDark: isDark,
             children: [
               _buildMenuTile(
                 icon: Icons.file_download,
                 iconColor: Colors.green,
-                title: '엑셀로 내보내기',
-                subtitle: '매출·지출 전체 내역 엑셀 파일 생성',
+                title: l10n.menuExportExcel,
+                subtitle: l10n.menuExportExcelSub,
                 trailing: _isExporting
                     ? const SizedBox(
                         width: 18,
@@ -256,8 +258,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.table_view,
                 iconColor: Colors.lightBlue,
-                title: '세무 정산용 엑셀',
-                subtitle: '국세청 전자신고용 형식으로 저장',
+                title: l10n.menuTaxExcel,
+                subtitle: l10n.menuTaxExcelSub,
                 trailing: _isExporting
                     ? const SizedBox(
                         width: 18,
@@ -272,7 +274,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
 
           const SizedBox(height: 24),
 
-          _buildSectionTitle('환경 설정'),
+          _buildSectionTitle(l10n.menuPreferences),
           _buildMenuCard(
             isDark: isDark,
             children: [
@@ -281,7 +283,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                 onChanged: (value) {
                   ref.read(themeProvider.notifier).toggleTheme(value);
                 },
-                title: const Text('다크 모드'),
+                title: Text(l10n.menuDarkMode),
                 secondary: Icon(
                   themeMode == ThemeMode.dark
                       ? Icons.dark_mode
@@ -295,8 +297,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.settings,
                 iconColor: Colors.grey,
-                title: '설정',
-                subtitle: '글자 크기, 사업자 정보, 데이터 백업',
+                title: l10n.menuSettings,
+                subtitle: l10n.menuSettingsSub,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -309,8 +311,8 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               _buildMenuTile(
                 icon: Icons.logout,
                 iconColor: Colors.red,
-                title: '로그아웃',
-                subtitle: '현재 기기에서만 로그아웃',
+                title: l10n.menuLogout,
+                subtitle: l10n.menuLogoutSub,
                 isDestructive: true,
                 onTap: _logout,
               ),
@@ -374,7 +376,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  email.isNotEmpty ? email : '사업 관리 중',
+                  email.isNotEmpty ? email : AppLocalizations.of(context)!.menuManagingBusiness,
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -388,11 +390,11 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
     );
   }
 
-  Widget _buildQuickAppsSection(bool isDark) {
+  Widget _buildQuickAppsSection(bool isDark, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('자주 쓰는 메뉴'),
+        _buildSectionTitle(l10n.menuFrequentlyUsed),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.all(12),
@@ -413,7 +415,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
             children: [
               _buildQuickIcon(
                 icon: Icons.bar_chart,
-                label: '통계',
+                label: l10n.menuStatisticsShort,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -425,7 +427,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               ),
               _buildQuickIcon(
                 icon: Icons.receipt_long,
-                label: '세무\n리포트',
+                label: l10n.menuTaxReportShort,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -437,7 +439,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               ),
               _buildQuickIcon(
                 icon: Icons.calendar_today,
-                label: '세무\n일정',
+                label: l10n.menuTaxScheduleShort,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -449,7 +451,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
               ),
               _buildQuickIcon(
                 icon: Icons.settings_outlined,
-                label: '설정',
+                label: l10n.menuSettingsShort,
                 onTap: () {
                   Navigator.push(
                     context,

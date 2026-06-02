@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../../transactions/data/transaction_model.dart';
 import '../../transactions/data/transaction_repository.dart';
@@ -170,14 +171,16 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final vatTitle =
-        _quarterVatNet >= 0 ? '이번 분기 부가세 환급 예상' : '이번 분기 부가세 납부 예상';
+    final vatTitle = _quarterVatNet >= 0
+        ? l10n.taxReportVatRefundEstimate
+        : l10n.taxReportVatPaymentEstimate;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("세무 리포트"),
+        title: Text(l10n.taxReportTitle),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -215,7 +218,7 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          '앱에 입력된 매출·지출 기준 추정치예요',
+                          l10n.taxReportEstimateNote,
                           style: TextStyle(
                             fontSize: 11,
                             color: isDark
@@ -230,7 +233,7 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
                   const SizedBox(height: 20),
 
                   Text(
-                    "이번 달 지출 구성",
+                    l10n.taxReportMonthlyExpenseBreakdown,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -256,13 +259,13 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
                     child: Column(
                       children: [
                         _buildRow(
-                          label: "공제 가능한 지출",
+                          label: l10n.taxReportDeductibleExpense,
                           amount: _deductibleAmount,
                           color: Colors.green,
                         ),
                         const SizedBox(height: 8),
                         _buildRow(
-                          label: "공제 불가 · 개인성 지출",
+                          label: l10n.taxReportNonDeductibleExpense,
                           amount: _nonDeductibleAmount,
                           color: Colors.redAccent,
                         ),
@@ -273,7 +276,7 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
                               : Colors.grey[300],
                         ),
                         const SizedBox(height: 8),
-                        _buildRatioRow(),
+                        _buildRatioRow(l10n),
                       ],
                     ),
                   ),
@@ -281,7 +284,7 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
                   const SizedBox(height: 20),
 
                   Text(
-                    "증빙(영수증) 현황",
+                    l10n.taxReportReceiptStatus,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -318,8 +321,8 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
                             children: [
                               Text(
                                 _missingReceiptCount == 0
-                                    ? "필수 영수증이 모두 등록되어 있어요"
-                                    : "영수증이 필요한 지출 중\n${_missingReceiptCount}건이 아직 등록되지 않았어요",
+                                    ? l10n.taxReportAllReceiptsRegistered
+                                    : l10n.taxReportMissingReceipts(_missingReceiptCount.toString()),
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: isDark
@@ -330,7 +333,7 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
                               const SizedBox(height: 6),
                               if (_missingReceiptCount > 0)
                                 Text(
-                                  "누락 금액: ${_currency.format(_missingReceiptAmount)}",
+                                  l10n.taxReportMissingAmount(_currency.format(_missingReceiptAmount)),
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.redAccent,
@@ -368,12 +371,12 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
     );
   }
 
-  Widget _buildRatioRow() {
+  Widget _buildRatioRow(AppLocalizations l10n) {
     final total = _deductibleAmount + _nonDeductibleAmount;
     if (total == 0) {
-      return const Text(
-        "이번 달 지출 데이터가 아직 거의 없어요.",
-        style: TextStyle(fontSize: 12),
+      return Text(
+        l10n.taxReportNoDataYet,
+        style: const TextStyle(fontSize: 12),
       );
     }
 
@@ -382,20 +385,18 @@ class _TaxSummaryPageState extends State<TaxSummaryPage> {
 
     String comment;
     if (nonDeductibleRatio <= 20) {
-      comment = "공제 불가 비율이 낮아서 비교적 안정적인 편이에요.";
+      comment = l10n.taxReportNonDeductibleLow;
     } else if (nonDeductibleRatio <= 40) {
-      comment =
-          "공제 불가 비율이 조금 높은 편이에요. 개인성 지출을 따로 분리해두면 좋아요.";
+      comment = l10n.taxReportNonDeductibleMedium;
     } else {
-      comment =
-          "공제 불가 비율이 꽤 높아요. 세무사 상담이 필요할 수 있어요.";
+      comment = l10n.taxReportNonDeductibleHigh;
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "공제 불가 비율: $nonDeductibleRatio%",
+          l10n.taxReportNonDeductibleRatio(nonDeductibleRatio.toString()),
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../../transactions/data/transaction_model.dart';
 import '../../transactions/data/transaction_repository.dart';
@@ -133,14 +134,14 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
     late String grade;
     late String comment;
     if (score >= 85) {
-      grade = '안전';
-      comment = '전체적으로 세무 리스크가 낮아요.';
+      grade = 'safe';
+      comment = '';
     } else if (score >= 60) {
-      grade = '보통';
-      comment = '몇 가지 리스크 포인트만 관리하면 좋아요.';
+      grade = 'normal';
+      comment = '';
     } else {
-      grade = '주의';
-      comment = '공제 불가 지출과 증빙 누락을 꼭 점검해보세요.';
+      grade = 'warning';
+      comment = '';
     }
 
     return TaxMetrics(
@@ -189,18 +190,19 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('통계 / 세무 리포트'),
+          title: Text(l10n.statisticsTitle),
           bottom: TabBar(
             controller: _tabController,
-            tabs: const [
-              Tab(text: '세무 리포트'),
-              Tab(text: '지출 통계'),
+            tabs: [
+              Tab(text: l10n.statisticsTaxReportTab),
+              Tab(text: l10n.statisticsExpenseTab),
             ],
           ),
         ),
@@ -211,8 +213,8 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildTaxTab(context),
-                    _buildCategoryTab(context, isDark: isDark),
+                    _buildTaxTab(context, l10n),
+                    _buildCategoryTab(context, isDark: isDark, l10n: l10n),
                   ],
                 ),
               ),
@@ -220,23 +222,23 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
     );
   }
 
-  Widget _buildTaxTab(BuildContext context) {
+  Widget _buildTaxTab(BuildContext context, AppLocalizations l10n) {
     final metrics = _buildTaxMetrics();
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _TaxScoreCard(metrics: metrics, currency: _currency),
+        _TaxScoreCard(metrics: metrics, currency: _currency, l10n: l10n),
         const SizedBox(height: 16),
-        _DeductionSection(metrics: metrics, currency: _currency),
+        _DeductionSection(metrics: metrics, currency: _currency, l10n: l10n),
         const SizedBox(height: 16),
-        _ReceiptSection(metrics: metrics, currency: _currency),
+        _ReceiptSection(metrics: metrics, currency: _currency, l10n: l10n),
       ],
     );
   }
 
   Widget _buildCategoryTab(BuildContext context,
-      {required bool isDark}) {
+      {required bool isDark, required AppLocalizations l10n}) {
     final slices = _buildCategorySlices();
     final totalExpense = _sumAmount(
       _currentMonthTx
@@ -247,9 +249,9 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(24),
-        children: const [
-          SizedBox(height: 80),
-          Center(child: Text('이번 달 등록된 지출이 없습니다.')),
+        children: [
+          const SizedBox(height: 80),
+          Center(child: Text(l10n.statisticsNoExpenseThisMonth)),
         ],
       );
     }
@@ -267,7 +269,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
         const SizedBox(height: 12),
         Center(
           child: Text(
-            '총 지출 ${_currency.format(totalExpense)}',
+            l10n.statisticsTotalExpense(_currency.format(totalExpense)),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -329,10 +331,12 @@ class CategorySlice {
 class _TaxScoreCard extends StatelessWidget {
   final TaxMetrics metrics;
   final NumberFormat currency;
+  final AppLocalizations l10n;
 
   const _TaxScoreCard({
     required this.metrics,
     required this.currency,
+    required this.l10n,
   });
 
   @override
@@ -360,8 +364,8 @@ class _TaxScoreCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Text(
-                  '이번 달 세무 점수',
+                Text(
+                  l10n.statisticsThisMonthTaxScore,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -393,7 +397,7 @@ class _TaxScoreCard extends StatelessWidget {
                 Icon(Icons.shield, size: 18, color: color),
                 const SizedBox(width: 6),
                 Text(
-                  '${metrics.taxGrade} · ${metrics.taxComment}',
+                  '${_resolveGrade(metrics.taxGrade, l10n)} · ${_resolveComment(metrics.taxGrade, l10n)}',
                   style: TextStyle(
                     color: color,
                     fontSize: 12,
@@ -407,17 +411,17 @@ class _TaxScoreCard extends StatelessWidget {
               runSpacing: 4,
               children: [
                 _smallBadge(
-                  '공제 가능 지출 비율',
+                  l10n.statisticsDeductibleRatio,
                   '${(metrics.deductibleRatio * 100).toStringAsFixed(1)}%',
                 ),
                 _smallBadge(
-                  '영수증 커버리지',
+                  l10n.statisticsReceiptCoverage,
                   '${(metrics.receiptCoverage * 100).toStringAsFixed(1)}%',
                 ),
                 if (metrics.bigNoReceiptCount > 0)
                   _smallBadge(
-                    '10만↑ 영수증 누락',
-                    '${metrics.bigNoReceiptCount}건 / ${currency.format(metrics.bigNoReceiptAmount)}',
+                    l10n.statisticsBigNoReceipt,
+                    '${metrics.bigNoReceiptCount} / ${currency.format(metrics.bigNoReceiptAmount)}',
                   ),
               ],
             ),
@@ -425,6 +429,22 @@ class _TaxScoreCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _resolveGrade(String grade, AppLocalizations l10n) {
+    switch (grade) {
+      case 'safe': return l10n.statisticsTaxSafe;
+      case 'normal': return l10n.statisticsTaxNormal;
+      default: return l10n.statisticsTaxWarning;
+    }
+  }
+
+  String _resolveComment(String grade, AppLocalizations l10n) {
+    switch (grade) {
+      case 'safe': return l10n.statisticsTaxSafeComment;
+      case 'normal': return l10n.statisticsTaxNormalComment;
+      default: return l10n.statisticsTaxWarningComment;
+    }
   }
 
   Widget _smallBadge(String label, String value) {
@@ -453,10 +473,12 @@ class _TaxScoreCard extends StatelessWidget {
 class _DeductionSection extends StatelessWidget {
   final TaxMetrics metrics;
   final NumberFormat currency;
+  final AppLocalizations l10n;
 
   const _DeductionSection({
     required this.metrics,
     required this.currency,
+    required this.l10n,
   });
 
   @override
@@ -476,8 +498,8 @@ class _DeductionSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '공제 가능 / 공제 불가 지출',
+            Text(
+              l10n.statisticsDeductibleSection,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -491,9 +513,9 @@ class _DeductionSection extends StatelessWidget {
                     crossAxisAlignment:
                         CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '공제 가능',
-                        style: TextStyle(fontSize: 12),
+                      Text(
+                        l10n.statisticsDeductible,
+                        style: const TextStyle(fontSize: 12),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -512,9 +534,9 @@ class _DeductionSection extends StatelessWidget {
                     crossAxisAlignment:
                         CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '공제 불가/개인성 지출',
-                        style: TextStyle(fontSize: 12),
+                      Text(
+                        l10n.statisticsNonDeductible,
+                        style: const TextStyle(fontSize: 12),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -539,14 +561,13 @@ class _DeductionSection extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '이번 달 지출 중 약 ${(percent * 100).toStringAsFixed(1)}%가 '
-              '세무상 공제 가능한 지출입니다.',
+              l10n.statisticsDeductiblePercent((percent * 100).toStringAsFixed(1)),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
             if (metrics.topRiskCategories.isNotEmpty) ...[
-              const Text(
-                '리스크 높은 카테고리 TOP3',
+              Text(
+                l10n.statisticsTopRiskCategories,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
@@ -593,10 +614,12 @@ class _DeductionSection extends StatelessWidget {
 class _ReceiptSection extends StatelessWidget {
   final TaxMetrics metrics;
   final NumberFormat currency;
+  final AppLocalizations l10n;
 
   const _ReceiptSection({
     required this.metrics,
     required this.currency,
+    required this.l10n,
   });
 
   @override
@@ -615,8 +638,8 @@ class _ReceiptSection extends StatelessWidget {
           crossAxisAlignment:
               CrossAxisAlignment.start,
           children: [
-            const Text(
-              '증빙(영수증) 커버리지',
+            Text(
+              l10n.statisticsReceiptSection,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -655,7 +678,7 @@ class _ReceiptSection extends StatelessWidget {
                         CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '지출 증빙이 $coveragePct% 등록되어 있습니다.',
+                        '$coveragePct% ${l10n.statisticsReceiptCoverage}',
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium,
@@ -663,17 +686,14 @@ class _ReceiptSection extends StatelessWidget {
                       const SizedBox(height: 4),
                       if (metrics.bigNoReceiptCount > 0)
                         Text(
-                          '특히 10만 원 이상 지출 중 '
-                          '${metrics.bigNoReceiptCount}건, '
-                          '${currency.format(metrics.bigNoReceiptAmount)} 만큼 '
-                          '영수증이 없습니다.',
+                          l10n.taxReportMissingReceipts(metrics.bigNoReceiptCount.toString()),
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.red,
                               ),
                         )
                       else
                         Text(
-                          '10만 원 이상 지출은 모두 영수증이 있어요. 좋아요!',
+                          l10n.taxReportAllReceiptsRegistered,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.green,
                               ),
