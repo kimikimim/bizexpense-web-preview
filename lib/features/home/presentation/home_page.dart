@@ -110,8 +110,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     setState(() {
       _transactions = data;
       _recurrings = recurrings;
-      _upcomingTaxEvent = taxEvent;
-      _taxProfile = profile;
       _isLoading = false;
     });
 
@@ -229,60 +227,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       'forecastNet': forecastNet,
     };
   }
-) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 2),
-          child: Icon(Icons.check_circle, size: 14),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isDark ? Colors.grey[300] : Colors.grey[700],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Row(children: [
-          Container(width: 3, height: 36, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
-          const SizedBox(width: 14),
-          Expanded(child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: isDark ? Colors.grey[300] : const Color(0xFF4E5968)))),
-          Text(currencyFormat.format(amount), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF191F28))),
-          if (onTap != null) ...[const SizedBox(width: 2), Icon(Icons.chevron_right_rounded, size: 18, color: Colors.grey[400])],
-        ]),
-      ),
-    );
-  }
-) {
-    return const SizedBox.shrink();
-  }
 
   Widget _buildPrimaryActions() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -331,32 +275,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           );
         }),
-      ),
-    );
-  }
-) {
-    return GestureDetector(onTap: onTap, child: Column(children: [Container(width: 56, height: 56, decoration: BoxDecoration(color: isDark ? const Color(0xFF2A2A2A) : color.withAlpha(20), borderRadius: BorderRadius.circular(18)), child: Icon(icon, color: color, size: 24)), const SizedBox(height: 8), Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? Colors.grey[300] : const Color(0xFF4E5968)))]));
-  }
-) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
-        decoration: BoxDecoration(
-          color: color.withAlpha(isDark ? 25 : 15),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withAlpha(50)),
-        ),
-        child: Row(children: [
-          Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: color.withAlpha(30), borderRadius: BorderRadius.circular(10)), child: Icon(icon, color: color, size: 18)),
-          const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF191F28))),
-            const SizedBox(height: 2),
-            Text(subtitle, style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[400] : const Color(0xFF8B95A1))),
-          ])),
-          Icon(Icons.chevron_right_rounded, size: 20, color: color),
-        ]),
       ),
     );
   }
@@ -431,21 +349,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ]),
-    );
-  }
-) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Row(children: [
-          Container(width: 36, height: 36, decoration: BoxDecoration(color: iconColor.withAlpha(isDark ? 40 : 20), borderRadius: BorderRadius.circular(10)), child: Icon(icon, color: iconColor, size: 18)),
-          const SizedBox(width: 14),
-          Expanded(child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: isDark ? Colors.white : const Color(0xFF191F28)))),
-          Icon(Icons.chevron_right_rounded, size: 20, color: Colors.grey[400]),
-        ]),
-      ),
     );
   }
 
@@ -682,6 +585,4 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
     );
   }
-}
-);
 }
