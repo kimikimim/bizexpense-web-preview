@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
+import 'package:expense_pro/core/providers/country_config_provider.dart';
 import '../../shell/main_shell_page.dart';
 
-class SignupPage extends StatefulWidget {
+class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  ConsumerState<SignupPage> createState() => _SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignupPageState extends ConsumerState<SignupPage> {
   final _pageCtrl = PageController();
 
   final _emailCtrl = TextEditingController();
@@ -23,17 +25,23 @@ class _SignupPageState extends State<SignupPage> {
   final _nicknameCtrl = TextEditingController();
   final _introCtrl = TextEditingController();
 
-  String _userType = 'business_individual';
+  String _userType = '';
   bool _isLoading = false;
   bool _obscurePw = true;
   bool _obscureConfirm = true;
   int _currentStep = 0;
 
-  static const _stepTitles = ['계정 만들기', '프로필 설정', '사업자 유형'];
-  static const _stepSubs = [
+  static const _stepTitlesKR = ['계정 만들기', '프로필 설정', '사업자 유형'];
+  static const _stepSubsKR = [
     '이메일과 비밀번호를 입력해주세요.',
     '기본 정보와 닉네임을 설정해요.',
     '어떻게 사용하실 건가요?',
+  ];
+  static const _stepTitlesME = ['Create Account', 'Set Up Profile', 'Business Type'];
+  static const _stepSubsME = [
+    'Enter your email and password.',
+    'Set your basic info and username.',
+    'How will you use the app?',
   ];
 
   @override
@@ -211,6 +219,10 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Widget _buildHeader(bool isDark) {
+    final isME = ref.read(countryConfigProvider).countryCode != 'KR';
+    final titles = isME ? _stepTitlesME : _stepTitlesKR;
+    final subs = isME ? _stepSubsME : _stepSubsKR;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
@@ -233,18 +245,18 @@ class _SignupPageState extends State<SignupPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _stepTitles[_currentStep],
+                  titles[_currentStep],
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  _stepSubs[_currentStep],
+                  subs[_currentStep],
                   style: TextStyle(fontSize: 12, color: Colors.grey[500]),
                 ),
               ],
             ),
           ),
           Text(
-            '${_currentStep + 1} / 3',
+            '${_currentStep + 1} / ${titles.length}',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -260,7 +272,7 @@ class _SignupPageState extends State<SignupPage> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       child: Row(
-        children: List.generate(3, (i) {
+        children: List.generate(_stepTitlesKR.length, (i) {
           final active = i <= _currentStep;
           return Expanded(
             child: Container(
@@ -465,41 +477,91 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Widget _buildStep2(bool isDark) {
-    final types = [
-      {
-        'value': 'business_individual',
-        'icon': Icons.store_rounded,
-        'title': '개인사업자',
-        'sub': '경비 처리, 부가세, 종합소득세 관리',
-        'tag': '가장 인기',
-        'tagColor': const Color(0xFF1E88E5),
-        'gradient': const LinearGradient(colors: [Color(0xFF1565C0), Color(0xFF1E88E5)]),
-      },
-      {
-        'value': 'business_corporate',
-        'icon': Icons.business_rounded,
-        'title': '법인사업자',
-        'sub': '법인 경비·회계 관리',
-        'tag': null,
-        'tagColor': null,
-        'gradient': const LinearGradient(colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)]),
-      },
-      {
-        'value': 'personal',
-        'icon': Icons.person_rounded,
-        'title': '개인용',
-        'sub': '생활비·가계부 관리',
-        'tag': null,
-        'tagColor': null,
-        'gradient': const LinearGradient(colors: [Color(0xFF1B5E20), Color(0xFF43A047)]),
-      },
-    ];
+    final countryCode = ref.read(countryConfigProvider).countryCode;
+    final isME = countryCode != 'KR';
+
+    final List<Map<String, dynamic>> types = isME
+        ? [
+            {
+              'value': 'sole_proprietorship',
+              'icon': Icons.store_rounded,
+              'title': 'Sole Proprietorship',
+              'sub': 'Individual owner · VAT tracking & expense management',
+              'tag': 'Most Popular',
+              'tagColor': const Color(0xFF1E88E5),
+              'gradient': const LinearGradient(colors: [Color(0xFF1565C0), Color(0xFF1E88E5)]),
+            },
+            {
+              'value': 'llc',
+              'icon': Icons.business_rounded,
+              'title': 'LLC / WLL',
+              'sub': 'Limited Liability Company · corporate accounting',
+              'tag': null,
+              'tagColor': null,
+              'gradient': const LinearGradient(colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)]),
+            },
+            {
+              'value': 'free_zone',
+              'icon': Icons.flight_takeoff_rounded,
+              'title': 'Free Zone Company',
+              'sub': 'DMCC · DIFC · ADGM · NEOM and other free zones',
+              'tag': 'UAE',
+              'tagColor': const Color(0xFF00897B),
+              'gradient': const LinearGradient(colors: [Color(0xFF00695C), Color(0xFF00897B)]),
+            },
+            {
+              'value': 'personal',
+              'icon': Icons.person_rounded,
+              'title': 'Personal',
+              'sub': 'Personal budget & expense tracking',
+              'tag': null,
+              'tagColor': null,
+              'gradient': const LinearGradient(colors: [Color(0xFF1B5E20), Color(0xFF43A047)]),
+            },
+          ]
+        : [
+            {
+              'value': 'business_individual',
+              'icon': Icons.store_rounded,
+              'title': '개인사업자',
+              'sub': '경비 처리, 부가세, 종합소득세 관리',
+              'tag': '가장 인기',
+              'tagColor': const Color(0xFF1E88E5),
+              'gradient': const LinearGradient(colors: [Color(0xFF1565C0), Color(0xFF1E88E5)]),
+            },
+            {
+              'value': 'business_corporate',
+              'icon': Icons.business_rounded,
+              'title': '법인사업자',
+              'sub': '법인 경비·회계 관리',
+              'tag': null,
+              'tagColor': null,
+              'gradient': const LinearGradient(colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)]),
+            },
+            {
+              'value': 'personal',
+              'icon': Icons.person_rounded,
+              'title': '개인용',
+              'sub': '생활비·가계부 관리',
+              'tag': null,
+              'tagColor': null,
+              'gradient': const LinearGradient(colors: [Color(0xFF1B5E20), Color(0xFF43A047)]),
+            },
+          ];
+
+    if (_userType.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() => _userType = types.first['value'] as String);
+      });
+    }
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       children: [
         Text(
-          '사업자 유형을 선택하면\n최적화된 기능을 제공해드려요.',
+          isME
+              ? 'Choose your business type\nand we\'ll optimise the app for you.'
+              : '사업자 유형을 선택하면\n최적화된 기능을 제공해드려요.',
           style: TextStyle(
             fontSize: 15,
             height: 1.5,
@@ -629,7 +691,8 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Widget _buildBottomBar(bool isDark) {
-    final isLast = _currentStep == 2;
+    final isME = ref.read(countryConfigProvider).countryCode != 'KR';
+    final isLast = _currentStep == _stepTitlesKR.length - 1;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       decoration: BoxDecoration(
@@ -667,7 +730,9 @@ class _SignupPageState extends State<SignupPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      isLast ? '가입 완료' : '다음',
+                      isLast
+                          ? (isME ? 'Complete' : '가입 완료')
+                          : (isME ? 'Next' : '다음'),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
