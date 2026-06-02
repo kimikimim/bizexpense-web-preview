@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,8 +29,20 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
   final prefs = await SharedPreferences.getInstance();
-  final savedCountry = prefs.getString('country_code') ?? 'KR';
-  final isME = savedCountry != 'KR';
+
+  // Resolve country once at startup:
+  // - If user has saved preference (including manual changes) → use it
+  // - First launch (no saved pref) → detect from device locale
+  final String resolvedCountry;
+  final savedCountry = prefs.getString('country_code');
+  if (savedCountry != null && kCountryConfigs.containsKey(savedCountry)) {
+    resolvedCountry = savedCountry;
+  } else {
+    final localeCode = PlatformDispatcher.instance.locale.countryCode ?? '';
+    resolvedCountry = kCountryConfigs.containsKey(localeCode) ? localeCode : 'KR';
+  }
+
+  final isME = resolvedCountry != 'KR';
 
   await Supabase.initialize(
     url: isME
@@ -49,7 +63,7 @@ Future<void> main() async {
   final session = Supabase.instance.client.auth.currentSession;
 
   Widget startPage;
-  if (!kCountryConfigs.containsKey(savedCountry) || prefs.getString('country_code') == null) {
+  if (prefs.getString('country_code') == null) {
     startPage = const CountrySelectPage();
   } else if (session == null) {
     startPage = const LoginPage();
@@ -61,6 +75,11 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
+      overrides: [
+        countryConfigProvider.overrideWith(
+          (ref) => CountryConfigNotifier(initialCountry: resolvedCountry),
+        ),
+      ],
       child: MyApp(startPage: startPage),
     ),
   );
