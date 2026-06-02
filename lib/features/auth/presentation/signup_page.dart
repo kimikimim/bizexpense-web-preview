@@ -32,7 +32,7 @@ class _SignupPageState extends State<SignupPage> {
   static const _stepTitles = ['계정 만들기', '프로필 설정', '사업자 유형'];
   static const _stepSubs = [
     '이메일과 비밀번호를 입력해주세요.',
-    '기본 정보와 커뮤니티 닉네임을 설정해요.',
+    '기본 정보와 닉네임을 설정해요.',
     '어떻게 사용하실 건가요?',
   ];
 
@@ -442,12 +442,7 @@ class _SignupPageState extends State<SignupPage> {
           ),
           const SizedBox(height: 24),
 
-          _sectionLabel('커뮤니티 정보', isDark),
-          const SizedBox(height: 6),
-          Text(
-            '게시글·댓글에는 닉네임만 공개됩니다.',
-            style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-          ),
+          _sectionLabel('닉네임', isDark),
           const SizedBox(height: 10),
           _inputField(
             controller: _nicknameCtrl,

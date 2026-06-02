@@ -14,7 +14,6 @@ import '../statistics/presentation/statistics_page.dart';
 import '../tax/presentation/tax_calendar_page.dart';
 import '../tax/presentation/tax_summary_page.dart';
 import '../recurring/presentation/recurring_list_page.dart';
-import '../community/presentation/community_page.dart';
 import '../transactions/presentation/invoice_page.dart';
 import '../user/presentation/settings_page.dart';
 import '../auth/presentation/login_page.dart';
@@ -161,7 +160,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                 icon: Icons.person_outline,
                 iconColor: Colors.blueGrey,
                 title: '프로필 설정',
-                subtitle: '이름, 나이, 커뮤니티 닉네임 관리',
+                subtitle: '이름, 나이, 닉네임 관리',
                 onTap: () async {
                   final changed = await Navigator.push<bool>(
                     context,
@@ -267,29 +266,6 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                       )
                     : null,
                 onTap: () => _exportExcel(forAccounting: true),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          _buildSectionTitle('커뮤니티'),
-          _buildMenuCard(
-            isDark: isDark,
-            children: [
-              _buildMenuTile(
-                icon: Icons.forum,
-                iconColor: Colors.deepPurple,
-                title: '사장님 커뮤니티',
-                subtitle: '다른 사장님들과 노하우 공유하기',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const CommunityPage(),
-                    ),
-                  );
-                },
               ),
             ],
           ),
@@ -404,17 +380,6 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                     color: isDark ? Colors.grey[400] : Colors.grey[600],
                   ),
                 ),
-                if (nickname != null && nickname.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    '커뮤니티 닉네임  $nickname',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color:
-                          isDark ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
@@ -483,13 +448,13 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                 },
               ),
               _buildQuickIcon(
-                icon: Icons.forum,
-                label: '커뮤니티',
+                icon: Icons.settings_outlined,
+                label: '설정',
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const CommunityPage(),
+                      builder: (_) => const SettingsPage(),
                     ),
                   );
                 },

@@ -146,7 +146,7 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("🗣️ 커뮤니티용 프로필", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                        const Text("프로필", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
                         const SizedBox(height: 10),
                         TextField(
                           controller: _nicknameController,

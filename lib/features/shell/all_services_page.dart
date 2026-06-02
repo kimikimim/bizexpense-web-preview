@@ -8,7 +8,6 @@ import '../tax/presentation/tax_faq_page.dart';
 import '../transactions/presentation/my_business_page.dart';
 import '../recurring/presentation/recurring_list_page.dart';
 import '../transactions/presentation/invoice_page.dart';
-import '../community/presentation/community_page.dart';
 import '../user/presentation/settings_page.dart';
 
 class AllServicesPage extends StatelessWidget {
@@ -164,25 +163,6 @@ class AllServicesPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => const InvoicePage(),
-                ),
-              );
-            },
-          ),
-
-          const SizedBox(height: 16),
-          _buildSectionTitle(context, '커뮤니티'),
-
-          _buildServiceTile(
-            context,
-            icon: Icons.forum,
-            color: Colors.deepPurpleAccent,
-            title: '사장님 커뮤니티',
-            subtitle: '다른 사장님들과 정보 나누기',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const CommunityPage(),
                 ),
               );
             },

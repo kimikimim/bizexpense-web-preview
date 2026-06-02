@@ -132,7 +132,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             const SizedBox(height: 24),
 
             Text(
-              '커뮤니티 정보',
+              '닉네임',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -143,17 +143,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             TextField(
               controller: _nicknameController,
               decoration: const InputDecoration(
-                labelText: '커뮤니티 닉네임',
-                hintText: '다른 사장님들에게 보일 이름',
+                labelText: '닉네임',
                 border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '커뮤니티 게시글/댓글에는 이 닉네임만 노출돼요.',
-              style: TextStyle(
-                fontSize: 11,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
             ),
             const SizedBox(height: 12),

@@ -6,10 +6,9 @@ import 'package:expense_pro/l10n/app_localizations.dart';
 import '../home/presentation/home_page.dart';
 import '../statistics/presentation/statistics_page.dart';
 import '../tax/presentation/tax_summary_page.dart';
-import '../community/presentation/community_page.dart';
 import '../user/presentation/settings_page.dart';
 
-import 'all_menu_page.dart'; 
+import 'all_menu_page.dart';
 
 class MainShellPage extends ConsumerStatefulWidget {
   const MainShellPage({super.key});
@@ -22,11 +21,10 @@ class _MainShellPageState extends ConsumerState<MainShellPage> {
   int _currentIndex = 0;
 
   late final List<Widget> _pages = [
-    const HomePage(),        
-    const StatisticsPage(),  
-    const TaxSummaryPage(),  
-    const CommunityPage(),   
-    AllMenuPage(), 
+    const HomePage(),
+    const StatisticsPage(),
+    const TaxSummaryPage(),
+    AllMenuPage(),
   ];
 
   @override
@@ -63,11 +61,6 @@ class _MainShellPageState extends ConsumerState<MainShellPage> {
             icon: const Icon(Icons.receipt_long_outlined),
             selectedIcon: const Icon(Icons.receipt_long),
             label: AppLocalizations.of(context)!.navTax,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.forum_outlined),
-            selectedIcon: const Icon(Icons.forum),
-            label: AppLocalizations.of(context)!.navCommunity,
           ),
           NavigationDestination(
             icon: const Icon(Icons.menu),
