@@ -1,4 +1,3 @@
-import 'upcoming_tax_banner.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +12,6 @@ import '../../../core/utils/text_parser.dart';
 import '../../../core/utils/excel_service.dart';
 import '../../tax/services/tax_service.dart';
 import '../../receivables/presentation/unpaid_receivables_page.dart';
-
 
 import '../../receipts/presentation/camera_page.dart';
 import '../../transactions/presentation/add_transaction_page.dart';
@@ -48,7 +46,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   final RecurringTransactionRepository _recurringRepo =
       RecurringTransactionRepository();
-  final RecurringService _recurringService = RecurringService();
 
   List<RecurringTransactionModel> _recurrings = [];
 
@@ -69,204 +66,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     _loadData();
   }
 
-  static const double _sectionGap = 16.0;              
-  static const double _sectionHorizontalPadding = 16.0; 
-  static const double _sectionInnerGap = 8.0; 
-
-  TextStyle get _sectionTitleStyle => const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      );
-
-  bool _isVatDeductibleForVat(TransactionModel tx) {
-    
-    if (tx.transactionType != 'expense') return false;
-
-    if (!_isDeductible(tx)) return false;
-
-    if (tx.receiptUrl == null || tx.receiptUrl!.isEmpty) return false;
-
-    return true;
-  }
-
-  Map<String, dynamic>? _upcomingTaxEvent;
-  Map<String, dynamic>? _taxProfile;
-  Map<String, dynamic> _calculateVatForCurrentPeriod() {
-    final config = ref.read(countryConfigProvider);
-    final now = DateTime.now();
-    final int year = now.year;
-    final taxPeriod = config.currentPeriod();
-
-    final DateTime from = DateTime(year, taxPeriod.startMonth, 1);
-    final DateTime to = DateTime(year, taxPeriod.endMonth + 1, 1)
-        .subtract(const Duration(days: 1));
-
-    final String periodWithYear = config.formatPeriodYear(year, taxPeriod);
-
-    int salesTotal = 0;
-    int purchaseTotal = 0;
-
-    for (final tx in _transactions) {
-      final d = tx.date;
-
-      if (d.isBefore(from) || d.isAfter(to)) continue;
-
-      if (tx.transactionType == 'income') {
-        salesTotal += tx.amount;
-      } else if (tx.transactionType == 'expense') {
-        if (!_isVatDeductibleForVat(tx)) continue;
-        purchaseTotal += tx.amount;
-      }
-    }
-
-    final int salesVat = (salesTotal * config.vatRate).round();
-    final int purchaseVat = (purchaseTotal * config.vatRate).round();
-    final int netVat = purchaseVat - salesVat;
-
-    return {
-      'period': taxPeriod.label,
-      'periodWithYear': periodWithYear,
-      'salesTotal': salesTotal,
-      'purchaseTotal': purchaseTotal,
-      'salesVat': salesVat,
-      'purchaseVat': purchaseVat,
-      'netVat': netVat,
-    };
-  }
-
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  Future<void> _openVatDetailBottomSheet() async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final formatter = NumberFormat('#,###');
-    final config = ref.read(countryConfigProvider);
-
-    final vatData = _calculateVatForCurrentPeriod();
-    final String periodWithYear = vatData['periodWithYear'] as String;
-    final int salesTotal = vatData['salesTotal'] as int;
-    final int purchaseTotal = vatData['purchaseTotal'] as int;
-    final int salesVat = vatData['salesVat'] as int;
-    final int purchaseVat = vatData['purchaseVat'] as int;
-    final int net = vatData['netVat'] as int;
-    final bool isRefund = net >= 0;
-
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: false,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                Text(
-                  "$periodWithYear ${config.vatTerminology} 예상 상세",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("매출 합계"),
-                    Text("₩${formatter.format(salesTotal)}"),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("매입 합계(공제 대상)"),
-                    Text("₩${formatter.format(purchaseTotal)}"),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-                Divider(color: isDark ? Colors.grey[700] : Colors.grey[300]),
-                const SizedBox(height: 12),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("매출 ${config.vatTerminology} (${(config.vatRate * 100).toStringAsFixed(0)}%)"),
-                    Text("${config.currencySymbol}${formatter.format(salesVat)}"),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("매입 ${config.vatTerminology} (${(config.vatRate * 100).toStringAsFixed(0)}%)"),
-                    Text("${config.currencySymbol}${formatter.format(purchaseVat)}"),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-                Divider(color: isDark ? Colors.grey[700] : Colors.grey[300]),
-                const SizedBox(height: 12),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      isRefund ? "환급 예상액" : "납부 예상액",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: isRefund ? Colors.teal : Colors.deepOrange,
-                      ),
-                    ),
-                    Text(
-                      "₩${formatter.format(net.abs())}",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: isRefund ? Colors.teal : Colors.deepOrange,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 8),
-                Text(
-                  "※ 현재 기(${periodWithYear.split(' ').last})에 입력된 매출·지출 기준으로 단순 계산된 값입니다.",
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Future<void> _loadData() async {
@@ -325,58 +128,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         .fold(0, (sum, tx) => sum + tx.amount);
   }
 
-  List<String> get _nonDeductibleCategories =>
-      ref.read(countryConfigProvider).nonDeductibleCategories;
-
-  bool _isDeductible(TransactionModel tx) {
-    final category = tx.category ?? '';
-    for (final blocked in _nonDeductibleCategories) {
-      if (category.contains(blocked)) return false;
-    }
-    return true;
-  }
-
-  int _calculateVatRefundEstimate() {
-    final vatRate = ref.read(countryConfigProvider).vatRate;
-    double refundableVat = 0;
-
-    for (final tx in _transactions) {
-      if (tx.transactionType != 'expense') continue;
-      if (!_isDeductible(tx)) continue;
-      if (tx.receiptUrl == null || tx.receiptUrl!.isEmpty) continue;
-
-      refundableVat += tx.amount * vatRate;
-    }
-
-    return refundableVat.round();
-  }
-
-  int _getQuarterVatNet() {
-    final config = ref.read(countryConfigProvider);
-    final now = DateTime.now();
-    final period = config.currentPeriod();
-    final start = DateTime(now.year, period.startMonth, 1);
-    final end = DateTime(now.year, period.endMonth + 1, 1);
-
-    int salesVat = 0;
-    int purchaseVat = 0;
-
-    for (final tx in _transactions) {
-      final d = tx.date;
-
-      if (d.isBefore(start) || !d.isBefore(end)) continue;
-
-      if (tx.transactionType == 'income') {
-        salesVat += (tx.amount * config.vatRate).round();
-      } else if (tx.transactionType == 'expense') {
-        if (!_isVatDeductibleForVat(tx)) continue;
-        purchaseVat += (tx.amount * config.vatRate).round();
-      }
-    }
-
-    return purchaseVat - salesVat;
-  }
-
   int _getMonthlyExpense() {
     final now = DateTime.now();
     return _transactions
@@ -387,156 +138,10 @@ class _HomePageState extends ConsumerState<HomePage> {
         .fold(0, (sum, tx) => sum + tx.amount);
   }
 
-  int _getUnpaidReceivables() {
-    return _transactions
-        .where((tx) => tx.transactionType == 'income' && !tx.isPaid)
-        .fold(0, (sum, tx) => sum + tx.amount);
-  }
-
-  int _getUnpaidPayables() {
-    return _transactions
-        .where((tx) => tx.transactionType == 'expense' && !tx.isPaid)
-        .fold(0, (sum, tx) => sum + tx.amount);
-  }
-
-  int _getEstimatedTax() {
-    final monthlyExpense = _getMonthlyExpense();
-    
-    return (monthlyExpense * 0.15).round();
-  }
-
-  double _getMonthOverMonthGrowth() {
-    final now = DateTime.now();
-    final thisMonth = _getMonthlyIncome();
-
-    final lastMonthDate = DateTime(now.year, now.month - 1);
-    final lastMonth = _transactions
-        .where((tx) =>
-            tx.transactionType == 'income' &&
-            tx.date.year == lastMonthDate.year &&
-            tx.date.month == lastMonthDate.month)
-        .fold(0, (sum, tx) => sum + tx.amount);
-
-    if (lastMonth == 0) return 0;
-    return ((thisMonth - lastMonth) / lastMonth * 100);
-  }
-
-  List<TransactionModel> _getUnpaidReceivablesList() {
-    return _transactions
-        .where((tx) => tx.transactionType == 'income' && !tx.isPaid)
-        .toList();
-  }
-
   List<TransactionModel> _getRecentTransactions() {
     final sorted = List<TransactionModel>.from(_transactions)
       ..sort((a, b) => b.date.compareTo(a.date));
     return sorted.take(3).toList();
-  }
-
-  int _getVatDaysRemaining() {
-    if (_upcomingTaxEvent == null) return -1;
-    try {
-      final dueDateStr = _upcomingTaxEvent!['due_date'];
-      if (dueDateStr == null) return -1;
-      final eventDate = DateTime.parse(dueDateStr);
-      final today = DateTime.now();
-      final diff = DateTime(eventDate.year, eventDate.month, eventDate.day)
-          .difference(DateTime(today.year, today.month, today.day))
-          .inDays;
-      return diff;
-    } catch (e) {
-      return -1;
-    }
-  }
-
-  Future<void> _openMissingReceiptList() async {
-    final missing = _getMissingReceiptList();
-    if (missing.isEmpty) {
-      _showSnackBar("영수증 누락된 항목이 없습니다.");
-      return;
-    }
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                Text(
-                  "영수증 누락된 지출",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "영수증 사진을 등록하면 세무 리스크를 줄일 수 있어요.",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: missing.length,
-                    itemBuilder: (context, index) {
-                      final tx = missing[index];
-
-                      final categoryKey = (tx.category == null ||
-                              tx.category!.trim().isEmpty)
-                          ? '기타'
-                          : tx.category!;
-                      final icon =
-                          categoryIcons[categoryKey] ?? Icons.receipt_long;
-
-                      return TransactionListItem(
-                        tx: tx,
-                        isDark: isDark,
-                        leadingIcon: icon,
-                        onTap: () async {
-                          
-                          Navigator.pop(context); 
-                          await _navigateToAddPage(
-                            initialData: tx,
-                            isExistingRecord: true,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Future<void> _navigateToAddPage(
@@ -555,290 +160,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
     if (result == true) _loadData();
   }
-
-  Future<void> _pasteAndParse() async {
-    final ClipboardData? data =
-        await Clipboard.getData(Clipboard.kTextPlain);
-    if (data == null || data.text == null) {
-      _showSnackBar("복사된 내용이 없습니다.");
-      return;
-    }
-    final parsedTx = TextParser.parse(data.text!);
-    if (parsedTx != null) {
-      _navigateToAddPage(initialData: parsedTx, isExistingRecord: false);
-    } else {
-      _showSnackBar("인식 실패: 결제 문자가 아니거나 형식이 다릅니다.");
-    }
-  }
-
-  Future<void> _signOut() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("로그아웃"),
-        content: const Text("정말 로그아웃 하시겠습니까?"),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("취소")),
-          TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text("로그아웃",
-                  style: TextStyle(color: Colors.red))),
-        ],
-      ),
-    );
-
-    if (confirm != true) return;
-    await Supabase.instance.client.auth.signOut();
-    if (!mounted) return;
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-        (route) => false);
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 1)));
-  }
-
-  void _showVatExplainBottomSheet() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final formatter = NumberFormat('#,###');
-
-    final int vatRefund = _calculateVatRefundEstimate();
-
-    final deductibleList = _transactions.where((tx) {
-      if (tx.transactionType != 'expense') return false;
-      if (!_isDeductible(tx)) return false; 
-      if (tx.receiptUrl == null || tx.receiptUrl!.isEmpty) return false; 
-      return true;
-    }).toList();
-
-    final nonDeductibleList = _transactions.where((tx) {
-      if (tx.transactionType != 'expense') return false;
       
-      if (!_isDeductible(tx)) return true;
-      if (tx.receiptUrl == null || tx.receiptUrl!.isEmpty) return true;
-      return false;
-    }).toList();
-
-    final deductibleTotal = deductibleList.fold<int>(
-      0,
-      (sum, tx) => sum + tx.amount,
-    );
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    const Icon(Icons.receipt_long, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      "부가세 환급 예상은 이렇게 계산했어요",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                Text(
-                  vatRefund >= 0 ? "환급 가능성 (추정)" : "납부 가능성 (추정)",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? Colors.grey[300] : Colors.grey[700],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "₩${formatter.format(vatRefund.abs())}",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: vatRefund >= 0 ? Colors.teal : Colors.deepOrange,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Text(
-                  "어떻게 계산했나요?",
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _buildVatExplainRow(
-                  isDark: isDark,
-                  title: "1. 공제 가능 지출만 모았어요",
-                  description:
-                      "식대·접대·복리후생·개인 지출·의류 등 일부 카테고리는 자동으로 공제 대상에서 제외했어요.",
-                ),
-                const SizedBox(height: 6),
-                _buildVatExplainRow(
-                  isDark: isDark,
-                  title: "2. 영수증이 있는 지출만 포함했어요",
-                  description:
-                      "영수증이 등록된 지출만 매입세액으로 보고, 그 합계의 10%를 환급 가능한 부가세로 추정했어요.",
-                ),
-                const SizedBox(height: 6),
-                _buildVatExplainRow(
-                  isDark: isDark,
-                  title: "3. 매출 부가세와 비교했어요",
-                  description:
-                      "앱에 입력된 매출 금액의 10%를 매출세액으로 보고, 매입세액과 차이를 계산했어요.",
-                ),
-
-                const SizedBox(height: 12),
-
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: isDark ? Colors.grey[900] : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "이번 계산에 포함된 지출",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "· 공제 가능 지출 합계: ₩${formatter.format(deductibleTotal)} (${deductibleList.length}건)",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark ? Colors.grey[300] : Colors.grey[800],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "· 이번 계산에서 제외된 지출: ${nonDeductibleList.length}건",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark ? Colors.grey[400] : Colors.grey[700],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                Text(
-                  "⚠️ 실제 부가세 신고 시에는 업종, 면세/과세 구분, 의제매입세액 등 추가 규정 때문에 금액이 달라질 수 있어요. "
-                  "정확한 환급·납부 금액은 반드시 세무사와 다시 확인해주세요.",
-                  style: TextStyle(
-                    fontSize: 11,
-                    height: 1.4,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-  
-  bool _needsReceipt(TransactionModel tx) {
-    
-    if (tx.transactionType != 'expense') return false;
-
-    final methodRaw = tx.method ?? '';
-    final baseMethod = methodRaw.contains('(')
-        ? methodRaw.split('(').first
-        : methodRaw;
-    final amount = tx.amount;
-
-    const mustReceiptMethods = [
-      '개인카드',
-      '법인카드',
-      '현금영수증',
-      '계좌이체',
-      '간이영수증',
-      '제로페이',
-      '지역화폐',
-      '상품권',
-    ];
-
-    if (!mustReceiptMethods.contains(baseMethod)) {
-      return false;
-    }
-
-    if (baseMethod == '현금영수증' || baseMethod == '간이영수증') {
-      return true;
-    }
-
-    if (amount >= 100000) {
-      return true;
-    }
-
-    return false;
-  }
-
-  List<TransactionModel> _getMissingReceiptList() {
-    final now = DateTime.now();
-
-    return _transactions.where((tx) {
-      
-      if (!_needsReceipt(tx)) return false;
-
-      final sameMonth =
-          tx.date.year == now.year && tx.date.month == now.month;
-      if (!sameMonth) return false;
-
-      final hasReceipt =
-          tx.receiptUrl != null && tx.receiptUrl!.isNotEmpty;
-
-      return !hasReceipt;
-    }).toList();
-  }
-
-  int _getReceiptMissingCount() {
-    return _getMissingReceiptList().length;
-  }
-    
   int _getThisMonthIncome() => _getMonthlyIncome();
   int _getThisMonthExpense() => _getMonthlyExpense();
 
@@ -907,12 +229,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       'forecastNet': forecastNet,
     };
   }
-
-  Widget _buildVatExplainRow({
-    required bool isDark,
-    required String title,
-    required String description,
-  }) {
+) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -947,49 +264,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       ],
     );
   }
-
-  Widget _buildKPISection() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final monthlyIncome = _getMonthlyIncome();
-    final monthlyExpense = _getMonthlyExpense();
-    final unpaidReceivables = _getUnpaidReceivables();
-    final vatData = _calculateVatForCurrentPeriod();
-    final String vatPeriod = vatData['period'] as String;
-    final int vatNet = vatData['netVat'] as int;
-    final unpaidList = _getUnpaidReceivablesList();
-
-    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(context, '이번 달 현황'),
-          const SizedBox(height: 12),
-          Container(
-            decoration: BoxDecoration(
-              color: cardBg,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: Colors.black.withAlpha(isDark ? 30 : 8), blurRadius: 16, offset: const Offset(0, 4))],
-            ),
-            child: Column(children: [
-              _kpiRow(context, '이번 달 매출', monthlyIncome, const Color(0xFF2DB400), isDark),
-              _kpiDivider(isDark),
-              _kpiRow(context, '이번 달 지출', monthlyExpense, const Color(0xFFFF4D4F), isDark),
-              _kpiDivider(isDark),
-              _kpiRow(context, '미수금${unpaidList.isNotEmpty ? " (${unpaidList.length}건)" : ""}', unpaidReceivables, const Color(0xFFFF9500), isDark,
-                onTap: unpaidReceivables > 0 ? () => Navigator.push(context, MaterialPageRoute(builder: (_) => UnpaidReceivablesPage(transactions: unpaidList))) : null),
-              _kpiDivider(isDark),
-              _kpiRow(context, '$vatPeriod ${ref.read(countryConfigProvider).vatTerminology} ${vatNet >= 0 ? "환급" : "납부"} 예상', vatNet.abs(), vatNet >= 0 ? const Color(0xFF3182F6) : const Color(0xFFFF4D4F), isDark, onTap: _openVatDetailBottomSheet),
-            ]),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _kpiRow(BuildContext context, String label, int amount, Color color, bool isDark, {VoidCallback? onTap}) {
+) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -1005,16 +280,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     );
   }
-
-  Widget _kpiDivider(bool isDark) {
-    return Divider(height: 1, indent: 20, endIndent: 20, color: isDark ? Colors.white10 : Colors.grey.shade100);
-  }
-
-  Widget _buildKpiSmallCard(_KpiItem item, bool isDark) {
-    return _kpiRow(context, item.title, item.value, item.color, isDark, onTap: item.onTap);
-  }
-
-  Widget _buildKPICard({required String title, required int amount, required IconData icon, required Color color, required bool isDark, String? subtitle, VoidCallback? onTap}) {
+) {
     return const SizedBox.shrink();
   }
 
@@ -1068,57 +334,10 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     );
   }
-
-  Widget _buildActionButton({required IconData icon, required String label, required Color color, required VoidCallback onTap, required bool isDark}) {
+) {
     return GestureDetector(onTap: onTap, child: Column(children: [Container(width: 56, height: 56, decoration: BoxDecoration(color: isDark ? const Color(0xFF2A2A2A) : color.withAlpha(20), borderRadius: BorderRadius.circular(18)), child: Icon(icon, color: color, size: 24)), const SizedBox(height: 8), Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? Colors.grey[300] : const Color(0xFF4E5968)))]));
   }
-
-  Widget _buildPriorityAlerts() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final unpaidReceivables = _getUnpaidReceivablesList();
-    final missingList = _getMissingReceiptList();
-    final List<Widget> alerts = [];
-
-    if (missingList.isNotEmpty) {
-      alerts.add(_buildAlertCard(
-        icon: Icons.receipt_long_rounded,
-        title: '영수증 누락 ${missingList.length}건',
-        subtitle: '세무 리스크를 줄이려면 빠르게 등록해주세요',
-        color: const Color(0xFF3182F6),
-        onTap: () async {
-          final selected = await Navigator.push<TransactionModel?>(context, MaterialPageRoute(builder: (_) => MissingReceiptPage(transactions: missingList)));
-          if (selected != null) _navigateToAddPage(initialData: selected, isExistingRecord: true);
-        },
-        isDark: isDark,
-      ));
-    }
-    if (unpaidReceivables.isNotEmpty) {
-      final total = unpaidReceivables.fold<int>(0, (s, tx) => s + tx.amount);
-      alerts.add(_buildAlertCard(
-        icon: Icons.pending_actions_rounded,
-        title: '미수금 ${unpaidReceivables.length}건',
-        subtitle: '합계 ${currencyFormat.format(total)}',
-        color: const Color(0xFFFF9500),
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => UnpaidReceivablesPage(transactions: unpaidReceivables))),
-        isDark: isDark,
-      ));
-    }
-    if (alerts.isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(context, '지금 확인하세요'),
-          const SizedBox(height: 12),
-          ...alerts.map((w) => Padding(padding: const EdgeInsets.only(bottom: 8), child: w)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAlertCard({required IconData icon, required String title, required String subtitle, required Color color, required VoidCallback onTap, required bool isDark}) {
+) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1214,42 +433,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       ]),
     );
   }
-
-  Widget _buildHelpSection() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _buildSectionTitle(context, '더 알아보기'),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [BoxShadow(color: Colors.black.withAlpha(isDark ? 30 : 8), blurRadius: 16, offset: const Offset(0, 4))],
-          ),
-          child: Column(children: [
-            _helpRow(icon: Icons.lightbulb_outline_rounded, iconColor: const Color(0xFFFF9500), label: '사장님 절세 족보', isDark: isDark,
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TaxTipsPage()))),
-            Divider(height: 1, indent: 20, endIndent: 20, color: isDark ? Colors.white10 : Colors.grey.shade100),
-            _helpRow(icon: Icons.share_rounded, iconColor: const Color(0xFF2DB400), label: '회계사에게 자료 공유', isDark: isDark,
-              onTap: () async {
-                if (_transactions.isEmpty) { _showSnackBar("내보낼 데이터가 없습니다."); return; }
-                await ExcelService().exportForAccounting(_transactions);
-                _showSnackBar("회계사용 엑셀 파일이 생성되었습니다.");
-              }),
-            Divider(height: 1, indent: 20, endIndent: 20, color: isDark ? Colors.white10 : Colors.grey.shade100),
-            _helpRow(icon: Icons.credit_card_rounded, iconColor: const Color(0xFF3182F6), label: '카드 관리', isDark: isDark,
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CardListPage()))),
-          ]),
-        ),
-      ]),
-    );
-  }
-
-  Widget _helpRow({required IconData icon, required Color iconColor, required String label, required bool isDark, required VoidCallback onTap}) {
+) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -1373,180 +557,12 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     );
   }
-
-  Widget _buildTransactionTypeToggle() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Theme.of(context).dividerColor),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => _transactionType = 'expense'),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 160),
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                decoration: BoxDecoration(
-                  color: _transactionType == 'expense'
-                      ? Colors.red.withOpacity(0.12)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: _transactionType == 'expense'
-                        ? Colors.red
-                        : Colors.transparent,
-                    width: 2,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.arrow_upward,
-                      color: _transactionType == 'expense'
-                          ? Colors.red
-                          : Colors.grey,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "지출",
-                      style: TextStyle(
-                        fontWeight: _transactionType == 'expense'
-                            ? FontWeight.bold
-                            : FontWeight.w500,
-                        fontSize: 17,
-                        color: _transactionType == 'expense'
-                            ? Colors.red
-                            : Colors.grey,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => _transactionType = 'income'),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 160),
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                decoration: BoxDecoration(
-                  color: _transactionType == 'income'
-                      ? Colors.green.withOpacity(0.12)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: _transactionType == 'income'
-                        ? Colors.green
-                        : Colors.transparent,
-                    width: 2,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.arrow_downward,
-                      color: _transactionType == 'income'
-                          ? Colors.green
-                          : Colors.grey,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "수입",
-                      style: TextStyle(
-                        fontWeight: _transactionType == 'income'
-                            ? FontWeight.bold
-                            : FontWeight.w500,
-                        fontSize: 17,
-                        color: _transactionType == 'income'
-                            ? Colors.green
-                            : Colors.grey,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
   
   Widget _buildSectionTitle(BuildContext context, String title) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: EdgeInsets.zero,
       child: Text(title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF191F28), letterSpacing: -0.3)),
-    );
-  }
-
-  Widget _buildCycleToggle() {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => setState(() => _cycle = 'monthly'),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 160),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              decoration: BoxDecoration(
-                color: _cycle == 'monthly'
-                    ? Colors.deepPurple.withOpacity(0.15)
-                    : Colors.grey.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  "매월",
-                  style: TextStyle(
-                    fontWeight: _cycle == 'monthly'
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    fontSize: 15,
-                    color: _cycle == 'monthly'
-                        ? Colors.deepPurple
-                        : Colors.grey,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => setState(() => _cycle = 'weekly'),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 160),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              decoration: BoxDecoration(
-                color: _cycle == 'weekly'
-                    ? Colors.deepPurple.withOpacity(0.15)
-                    : Colors.grey.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  "매주",
-                  style: TextStyle(
-                    fontWeight: _cycle == 'weekly'
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    fontSize: 15,
-                    color: _cycle == 'weekly'
-                        ? Colors.deepPurple
-                        : Colors.grey,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
   Widget _buildSearchResults() {
@@ -1649,14 +665,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         const SizedBox(height: 20),
                         _buildPrimaryActions(),
                         const SizedBox(height: 24),
-                        _buildPriorityAlerts(),
-                        const UpcomingTaxBanner(),
-                        const SizedBox(height: 24),
-                        _buildKPISection(),
-                        const SizedBox(height: 24),
                         _buildRecentActivity(),
-                        const SizedBox(height: 24),
-                        _buildHelpSection(),
                         const SizedBox(height: 80),
                       ],
                     ),
@@ -1674,21 +683,5 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 }
-
-class _KpiItem {
-final String title;
-final int value;
-final IconData icon;
-final Color color;
-final String? subtitle;
-final VoidCallback? onTap;
-
-  _KpiItem({
-  required this.title,
-  required this.value,
-  required this.icon,
-  required this.color,
-  this.subtitle,
-  this.onTap,
-  });
+);
 }
