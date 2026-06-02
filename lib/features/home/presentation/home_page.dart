@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'upcoming_tax_banner.dart';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 import '../../transactions/data/transaction_model.dart';
 import '../../transactions/data/transaction_repository.dart';
@@ -16,34 +14,23 @@ import '../../../core/utils/excel_service.dart';
 import '../../tax/services/tax_service.dart';
 import '../../receivables/presentation/unpaid_receivables_page.dart';
 
-import '../../../core/providers/theme_provider.dart';
 
 import '../../receipts/presentation/camera_page.dart';
 import '../../transactions/presentation/add_transaction_page.dart';
-import '../../statistics/presentation/statistics_page.dart';
 import '../../auth/presentation/login_page.dart';
-import '../../tax/presentation/tax_setup_page.dart';
-import '../../transactions/presentation/invoice_page.dart';
-import '../../transactions/presentation/my_business_page.dart';
-import '../../tax/presentation/tax_calendar_page.dart';
 import '../../tax/presentation/tax_tips_page.dart';
-import '../../tax/presentation/tax_faq_page.dart';
-import '../../community/presentation/community_page.dart';
-import '../../user/presentation/settings_page.dart';
 import '../../transactions/presentation/all_transactions_page.dart';
 import '../../transactions/presentation/transaction_list_item.dart';
 import '../../../core/constants/category_icons.dart';
 import '../../transactions/presentation/missing_receipt_page.dart';
-import '../../recurring/presentation/recurring_list_page.dart';
 import '../../recurring/data/recurring_transaction_model.dart';
 import '../../recurring/data/recurring_transaction_repository.dart';
 import '../../recurring/services/recurring_service.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import '../../cards/presentation/card_list_page.dart';
 import '../../cards/data/card_repository.dart';
-import '../../statistics/presentation/statistics_page.dart';
-import '../../tax/presentation/tax_summary_page.dart'; 
-import 'upcoming_tax_banner.dart';
+import '../../tax/presentation/tax_summary_page.dart';
+import '../../../core/providers/country_config_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -69,8 +56,18 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool _isLoading = true;
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
-  final currencyFormat =
-      NumberFormat.currency(locale: 'ko_KR', symbol: '₩');
+  late NumberFormat currencyFormat;
+
+  @override
+  void initState() {
+    super.initState();
+    final config = ref.read(countryConfigProvider);
+    currencyFormat = NumberFormat.currency(
+      locale: config.currencyLocale,
+      symbol: config.currencySymbol,
+    );
+    _loadData();
+  }
 
   static const double _sectionGap = 16.0;              
   static const double _sectionHorizontalPadding = 16.0; 
@@ -95,16 +92,16 @@ class _HomePageState extends ConsumerState<HomePage> {
   Map<String, dynamic>? _upcomingTaxEvent;
   Map<String, dynamic>? _taxProfile;
   Map<String, dynamic> _calculateVatForCurrentPeriod() {
+    final config = ref.read(countryConfigProvider);
     final now = DateTime.now();
     final int year = now.year;
-    final bool isFirstPeriod = now.month <= 6;
+    final taxPeriod = config.currentPeriod();
 
-    final DateTime from = DateTime(year, isFirstPeriod ? 1 : 7, 1);
-    
-    final DateTime to = DateTime(year, isFirstPeriod ? 6 : 12, 31);
+    final DateTime from = DateTime(year, taxPeriod.startMonth, 1);
+    final DateTime to = DateTime(year, taxPeriod.endMonth + 1, 1)
+        .subtract(const Duration(days: 1));
 
-    final String period = isFirstPeriod ? '1기' : '2기';
-    final String periodWithYear = '$year년 $period';
+    final String periodWithYear = config.formatPeriodYear(year, taxPeriod);
 
     int salesTotal = 0;
     int purchaseTotal = 0;
@@ -122,12 +119,12 @@ class _HomePageState extends ConsumerState<HomePage> {
       }
     }
 
-    final int salesVat = (salesTotal * 0.1).round();
-    final int purchaseVat = (purchaseTotal * 0.1).round();
-    final int netVat = purchaseVat - salesVat; 
+    final int salesVat = (salesTotal * config.vatRate).round();
+    final int purchaseVat = (purchaseTotal * config.vatRate).round();
+    final int netVat = purchaseVat - salesVat;
 
     return {
-      'period': period,
+      'period': taxPeriod.label,
       'periodWithYear': periodWithYear,
       'salesTotal': salesTotal,
       'purchaseTotal': purchaseTotal,
@@ -135,12 +132,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       'purchaseVat': purchaseVat,
       'netVat': netVat,
     };
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
   }
 
   @override
@@ -152,6 +143,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   Future<void> _openVatDetailBottomSheet() async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final formatter = NumberFormat('#,###');
+    final config = ref.read(countryConfigProvider);
 
     final vatData = _calculateVatForCurrentPeriod();
     final String periodWithYear = vatData['periodWithYear'] as String;
@@ -190,7 +182,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
                 Text(
-                  "$periodWithYear 부가세 예상 상세",
+                  "$periodWithYear ${config.vatTerminology} 예상 상세",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -222,16 +214,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("매출 부가세 (10%)"),
-                    Text("₩${formatter.format(salesVat)}"),
+                    Text("매출 ${config.vatTerminology} (${(config.vatRate * 100).toStringAsFixed(0)}%)"),
+                    Text("${config.currencySymbol}${formatter.format(salesVat)}"),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("매입 부가세 (10%)"),
-                    Text("₩${formatter.format(purchaseVat)}"),
+                    Text("매입 ${config.vatTerminology} (${(config.vatRate * 100).toStringAsFixed(0)}%)"),
+                    Text("${config.currencySymbol}${formatter.format(purchaseVat)}"),
                   ],
                 ),
 
@@ -333,57 +325,54 @@ class _HomePageState extends ConsumerState<HomePage> {
         .fold(0, (sum, tx) => sum + tx.amount);
   }
 
-  static const nonDeductibleCategories = [
-    '접대', '개인', '의류',
-  ];
+  List<String> get _nonDeductibleCategories =>
+      ref.read(countryConfigProvider).nonDeductibleCategories;
 
   bool _isDeductible(TransactionModel tx) {
     final category = tx.category ?? '';
-    for (final blocked in nonDeductibleCategories) {
+    for (final blocked in _nonDeductibleCategories) {
       if (category.contains(blocked)) return false;
     }
     return true;
   }
 
   int _calculateVatRefundEstimate() {
+    final vatRate = ref.read(countryConfigProvider).vatRate;
     double refundableVat = 0;
 
     for (final tx in _transactions) {
-      if (tx.transactionType != 'expense') continue;               
-      if (!_isDeductible(tx)) continue;                            
-      if (tx.receiptUrl == null || tx.receiptUrl!.isEmpty) continue; 
+      if (tx.transactionType != 'expense') continue;
+      if (!_isDeductible(tx)) continue;
+      if (tx.receiptUrl == null || tx.receiptUrl!.isEmpty) continue;
 
-      refundableVat += tx.amount * 0.1; 
+      refundableVat += tx.amount * vatRate;
     }
 
     return refundableVat.round();
   }
 
-    int _getQuarterVatNet() {
-      final now = DateTime.now();
+  int _getQuarterVatNet() {
+    final config = ref.read(countryConfigProvider);
+    final now = DateTime.now();
+    final period = config.currentPeriod();
+    final start = DateTime(now.year, period.startMonth, 1);
+    final end = DateTime(now.year, period.endMonth + 1, 1);
 
-      final quarterIndex = ((now.month - 1) / 3).floor(); 
-      final startMonth = quarterIndex * 3 + 1;            
-      final start = DateTime(now.year, startMonth, 1);
-      final end   = DateTime(now.year, startMonth + 3, 1); 
+    int salesVat = 0;
+    int purchaseVat = 0;
 
-      int salesVat = 0;     
-      int purchaseVat = 0;  
+    for (final tx in _transactions) {
+      final d = tx.date;
 
-      for (final tx in _transactions) {
-        final d = tx.date;
+      if (d.isBefore(start) || !d.isBefore(end)) continue;
 
-        if (d.isBefore(start) || !d.isBefore(end)) continue;
-
-        if (tx.transactionType == 'income') {
-          
-          salesVat += (tx.amount * 0.1).round();
-        } else if (tx.transactionType == 'expense') {
-          
-          if (!_isVatDeductibleForVat(tx)) continue;
-          purchaseVat += (tx.amount * 0.1).round();
-        }
+      if (tx.transactionType == 'income') {
+        salesVat += (tx.amount * config.vatRate).round();
+      } else if (tx.transactionType == 'expense') {
+        if (!_isVatDeductibleForVat(tx)) continue;
+        purchaseVat += (tx.amount * config.vatRate).round();
       }
+    }
 
     return purchaseVat - salesVat;
   }
@@ -992,7 +981,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               _kpiRow(context, '미수금${unpaidList.isNotEmpty ? " (${unpaidList.length}건)" : ""}', unpaidReceivables, const Color(0xFFFF9500), isDark,
                 onTap: unpaidReceivables > 0 ? () => Navigator.push(context, MaterialPageRoute(builder: (_) => UnpaidReceivablesPage(transactions: unpaidList))) : null),
               _kpiDivider(isDark),
-              _kpiRow(context, '$vatPeriod 부가세 ${vatNet >= 0 ? "환급" : "납부"} 예상', vatNet.abs(), vatNet >= 0 ? const Color(0xFF3182F6) : const Color(0xFFFF4D4F), isDark, onTap: _openVatDetailBottomSheet),
+              _kpiRow(context, '$vatPeriod ${ref.read(countryConfigProvider).vatTerminology} ${vatNet >= 0 ? "환급" : "납부"} 예상', vatNet.abs(), vatNet >= 0 ? const Color(0xFF3182F6) : const Color(0xFFFF4D4F), isDark, onTap: _openVatDetailBottomSheet),
             ]),
           ),
         ],

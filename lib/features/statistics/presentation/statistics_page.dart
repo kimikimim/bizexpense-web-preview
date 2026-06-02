@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../transactions/data/transaction_model.dart';
 import '../../transactions/data/transaction_repository.dart';
+import '../../../core/providers/country_config_provider.dart';
 
-class StatisticsPage extends StatefulWidget {
+class StatisticsPage extends ConsumerStatefulWidget {
   const StatisticsPage({super.key});
 
   @override
-  State<StatisticsPage> createState() => _StatisticsPageState();
+  ConsumerState<StatisticsPage> createState() => _StatisticsPageState();
 }
 
-class _StatisticsPageState extends State<StatisticsPage>
+class _StatisticsPageState extends ConsumerState<StatisticsPage>
     with SingleTickerProviderStateMixin {
   final TransactionRepository _repo = TransactionRepository();
-  final NumberFormat _currency =
-      NumberFormat.currency(locale: 'ko_KR', symbol: '₩');
+  late NumberFormat _currency;
 
   bool _isLoading = true;
   late TabController _tabController;
@@ -25,6 +26,11 @@ class _StatisticsPageState extends State<StatisticsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    final config = ref.read(countryConfigProvider);
+    _currency = NumberFormat.currency(
+      locale: config.currencyLocale,
+      symbol: config.currencySymbol,
+    );
     _loadData();
   }
 
@@ -55,20 +61,12 @@ class _StatisticsPageState extends State<StatisticsPage>
   int _sumAmount(Iterable<TransactionModel> txs) =>
       txs.fold(0, (s, t) => s + t.amount);
 
-  static const _nonDeductibleKeywords = [
-    '식대',
-    '접대',
-    '복리후생',
-    '개인',
-    '의류',
-  ];
-
   bool _isDeductible(TransactionModel tx) {
-    
     if (tx.transactionType != 'expense') return false;
 
+    final config = ref.read(countryConfigProvider);
     final category = tx.category ?? '';
-    for (final k in _nonDeductibleKeywords) {
+    for (final k in config.nonDeductibleCategories) {
       if (category.contains(k)) return false;
     }
 

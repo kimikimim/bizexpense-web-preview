@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,9 +8,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../features/user/presentation/user_type_page.dart';
 import '../features/auth/presentation/login_page.dart';
+import '../features/onboarding/presentation/country_select_page.dart';
 
 import '../core/providers/theme_provider.dart';
 import '../core/providers/font_size_provider.dart';
+import '../core/config/country_tax_config.dart';
 
 import '../features/shell/main_shell_page.dart';
 import '../features/cards/services/native_channel_service.dart';
@@ -24,8 +25,8 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,          
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!, 
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
   NativeChannelService().init();
@@ -36,18 +37,19 @@ Future<void> main() async {
     await prefs.setBool('isDark', false);
   }
 
+  final countryCode = prefs.getString('country_code');
   final userType = prefs.getString('user_type');
   final session = Supabase.instance.client.auth.currentSession;
 
   Widget startPage;
-  if (session == null) {
+  if (countryCode == null || !kCountryConfigs.containsKey(countryCode)) {
+    startPage = const CountrySelectPage();
+  } else if (session == null) {
     startPage = const LoginPage();
+  } else if (userType == null) {
+    startPage = const UserTypePage();
   } else {
-    if (userType == null) {
-      startPage = const UserTypePage();
-    } else {
-      startPage = const MainShellPage();
-    }
+    startPage = const MainShellPage();
   }
 
   runApp(
