@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/country_tax_config.dart';
 
@@ -18,9 +19,24 @@ class CountryConfigNotifier extends StateNotifier<CountryTaxConfig> {
 
   Future<void> _loadSaved() async {
     final prefs = await SharedPreferences.getInstance();
-    final code = prefs.getString('country_code');
-    if (code != null && kCountryConfigs.containsKey(code)) {
-      state = kCountryConfigs[code]!;
+    final localCode = prefs.getString('country_code');
+    if (localCode != null && kCountryConfigs.containsKey(localCode)) {
+      state = kCountryConfigs[localCode]!;
+      return;
+    }
+
+    final uid = Supabase.instance.client.auth.currentUser?.id;
+    if (uid != null) {
+      final row = await Supabase.instance.client
+          .from('profiles')
+          .select('country_code')
+          .eq('id', uid)
+          .maybeSingle();
+      final dbCode = row?['country_code'] as String?;
+      if (dbCode != null && kCountryConfigs.containsKey(dbCode)) {
+        state = kCountryConfigs[dbCode]!;
+        await prefs.setString('country_code', dbCode);
+      }
     }
   }
 
@@ -30,6 +46,14 @@ class CountryConfigNotifier extends StateNotifier<CountryTaxConfig> {
     state = config;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('country_code', countryCode);
+
+    final uid = Supabase.instance.client.auth.currentUser?.id;
+    if (uid != null) {
+      await Supabase.instance.client
+          .from('profiles')
+          .update({'country_code': countryCode})
+          .eq('id', uid);
+    }
   }
 }
 
