@@ -188,6 +188,36 @@ abstract class AppLocalizations {
   /// **'Please enter your email and password.'**
   String get loginEmailRequired;
 
+  /// No description provided for @loginWithKakao.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Kakao'**
+  String get loginWithKakao;
+
+  /// No description provided for @loginWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get loginWithGoogle;
+
+  /// No description provided for @loginWithApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get loginWithApple;
+
+  /// No description provided for @loginOrDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get loginOrDivider;
+
+  /// No description provided for @loginOAuthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in failed. Please try again.'**
+  String get loginOAuthError;
+
   /// No description provided for @loginGenericError.
   ///
   /// In en, this message translates to:

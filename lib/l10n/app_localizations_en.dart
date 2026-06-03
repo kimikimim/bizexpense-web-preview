@@ -54,6 +54,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginEmailRequired => 'Please enter your email and password.';
 
   @override
+  String get loginWithKakao => 'Continue with Kakao';
+
+  @override
+  String get loginWithGoogle => 'Continue with Google';
+
+  @override
+  String get loginWithApple => 'Continue with Apple';
+
+  @override
+  String get loginOrDivider => 'or';
+
+  @override
+  String get loginOAuthError => 'Sign-in failed. Please try again.';
+
+  @override
   String get loginGenericError => 'An error occurred. Please try again.';
 
   @override

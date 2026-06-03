@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_pro/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -9,14 +10,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/widgets/primary_button.dart';
+import '../../../core/providers/country_config_provider.dart';
+import '../../../core/config/transaction_options.dart';
 
 import '../data/transaction_model.dart';
 import '../data/transaction_repository.dart';
 
-class AddTransactionPage extends StatefulWidget {
+class AddTransactionPage extends ConsumerStatefulWidget {
   final TransactionModel? initialData;
   final bool isExistingRecord;
-  final String? initialTransactionType; 
+  final String? initialTransactionType;
 
   const AddTransactionPage({
     super.key,
@@ -26,10 +29,10 @@ class AddTransactionPage extends StatefulWidget {
   });
 
   @override
-  State<AddTransactionPage> createState() => _AddTransactionPageState();
+  ConsumerState<AddTransactionPage> createState() => _AddTransactionPageState();
 }
 
-class _AddTransactionPageState extends State<AddTransactionPage> {
+class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
   final _formKey = GlobalKey<FormState>();
   final _repository = TransactionRepository();
   final ImagePicker _picker = ImagePicker();
@@ -48,64 +51,32 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   String _userType = 'personal';
 
   bool _isTaxDeductible = true;
-  bool _isVatExempt = false; 
+  bool _isVatExempt = false;
 
-  String _transactionType = 'expense'; 
+  String _transactionType = 'expense';
 
-  String _selectedMethod = '개인카드';
+  late TxOptions _opts;
+  bool _isKorea = true;
+  late String _selectedMethod;
   String _selectedInstallment = '1';
   String _cashReceiptType = '지출증빙용';
 
   List<String> _storeSuggestions = [];
   XFile? _pickedImage;
 
-  final List<String> _paymentMethods = [
-    '개인카드',
-    '법인카드',
-    '현금영수증',
-    '계좌이체',
-    '간이영수증',
-    '지역화폐',
-    '제로페이',
-    '상품권',
-    '포인트/마일리지',
-    '기타',
-  ];
-
-  final List<Map<String, dynamic>> _expenseCategoryIcons = [
-    {'icon': Icons.restaurant, 'label': '식비'},
-    {'icon': Icons.local_cafe, 'label': '카페/간식'},
-    {'icon': Icons.directions_car, 'label': '교통비'},
-    {'icon': Icons.shopping_bag, 'label': '쇼핑'},
-    {'icon': Icons.shopping_cart, 'label': '소모품'},
-    {'icon': Icons.handshake, 'label': '접대비'},
-    {'icon': Icons.phone_android, 'label': '통신비'},
-    {'icon': Icons.local_hospital, 'label': '의료비'},
-    {'icon': Icons.school, 'label': '교육비'},
-    {'icon': Icons.more_horiz, 'label': '기타'},
-  ];
-
-  final List<Map<String, dynamic>> _incomeCategoryIcons = [
-    {'icon': Icons.work, 'label': '사업수입'},
-    {'icon': Icons.payments, 'label': '급여'},
-    {'icon': Icons.sell, 'label': '판매수익'},
-    {'icon': Icons.account_balance, 'label': '임대수익'},
-    {'icon': Icons.trending_up, 'label': '투자수익'},
-    {'icon': Icons.card_giftcard, 'label': '기타수입'},
-    {'icon': Icons.more_horiz, 'label': '기타'},
-  ];
-
-  final List<String> _incomeMethods = [
-    '계좌입금',
-    '현금',
-    '카드수납',
-    '전자결제',
-    '기타',
-  ];
+  List<String> get _paymentMethods => _opts.expensePaymentMethods;
+  List<String> get _incomeMethods => _opts.incomeMethods;
+  List<Map<String, dynamic>> get _expenseCategoryIcons => _opts.expenseCategories;
+  List<Map<String, dynamic>> get _incomeCategoryIcons => _opts.incomeCategories;
 
   @override
   void initState() {
     super.initState();
+    final countryCode = ref.read(countryConfigProvider).countryCode;
+    _isKorea = countryCode == 'KR';
+    _opts = TxOptions.forCountry(countryCode);
+    _selectedMethod = _opts.defaultExpenseMethod;
+
     _loadUserType();
     _loadStoreNames();
 
@@ -157,7 +128,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       if (methodList.contains(method)) {
         _selectedMethod = method;
       } else {
-        _selectedMethod = '기타';
+        _selectedMethod = _opts.otherMethod;
         _customMethodController.text = method;
       }
 
@@ -165,12 +136,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         _cashReceiptType = data.cashReceiptType!;
       }
     } else {
-      
-      if (_transactionType == 'income') {
-        _selectedMethod = '계좌입금';
-      } else {
-        _selectedMethod = '개인카드';
-      }
+      _selectedMethod = _transactionType == 'income'
+          ? _opts.defaultIncomeMethod
+          : _opts.defaultExpenseMethod;
       _isVatExempt = false;
     }
   }
@@ -225,7 +193,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       initialDate: _selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
-      locale: const Locale('ko', 'KR'),
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);
@@ -275,6 +242,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   }
 
   bool _needsReceiptForCurrentForm() {
+    if (!_isKorea) return false; // Korea-specific receipt rules
     if (_transactionType != 'expense') return false;
 
     final rawAmount =
@@ -403,11 +371,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     }
 
     String methodToSave = _selectedMethod;
-    if (_selectedMethod == '기타') {
+    if (_selectedMethod == _opts.otherMethod) {
       methodToSave =
           _customMethodController.text.trim();
-      if (methodToSave.isEmpty) methodToSave = '기타';
-    } else if (_selectedMethod.contains('카드')) {
+      if (methodToSave.isEmpty) methodToSave = _opts.otherMethod;
+    } else if (_isKorea && _opts.isCardMethod(_selectedMethod)) {
       int installment = 1;
       if (_selectedInstallment == 'custom') {
         installment = int.tryParse(
@@ -463,7 +431,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           ? _isTaxDeductible
           : false,
       approvalNumber: _approvalNumController.text,
-      cashReceiptType: _selectedMethod == '현금영수증'
+      cashReceiptType: _opts.isCashReceipt(_selectedMethod)
           ? _cashReceiptType
           : null,
       accountId: 'ManualInput',
@@ -656,7 +624,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   @override
   Widget build(BuildContext context) {
     final isBusiness = _userType.contains('business');
-    final isEntertainment =
+    final isEntertainment = _isKorea &&
         _categoryController.text.contains('접대');
 
     final isDark =
@@ -709,10 +677,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          DateFormat(
-                            'yyyy년 MM월 dd일 (E)',
-                            'ko_KR',
-                          ).format(_selectedDate),
+                          _isKorea
+                              ? DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR')
+                                  .format(_selectedDate)
+                              : DateFormat.yMMMMEEEEd(
+                                      Localizations.localeOf(context)
+                                          .toString())
+                                  .format(_selectedDate),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: textColor,
@@ -754,7 +725,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   _categoryController
                                       .clear();
                                   _selectedMethod =
-                                      '개인카드';
+                                      _opts.defaultExpenseMethod;
                                 });
                               },
                               child: Container(
@@ -826,7 +797,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   _categoryController
                                       .clear();
                                   _selectedMethod =
-                                      '계좌입금';
+                                      _opts.defaultIncomeMethod;
                                 });
                               },
                               child: Container(
@@ -1021,10 +992,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       ),
                     ),
 
-                    if (_transactionType ==
-                            'expense' &&
-                        _selectedMethod
-                            .contains('카드')) ...[
+                    if (_isKorea &&
+                        _transactionType == 'expense' &&
+                        _opts.isCardMethod(_selectedMethod)) ...[
                       const SizedBox(height: 12),
                       _buildInputCard(
                         child: Row(
@@ -1110,10 +1080,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       ),
                     ],
 
-                    if (_transactionType ==
-                            'expense' &&
-                        _selectedMethod ==
-                            '현금영수증') ...[
+                    if (_transactionType == 'expense' &&
+                        _opts.isCashReceipt(_selectedMethod)) ...[
                       const SizedBox(height: 12),
                       Container(
                         padding:

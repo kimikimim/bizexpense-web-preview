@@ -1,6 +1,8 @@
 # ▶ Flutter 기본
 build/*
 !build/web
+android/build/
+ios/build/
 .flutter-plugins
 .flutter-plugins-dependencies
 .macos/

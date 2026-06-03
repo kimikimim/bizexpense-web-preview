@@ -18,6 +18,11 @@
   "signUp": "Sign Up",
   "loginError": "Incorrect email or password.",
   "loginEmailRequired": "Please enter your email and password.",
+  "loginWithKakao": "Continue with Kakao",
+  "loginWithGoogle": "Continue with Google",
+  "loginWithApple": "Continue with Apple",
+  "loginOrDivider": "or",
+  "loginOAuthError": "Sign-in failed. Please try again.",
   "loginGenericError": "An error occurred. Please try again.",
 
   "signupStep1Title": "Create Account",

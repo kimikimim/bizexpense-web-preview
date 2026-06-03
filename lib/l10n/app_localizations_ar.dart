@@ -54,6 +54,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginEmailRequired => 'يرجى إدخال البريد الإلكتروني وكلمة المرور.';
 
   @override
+  String get loginWithKakao => 'المتابعة عبر كاكاو';
+
+  @override
+  String get loginWithGoogle => 'المتابعة عبر Google';
+
+  @override
+  String get loginWithApple => 'المتابعة عبر Apple';
+
+  @override
+  String get loginOrDivider => 'أو';
+
+  @override
+  String get loginOAuthError => 'فشل تسجيل الدخول. حاول مرة أخرى.';
+
+  @override
   String get loginGenericError => 'حدث خطأ. يرجى المحاولة مرة أخرى.';
 
   @override

@@ -3,7 +3,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import 'package:expense_pro/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../user/presentation/user_type_page.dart';
 import 'signup_page.dart';
 import '../../shell/main_shell_page.dart';
@@ -20,6 +19,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   final _passwordCtrl = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _isKorea = true;
   late AnimationController _animCtrl;
   late Animation<Offset> _slideAnim;
   late Animation<double> _fadeAnim;
@@ -39,6 +39,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _fadeAnim = Tween<double>(begin: 0, end: 1)
         .animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut));
     _animCtrl.forward();
+    _loadRegion();
+  }
+
+  Future<void> _loadRegion() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isKorea = (prefs.getString('country_code') ?? 'KR') == 'KR';
+    if (mounted) setState(() => _isKorea = isKorea);
   }
 
   @override
@@ -97,14 +104,15 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     }
   }
 
-  Future<void> _kakaoLogin() async {
+  Future<void> _oauthLogin(OAuthProvider provider) async {
     try {
       await Supabase.instance.client.auth.signInWithOAuth(
-        OAuthProvider.kakao,
+        provider,
         redirectTo: 'io.supabase.flutter://login-callback/',
       );
     } catch (e) {
-      _showError('카카오 로그인 실패: $e');
+      appLogger.e('oauth login error', error: e);
+      if (mounted) _showError(AppLocalizations.of(context)!.loginOAuthError);
     }
   }
 
@@ -160,16 +168,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
                   const SizedBox(height: 24),
 
-                  FutureBuilder<bool>(
-                    future: SharedPreferences.getInstance()
-                        .then((p) => (p.getString('country_code') ?? 'KR') == 'KR'),
-                    builder: (context, snap) {
-                      if (snap.data != true) return const SizedBox.shrink();
-                      return FadeTransition(
-                        opacity: _fadeAnim,
-                        child: _buildKakaoButton(),
-                      );
-                    },
+                  FadeTransition(
+                    opacity: _fadeAnim,
+                    child: _buildSocialButtons(),
                   ),
 
                   const SizedBox(height: 20),
@@ -400,31 +401,76 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     );
   }
 
-  Widget _buildKakaoButton() {
+  Widget _buildSocialButtons() {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      children: [
+        // Korea-only: Kakao
+        if (_isKorea) ...[
+          _buildSocialButton(
+            label: l10n.loginWithKakao,
+            icon: Icons.chat_bubble_rounded,
+            bgColor: const Color(0xFFFEE500),
+            fgColor: const Color(0xFF3A1D1D),
+            onTap: () => _oauthLogin(OAuthProvider.kakao),
+          ),
+          const SizedBox(height: 10),
+        ],
+        // All regions: Google
+        _buildSocialButton(
+          label: l10n.loginWithGoogle,
+          icon: Icons.g_mobiledata_rounded,
+          bgColor: Colors.white,
+          fgColor: const Color(0xFF1F1F1F),
+          border: true,
+          onTap: () => _oauthLogin(OAuthProvider.google),
+        ),
+        const SizedBox(height: 10),
+        // All regions: Apple
+        _buildSocialButton(
+          label: l10n.loginWithApple,
+          icon: Icons.apple,
+          bgColor: Colors.black,
+          fgColor: Colors.white,
+          onTap: () => _oauthLogin(OAuthProvider.apple),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSocialButton({
+    required String label,
+    required IconData icon,
+    required Color bgColor,
+    required Color fgColor,
+    required VoidCallback onTap,
+    bool border = false,
+  }) {
     return GestureDetector(
-      onTap: _kakaoLogin,
+      onTap: onTap,
       child: Container(
         height: 52,
         decoration: BoxDecoration(
-          color: const Color(0xFFFEE500),
+          color: bgColor,
           borderRadius: BorderRadius.circular(14),
+          border: border ? Border.all(color: const Color(0xFFE0E0E0)) : null,
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFFEE500).withAlpha(80),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withAlpha(12),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.chat_bubble_rounded, color: Color(0xFF3A1D1D), size: 20),
-            SizedBox(width: 10),
+            Icon(icon, color: fgColor, size: 22),
+            const SizedBox(width: 10),
             Text(
-              '카카오로 3초 만에 시작하기',
+              label,
               style: TextStyle(
-                color: Color(0xFF3A1D1D),
+                color: fgColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
               ),

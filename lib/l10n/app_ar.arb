@@ -18,6 +18,11 @@
   "signUp": "إنشاء حساب",
   "loginError": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
   "loginEmailRequired": "يرجى إدخال البريد الإلكتروني وكلمة المرور.",
+  "loginWithKakao": "المتابعة عبر كاكاو",
+  "loginWithGoogle": "المتابعة عبر Google",
+  "loginWithApple": "المتابعة عبر Apple",
+  "loginOrDivider": "أو",
+  "loginOAuthError": "فشل تسجيل الدخول. حاول مرة أخرى.",
   "loginGenericError": "حدث خطأ. يرجى المحاولة مرة أخرى.",
 
   "signupStep1Title": "إنشاء حساب",
