@@ -32,8 +32,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   final ExcelService _excelService = ExcelService();
   final TransactionRepository _transactionRepository = TransactionRepository();
 
-  final String _supportEmail = 'support@bizexpense.com'; 
-  final String _kakaoOpenChatUrl = 'https://open.kakao.com/o/your_link_id'; 
+  final String _supportEmail = 'support@bizexpense.com';
+  final String _kakaoOpenChatUrl = 'https://open.kakao.com/o/your_link_id';
   final String _termsUrl = 'https://your-notion-url.com/terms';
   final String _privacyUrl = 'https://your-notion-url.com/privacy';
 
@@ -124,7 +124,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   Future<void> _loadVersion() async {
     final info = await PackageInfo.fromPlatform();
-    if(mounted) {
+    if (mounted) {
       setState(() {
         _appVersion = info.version;
       });
@@ -168,10 +168,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sectionColor = isDark ? Colors.grey[400] : Colors.blueGrey;
 
     final currentFontSizeLevel = ref.watch(fontSizeProvider);
     final currentCountry = ref.watch(countryConfigProvider);
+    final isKorea = currentCountry.countryCode == 'KR';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -181,310 +181,363 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         elevation: 0,
       ),
       body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
         children: [
-          const SizedBox(height: 20),
+          // ── Display ─────────────────────────────
+          _sectionLabel(l10n.settingsDisplaySettings, isDark),
+          _card(isDark, [
+            _fontSizeControl(currentFontSizeLevel, l10n),
+            _tile(
+              leading: Text(currentCountry.flagEmoji, style: const TextStyle(fontSize: 22)),
+              title: l10n.settingsCountryRegion,
+              subtitle: "${currentCountry.countryName} · ${currentCountry.vatTerminology} ${(currentCountry.vatRate * 100).toStringAsFixed(0)}%",
+              onTap: () => _showCountryPicker(context, isDark),
+            ),
+          ]),
+          const SizedBox(height: 22),
 
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.settingsDisplaySettings, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            color: isDark ? Colors.grey[900] : Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(l10n.settingsFontSizeLabel, style: const TextStyle(fontSize: 16)),
-                    Text(
-                      _getFontSizeLabel(currentFontSizeLevel, l10n),
-                      style: TextStyle(color: Colors.blue[400], fontWeight: FontWeight.bold)
-                    ),
-                  ],
-                ),
-                Slider(
-                  value: currentFontSizeLevel.toDouble(),
-                  min: 1,
-                  max: 5,
-                  divisions: 4,
-                  activeColor: Colors.blueGrey,
-                  label: _getFontSizeLabel(currentFontSizeLevel, l10n),
-                  onChanged: (value) {
-                    ref.read(fontSizeProvider.notifier).setFontSize(value.toInt());
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(l10n.settingsSmall, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                    Text(l10n.settingsMedium, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                    Text(l10n.settingsLarge, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                  ],
-                )
-              ],
+          // ── Business ────────────────────────────
+          _sectionLabel(l10n.settingsBusinessManagement, isDark),
+          _card(isDark, [
+            _tile(
+              leading: _leadingIcon(Icons.person_pin, Colors.indigo),
+              title: l10n.settingsMyBusinessInfo,
+              subtitle: l10n.settingsMyBusinessInfoSub,
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => MyBusinessPage())),
+            ),
+            if (isKorea)
+              _tile(
+                leading: _leadingIcon(Icons.calendar_month, Colors.indigo),
+                title: l10n.settingsTaxScheduleSetup,
+                subtitle: l10n.settingsTaxScheduleSetupSub,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => TaxSetupPage())),
+              ),
+          ]),
+          const SizedBox(height: 22),
+
+          // ── Data ────────────────────────────────
+          _sectionLabel(l10n.menuDataManagement, isDark),
+          _card(isDark, [
+            _tile(
+              leading: _leadingIcon(Icons.cloud_upload, Colors.green),
+              title: l10n.settingsDataBackup,
+              subtitle: l10n.settingsDataBackupSub,
+              onTap: _runAutoBackup,
+            ),
+            _tile(
+              leading: _leadingIcon(Icons.file_download_outlined, Colors.blue),
+              title: l10n.settingsBackupFileDownload,
+              subtitle: l10n.settingsBackupFileDownloadSub,
+              onTap: _downloadBackup,
+            ),
+            _tile(
+              leading: _leadingIcon(Icons.restore, Colors.orange),
+              title: l10n.settingsDataRestore,
+              subtitle: l10n.settingsDataRestoreSub,
+              onTap: _restoreBackup,
+            ),
+            _tile(
+              leading: _leadingIcon(Icons.account_balance_wallet, Colors.indigo),
+              title: l10n.settingsTaxSettlementExcel,
+              subtitle: l10n.settingsTaxSettlementExcelSub,
+              onTap: _exportTaxExcel,
+            ),
+          ]),
+          const SizedBox(height: 22),
+
+          // ── Support ─────────────────────────────
+          _sectionLabel(l10n.settingsSupport, isDark),
+          _card(isDark, [
+            if (isKorea)
+              _tile(
+                leading: _leadingIcon(Icons.chat_bubble_outline, Colors.amber),
+                title: l10n.settingsKakaoInquiry,
+                subtitle: l10n.settingsKakaoInquirySub,
+                onTap: () => _launchUrl(_kakaoOpenChatUrl),
+              ),
+            _tile(
+              leading: _leadingIcon(Icons.email_outlined, Colors.blue),
+              title: l10n.settingsEmailInquiry,
+              onTap: _sendEmail,
+            ),
+          ]),
+          const SizedBox(height: 22),
+
+          // ── Legal ───────────────────────────────
+          _sectionLabel(l10n.settingsTermsAndPolicy, isDark),
+          _card(isDark, [
+            _tile(
+              leading: _leadingIcon(Icons.description_outlined, Colors.blueGrey),
+              title: l10n.settingsTermsOfService,
+              onTap: () => _launchUrl(_termsUrl),
+            ),
+            _tile(
+              leading: _leadingIcon(Icons.privacy_tip_outlined, Colors.blueGrey),
+              title: l10n.settingsPrivacyPolicy,
+              onTap: () => _launchUrl(_privacyUrl),
+            ),
+            _tile(
+              leading: _leadingIcon(Icons.policy_outlined, Colors.blueGrey),
+              title: l10n.settingsOpenSourceLicense,
+              onTap: () => showLicensePage(context: context, applicationName: "BizExpense", applicationVersion: _appVersion),
+            ),
+          ]),
+          const SizedBox(height: 28),
+
+          Center(
+            child: Text(
+              "BizExpense · v$_appVersion",
+              style: TextStyle(fontSize: 12, color: Colors.grey[isDark ? 600 : 500]),
             ),
           ),
-
-          ListTile(
-            leading: Text(currentCountry.flagEmoji, style: const TextStyle(fontSize: 22)),
-            title: Text(l10n.settingsCountryRegion),
-            subtitle: Text("${currentCountry.countryName} · ${currentCountry.vatTerminology} ${(currentCountry.vatRate * 100).toStringAsFixed(0)}%"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () => _showCountryPicker(context, isDark),
-          ),
-
-          const Divider(),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text(l10n.settingsBusinessManagement, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.person_pin, color: Colors.indigo),
-            title: Text(l10n.settingsMyBusinessInfo),
-            subtitle: Text(l10n.settingsMyBusinessInfoSub),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => MyBusinessPage()));
-            },
-          ),
-          if (currentCountry.countryCode == 'KR')
-            ListTile(
-              leading: const Icon(Icons.calendar_month, color: Colors.indigo),
-              title: Text(l10n.settingsTaxScheduleSetup),
-              subtitle: Text(l10n.settingsTaxScheduleSetupSub),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => TaxSetupPage()));
-              },
-            ),
-
-          const Divider(),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text(l10n.menuDataManagement, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.cloud_upload, color: Colors.green),
-            title: Text(l10n.settingsDataBackup),
-            subtitle: Text(l10n.settingsDataBackupSub),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () async {
-              final success = await _backupService.autoBackup();
-              if (mounted) {
-                final l10n2 = AppLocalizations.of(context)!;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success ? l10n2.settingsBackupSuccess : l10n2.settingsBackupFailed),
-                    backgroundColor: success ? Colors.green : Colors.red,
-                  ),
-                );
-              }
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.file_download_outlined, color: Colors.blue),
-            title: Text(l10n.settingsBackupFileDownload),
-            subtitle: Text(l10n.settingsBackupFileDownloadSub),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () async {
-              final backupJson = await _backupService.createBackupFile();
-              if (backupJson != null) {
-                await Share.share(backupJson, subject: 'BizExpense Backup');
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)!.settingsBackupShared)),
-                  );
-                }
-              } else {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)!.settingsBackupShareFailed)),
-                  );
-                }
-              }
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.restore, color: Colors.orange),
-            title: Text(l10n.settingsDataRestore),
-            subtitle: Text(l10n.settingsDataRestoreSub),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () async {
-              try {
-                final result = await FilePicker.platform.pickFiles(
-                  type: FileType.custom,
-                  allowedExtensions: ['json', 'txt'],
-                );
-                
-                if (result != null && result.files.isNotEmpty) {
-                  String backupJson;
-                  
-                  if (kIsWeb) {
-                    final bytes = result.files.single.bytes;
-                    if (bytes == null) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(AppLocalizations.of(context)!.settingsFileNotReadable)),
-                        );
-                      }
-                      return;
-                    }
-                    backupJson = utf8.decode(bytes);
-                  } else {
-                    final path = result.files.single.path;
-                    if (path == null) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(AppLocalizations.of(context)!.settingsFilePathNotFound)),
-                        );
-                      }
-                      return;
-                    }
-                    final file = File(path);
-                    backupJson = await file.readAsString();
-                  }
-
-                  final confirm = await showDialog<bool>(
-                    context: context,
-                    builder: (context) {
-                      final dl = AppLocalizations.of(context)!;
-                      return AlertDialog(
-                        title: Text(dl.settingsRestoreDialogTitle),
-                        content: Text(dl.settingsRestoreDialogContent),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, false),
-                            child: Text(dl.cancel),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            child: Text(dl.settingsRestoreConfirm, style: const TextStyle(color: Colors.red)),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-
-                  if (confirm == true) {
-                    final success = await _backupService.restoreFromBackup(backupJson);
-                    if (mounted) {
-                      final l10n2 = AppLocalizations.of(context)!;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(success ? l10n2.settingsRestoreSuccess : l10n2.settingsRestoreFailed),
-                          backgroundColor: success ? Colors.green : Colors.red,
-                        ),
-                      );
-                    }
-                  }
-                }
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)!.settingsFileReadFailed(e.toString()))),
-                  );
-                }
-              }
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.account_balance_wallet, color: Colors.indigo),
-            title: Text(l10n.settingsTaxSettlementExcel),
-            subtitle: Text(l10n.settingsTaxSettlementExcelSub),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () async {
-              final transactions = await _transactionRepository.getTransactions();
-              if (transactions.isEmpty) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)!.noDataToExport)),
-                  );
-                }
-                return;
-              }
-              await _excelService.exportForAccounting(
-                transactions,
-                config: ref.read(countryConfigProvider),
-              );
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(AppLocalizations.of(context)!.exportExcelSuccess)),
-                );
-              }
-            },
-          ),
-
-          const Divider(),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text(l10n.settingsSupport, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.chat_bubble_outline, color: Colors.amber),
-            title: Text(l10n.settingsKakaoInquiry),
-            subtitle: Text(l10n.settingsKakaoInquirySub),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () => _launchUrl(_kakaoOpenChatUrl),
-          ),
-          ListTile(
-            leading: const Icon(Icons.email_outlined, color: Colors.blue),
-            title: Text(l10n.settingsEmailInquiry),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: _sendEmail,
-          ),
-
-          const Divider(),
-
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-            child: Text(l10n.settingsTermsAndPolicy, style: TextStyle(color: sectionColor, fontWeight: FontWeight.bold)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.description_outlined),
-            title: Text(l10n.settingsTermsOfService),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () => _launchUrl(_termsUrl),
-          ),
-          ListTile(
-            leading: const Icon(Icons.privacy_tip_outlined),
-            title: Text(l10n.settingsPrivacyPolicy),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () => _launchUrl(_privacyUrl),
-          ),
-          ListTile(
-            leading: const Icon(Icons.policy_outlined),
-            title: Text(l10n.settingsOpenSourceLicense),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () => showLicensePage(context: context, applicationName: "BizExpense", applicationVersion: _appVersion),
-          ),
-
-          const Divider(),
-
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: Text(l10n.settingsAppVersion),
-            trailing: Text(_appVersion, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-          ),
-          
-          const SizedBox(height: 40),
         ],
       ),
     );
   }
 
+  // ── reusable UI ───────────────────────────────
+  Widget _sectionLabel(String title, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: isDark ? Colors.grey[400] : Colors.blueGrey,
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+        ),
+      ),
+    );
+  }
+
+  Widget _card(bool isDark, List<Widget> children) {
+    final visible = children.whereType<Widget>().toList();
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[900] : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: isDark ? Colors.grey[800]! : Colors.grey[200]!),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          for (int i = 0; i < visible.length; i++) ...[
+            if (i != 0) const Divider(height: 1),
+            visible[i],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _leadingIcon(IconData icon, Color color) {
+    return CircleAvatar(
+      radius: 18,
+      backgroundColor: color.withOpacity(0.12),
+      child: Icon(icon, color: color, size: 20),
+    );
+  }
+
+  Widget _tile({
+    required Widget leading,
+    required String title,
+    String? subtitle,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      leading: leading,
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 11)) : null,
+      trailing: const Icon(Icons.chevron_right, size: 18),
+      onTap: onTap,
+    );
+  }
+
+  Widget _fontSizeControl(int level, AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l10n.settingsFontSizeLabel, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+              Text(
+                _getFontSizeLabel(level, l10n),
+                style: TextStyle(color: Colors.blue[400], fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          Slider(
+            value: level.toDouble(),
+            min: 1,
+            max: 5,
+            divisions: 4,
+            activeColor: Colors.blueGrey,
+            label: _getFontSizeLabel(level, l10n),
+            onChanged: (value) {
+              ref.read(fontSizeProvider.notifier).setFontSize(value.toInt());
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l10n.settingsSmall, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(l10n.settingsMedium, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(l10n.settingsLarge, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── actions (unchanged logic) ─────────────────
+  Future<void> _runAutoBackup() async {
+    final success = await _backupService.autoBackup();
+    if (mounted) {
+      final l10n2 = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(success ? l10n2.settingsBackupSuccess : l10n2.settingsBackupFailed),
+          backgroundColor: success ? Colors.green : Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _downloadBackup() async {
+    final backupJson = await _backupService.createBackupFile();
+    if (backupJson != null) {
+      await Share.share(backupJson, subject: 'BizExpense Backup');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.settingsBackupShared)),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.settingsBackupShareFailed)),
+        );
+      }
+    }
+  }
+
+  Future<void> _restoreBackup() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json', 'txt'],
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        String backupJson;
+
+        if (kIsWeb) {
+          final bytes = result.files.single.bytes;
+          if (bytes == null) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(AppLocalizations.of(context)!.settingsFileNotReadable)),
+              );
+            }
+            return;
+          }
+          backupJson = utf8.decode(bytes);
+        } else {
+          final path = result.files.single.path;
+          if (path == null) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(AppLocalizations.of(context)!.settingsFilePathNotFound)),
+              );
+            }
+            return;
+          }
+          final file = File(path);
+          backupJson = await file.readAsString();
+        }
+
+        final confirm = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            final dl = AppLocalizations.of(context)!;
+            return AlertDialog(
+              title: Text(dl.settingsRestoreDialogTitle),
+              content: Text(dl.settingsRestoreDialogContent),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text(dl.cancel),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(dl.settingsRestoreConfirm, style: const TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (confirm == true) {
+          final success = await _backupService.restoreFromBackup(backupJson);
+          if (mounted) {
+            final l10n2 = AppLocalizations.of(context)!;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(success ? l10n2.settingsRestoreSuccess : l10n2.settingsRestoreFailed),
+                backgroundColor: success ? Colors.green : Colors.red,
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.settingsFileReadFailed(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _exportTaxExcel() async {
+    final transactions = await _transactionRepository.getTransactions();
+    if (transactions.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.noDataToExport)),
+        );
+      }
+      return;
+    }
+    await _excelService.exportForAccounting(
+      transactions,
+      config: ref.read(countryConfigProvider),
+    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.exportExcelSuccess)),
+      );
+    }
+  }
+
   String _getFontSizeLabel(int level, AppLocalizations l10n) {
     switch (level) {
-      case 1: return l10n.settingsFontSizeVerySmall;
-      case 2: return l10n.settingsFontSizeSmall;
-      case 3: return l10n.settingsFontSizeNormal;
-      case 4: return l10n.settingsFontSizeLarge;
-      case 5: return l10n.settingsFontSizeVeryLarge;
-      default: return l10n.settingsFontSizeNormal;
+      case 1:
+        return l10n.settingsFontSizeVerySmall;
+      case 2:
+        return l10n.settingsFontSizeSmall;
+      case 3:
+        return l10n.settingsFontSizeNormal;
+      case 4:
+        return l10n.settingsFontSizeLarge;
+      case 5:
+        return l10n.settingsFontSizeVeryLarge;
+      default:
+        return l10n.settingsFontSizeNormal;
     }
   }
 }
