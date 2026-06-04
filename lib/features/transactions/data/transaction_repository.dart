@@ -15,6 +15,7 @@ class TransactionRepository {
       'store_name': tx.storeName,
       'amount': tx.amount,
       'transaction_date': tx.date.toIso8601String(),
+      'transaction_type': tx.transactionType,
       'category': tx.category,
       'method': tx.method,
       'receipt_image_url': tx.receiptUrl,
