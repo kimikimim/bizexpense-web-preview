@@ -442,5 +442,13 @@
   "profileAgeHint": "e.g. 35",
   "profileNickname": "Nickname",
   "profileNicknameSection": "Nickname",
-  "profileSaveButton": "Save"
+  "profileSaveButton": "Save",
+  "signupTypeSoleProp": "Sole Proprietorship",
+  "signupTypeSolePropSub": "Individual owner · VAT tracking & expense management",
+  "signupTypeLlc": "LLC / WLL",
+  "signupTypeLlcSub": "Limited Liability Company · corporate accounting",
+  "signupTypeFreeZone": "Free Zone Company",
+  "signupTypeFreeZoneSub": "DMCC · DIFC · ADGM · NEOM and other free zones",
+  "signupStepCounter": "{current} / {total}",
+  "@signupStepCounter": {"placeholders": {"current": {"type": "String"}, "total": {"type": "String"}}}
 }

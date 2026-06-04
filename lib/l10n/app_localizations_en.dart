@@ -1167,4 +1167,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileSaveButton => 'Save';
+
+  @override
+  String get signupTypeSoleProp => 'Sole Proprietorship';
+
+  @override
+  String get signupTypeSolePropSub =>
+      'Individual owner · VAT tracking & expense management';
+
+  @override
+  String get signupTypeLlc => 'LLC / WLL';
+
+  @override
+  String get signupTypeLlcSub =>
+      'Limited Liability Company · corporate accounting';
+
+  @override
+  String get signupTypeFreeZone => 'Free Zone Company';
+
+  @override
+  String get signupTypeFreeZoneSub =>
+      'DMCC · DIFC · ADGM · NEOM and other free zones';
+
+  @override
+  String signupStepCounter(String current, String total) {
+    return '$current / $total';
+  }
 }

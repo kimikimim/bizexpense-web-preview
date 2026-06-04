@@ -2283,6 +2283,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get profileSaveButton;
+
+  /// No description provided for @signupTypeSoleProp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sole Proprietorship'**
+  String get signupTypeSoleProp;
+
+  /// No description provided for @signupTypeSolePropSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Individual owner · VAT tracking & expense management'**
+  String get signupTypeSolePropSub;
+
+  /// No description provided for @signupTypeLlc.
+  ///
+  /// In en, this message translates to:
+  /// **'LLC / WLL'**
+  String get signupTypeLlc;
+
+  /// No description provided for @signupTypeLlcSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Limited Liability Company · corporate accounting'**
+  String get signupTypeLlcSub;
+
+  /// No description provided for @signupTypeFreeZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Zone Company'**
+  String get signupTypeFreeZone;
+
+  /// No description provided for @signupTypeFreeZoneSub.
+  ///
+  /// In en, this message translates to:
+  /// **'DMCC · DIFC · ADGM · NEOM and other free zones'**
+  String get signupTypeFreeZoneSub;
+
+  /// No description provided for @signupStepCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total}'**
+  String signupStepCounter(String current, String total);
 }
 
 class _AppLocalizationsDelegate

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import 'package:expense_pro/core/providers/country_config_provider.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../shell/main_shell_page.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
@@ -31,18 +32,12 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   bool _obscureConfirm = true;
   int _currentStep = 0;
 
-  static const _stepTitlesKR = ['계정 만들기', '프로필 설정', '사업자 유형'];
-  static const _stepSubsKR = [
-    '이메일과 비밀번호를 입력해주세요.',
-    '기본 정보와 닉네임을 설정해요.',
-    '어떻게 사용하실 건가요?',
-  ];
-  static const _stepTitlesME = ['Create Account', 'Set Up Profile', 'Business Type'];
-  static const _stepSubsME = [
-    'Enter your email and password.',
-    'Set your basic info and username.',
-    'How will you use the app?',
-  ];
+  static const _stepCount = 3;
+
+  List<String> _stepTitles(AppLocalizations l) =>
+      [l.signupStep1Title, l.signupStep2Title, l.signupStep3Title];
+  List<String> _stepSubs(AppLocalizations l) =>
+      [l.signupStep1Sub, l.signupStep2Sub, l.signupStep3Sub];
 
   @override
   void dispose() {
@@ -58,44 +53,44 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   }
 
   void _nextStep() {
+    final l = AppLocalizations.of(context)!;
     if (_currentStep == 0) {
-      
       final email = _emailCtrl.text.trim();
       final pw = _passwordCtrl.text.trim();
       final confirm = _confirmCtrl.text.trim();
       if (email.isEmpty || !email.contains('@')) {
-        _showSnack('올바른 이메일을 입력해주세요.');
+        _showSnack(l.validEmailRequired);
         return;
       }
       if (pw.length < 8) {
-        _showSnack('비밀번호는 8자리 이상이어야 합니다.');
+        _showSnack(l.passwordTooShort);
         return;
       }
       if (!RegExp(r'[a-zA-Z]').hasMatch(pw)) {
-        _showSnack('비밀번호에 영문자를 포함해주세요.');
+        _showSnack(l.passwordNeedsLetter);
         return;
       }
       if (!RegExp(r'[0-9]').hasMatch(pw)) {
-        _showSnack('비밀번호에 숫자를 포함해주세요.');
+        _showSnack(l.passwordNeedsNumber);
         return;
       }
       if (!RegExp(r'[^a-zA-Z0-9]').hasMatch(pw)) {
-        _showSnack('비밀번호에 특수문자를 포함해주세요.');
+        _showSnack(l.passwordNeedsSpecial);
         return;
       }
       if (pw != confirm) {
-        _showSnack('비밀번호가 일치하지 않습니다.');
+        _showSnack(l.passwordMismatch);
         return;
       }
     } else if (_currentStep == 1) {
       final name = _nameCtrl.text.trim();
       final nickname = _nicknameCtrl.text.trim();
       if (name.isEmpty) {
-        _showSnack('이름을 입력해주세요.');
+        _showSnack(l.nameRequired);
         return;
       }
       if (nickname.length < 2) {
-        _showSnack('닉네임은 2자 이상이어야 합니다.');
+        _showSnack(l.usernameTooShort);
         return;
       }
     }
@@ -139,7 +134,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         },
       );
 
-      if (res.user == null) throw Exception('회원가입 실패');
+      if (res.user == null) throw Exception('signup failed');
 
       final prefs = await SharedPreferences.getInstance();
       final countryCode = prefs.getString('country_code') ?? 'KR';
@@ -162,18 +157,19 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     } on AuthException catch (e) {
       _showSnack(_authError(e.message));
     } catch (e) {
-      appLogger.e('회원가입 오류', error: e);
-      _showSnack('오류가 발생했습니다. 다시 시도해주세요.');
+      appLogger.e('signup error', error: e);
+      if (mounted) _showSnack(AppLocalizations.of(context)!.loginGenericError);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   String _authError(String raw) {
-    if (raw.contains('already registered')) return '이미 가입된 이메일입니다.';
-    if (raw.contains('invalid email')) return '이메일 형식이 올바르지 않습니다.';
-    if (raw.contains('weak password')) return '비밀번호는 8자 이상, 영문·숫자·특수문자를 포함해야 합니다.';
-    return '가입 실패: $raw';
+    final l = AppLocalizations.of(context)!;
+    if (raw.contains('already registered')) return l.emailAlreadyRegistered;
+    if (raw.contains('invalid email')) return l.invalidEmail;
+    if (raw.contains('weak password')) return l.weakPassword;
+    return l.signupFailed;
   }
 
   void _showSnack(String msg) {
@@ -219,9 +215,9 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   }
 
   Widget _buildHeader(bool isDark) {
-    final isME = ref.read(countryConfigProvider).countryCode != 'KR';
-    final titles = isME ? _stepTitlesME : _stepTitlesKR;
-    final subs = isME ? _stepSubsME : _stepSubsKR;
+    final l = AppLocalizations.of(context)!;
+    final titles = _stepTitles(l);
+    final subs = _stepSubs(l);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -256,7 +252,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             ),
           ),
           Text(
-            '${_currentStep + 1} / ${titles.length}',
+            AppLocalizations.of(context)!
+                .signupStepCounter('${_currentStep + 1}', '${titles.length}'),
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -272,7 +269,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       child: Row(
-        children: List.generate(_stepTitlesKR.length, (i) {
+        children: List.generate(_stepCount, (i) {
           final active = i <= _currentStep;
           return Expanded(
             child: Container(
@@ -291,6 +288,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   }
 
   Widget _buildStep0(bool isDark) {
+    final l = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       child: Column(
@@ -335,15 +333,15 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     ),
                   ),
                 ),
-                const Center(
+                Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.lock_person_rounded, size: 40, color: Colors.white),
-                      SizedBox(height: 8),
+                      const Icon(Icons.lock_person_rounded, size: 40, color: Colors.white),
+                      const SizedBox(height: 8),
                       Text(
-                        '안전하게 시작해요',
-                        style: TextStyle(
+                        l.signupBannerStep1,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -358,7 +356,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
           _inputField(
             controller: _emailCtrl,
-            label: '이메일 주소',
+            label: l.emailAddress,
             icon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
             isDark: isDark,
@@ -366,7 +364,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           const SizedBox(height: 14),
           _inputField(
             controller: _passwordCtrl,
-            label: '비밀번호 (8자↑, 영문·숫자·특수문자)',
+            label: l.passwordHint,
             icon: Icons.lock_outline,
             obscure: _obscurePw,
             isDark: isDark,
@@ -378,7 +376,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           const SizedBox(height: 14),
           _inputField(
             controller: _confirmCtrl,
-            label: '비밀번호 확인',
+            label: l.confirmPassword,
             icon: Icons.lock_reset_outlined,
             obscure: _obscureConfirm,
             isDark: isDark,
@@ -393,6 +391,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   }
 
   Widget _buildStep1(bool isDark) {
+    final l = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       child: Column(
@@ -424,15 +423,15 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     ),
                   ),
                 ),
-                const Center(
+                Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.person_pin_rounded, size: 40, color: Colors.white),
-                      SizedBox(height: 8),
+                      const Icon(Icons.person_pin_rounded, size: 40, color: Colors.white),
+                      const SizedBox(height: 8),
                       Text(
-                        '나를 소개해볼게요',
-                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                        l.signupBannerStep2,
+                        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -441,35 +440,35 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             ),
           ),
 
-          _sectionLabel('기본 정보', isDark),
+          _sectionLabel(l.basicInfo, isDark),
           const SizedBox(height: 10),
-          _inputField(controller: _nameCtrl, label: '이름 (실명)', icon: Icons.badge_outlined, isDark: isDark),
+          _inputField(controller: _nameCtrl, label: l.fullName, icon: Icons.badge_outlined, isDark: isDark),
           const SizedBox(height: 14),
           _inputField(
             controller: _ageCtrl,
-            label: '나이 (선택)',
+            label: l.age,
             icon: Icons.cake_outlined,
             keyboardType: TextInputType.number,
             isDark: isDark,
           ),
           const SizedBox(height: 24),
 
-          _sectionLabel('닉네임', isDark),
+          _sectionLabel(l.profileNicknameSection, isDark),
           const SizedBox(height: 10),
           _inputField(
             controller: _nicknameCtrl,
-            label: '닉네임',
+            label: l.profileNickname,
             icon: Icons.alternate_email_rounded,
             isDark: isDark,
           ),
           const SizedBox(height: 14),
           _inputField(
             controller: _introCtrl,
-            label: '한 줄 소개 (선택)',
+            label: l.bio,
             icon: Icons.edit_note_rounded,
             maxLines: 2,
             isDark: isDark,
-            hint: '예) 카페 운영 3년차 사장님입니다.',
+            hint: l.bioHint,
           ),
         ],
       ),
@@ -477,6 +476,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   }
 
   Widget _buildStep2(bool isDark) {
+    final l = AppLocalizations.of(context)!;
     final countryCode = ref.read(countryConfigProvider).countryCode;
     final isME = countryCode != 'KR';
 
@@ -485,17 +485,17 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             {
               'value': 'sole_proprietorship',
               'icon': Icons.store_rounded,
-              'title': 'Sole Proprietorship',
-              'sub': 'Individual owner · VAT tracking & expense management',
-              'tag': 'Most Popular',
+              'title': l.signupTypeSoleProp,
+              'sub': l.signupTypeSolePropSub,
+              'tag': l.mostPopular,
               'tagColor': const Color(0xFF1E88E5),
               'gradient': const LinearGradient(colors: [Color(0xFF1565C0), Color(0xFF1E88E5)]),
             },
             {
               'value': 'llc',
               'icon': Icons.business_rounded,
-              'title': 'LLC / WLL',
-              'sub': 'Limited Liability Company · corporate accounting',
+              'title': l.signupTypeLlc,
+              'sub': l.signupTypeLlcSub,
               'tag': null,
               'tagColor': null,
               'gradient': const LinearGradient(colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)]),
@@ -503,8 +503,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             {
               'value': 'free_zone',
               'icon': Icons.flight_takeoff_rounded,
-              'title': 'Free Zone Company',
-              'sub': 'DMCC · DIFC · ADGM · NEOM and other free zones',
+              'title': l.signupTypeFreeZone,
+              'sub': l.signupTypeFreeZoneSub,
               'tag': 'UAE',
               'tagColor': const Color(0xFF00897B),
               'gradient': const LinearGradient(colors: [Color(0xFF00695C), Color(0xFF00897B)]),
@@ -512,8 +512,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             {
               'value': 'personal',
               'icon': Icons.person_rounded,
-              'title': 'Personal',
-              'sub': 'Personal budget & expense tracking',
+              'title': l.personal,
+              'sub': l.personalSub,
               'tag': null,
               'tagColor': null,
               'gradient': const LinearGradient(colors: [Color(0xFF1B5E20), Color(0xFF43A047)]),
@@ -523,17 +523,17 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             {
               'value': 'business_individual',
               'icon': Icons.store_rounded,
-              'title': '개인사업자',
-              'sub': '경비 처리, 부가세, 종합소득세 관리',
-              'tag': '가장 인기',
+              'title': l.businessIndividual,
+              'sub': l.businessIndividualSub,
+              'tag': l.mostPopular,
               'tagColor': const Color(0xFF1E88E5),
               'gradient': const LinearGradient(colors: [Color(0xFF1565C0), Color(0xFF1E88E5)]),
             },
             {
               'value': 'business_corporate',
               'icon': Icons.business_rounded,
-              'title': '법인사업자',
-              'sub': '법인 경비·회계 관리',
+              'title': l.businessCorporate,
+              'sub': l.businessCorporateSub,
               'tag': null,
               'tagColor': null,
               'gradient': const LinearGradient(colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)]),
@@ -541,8 +541,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             {
               'value': 'personal',
               'icon': Icons.person_rounded,
-              'title': '개인용',
-              'sub': '생활비·가계부 관리',
+              'title': l.personal,
+              'sub': l.personalSub,
               'tag': null,
               'tagColor': null,
               'gradient': const LinearGradient(colors: [Color(0xFF1B5E20), Color(0xFF43A047)]),
@@ -559,9 +559,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       children: [
         Text(
-          isME
-              ? 'Choose your business type\nand we\'ll optimise the app for you.'
-              : '사업자 유형을 선택하면\n최적화된 기능을 제공해드려요.',
+          l.signupChooseType,
           style: TextStyle(
             fontSize: 15,
             height: 1.5,
@@ -691,8 +689,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   }
 
   Widget _buildBottomBar(bool isDark) {
-    final isME = ref.read(countryConfigProvider).countryCode != 'KR';
-    final isLast = _currentStep == _stepTitlesKR.length - 1;
+    final l = AppLocalizations.of(context)!;
+    final isLast = _currentStep == _stepCount - 1;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       decoration: BoxDecoration(
@@ -730,9 +728,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      isLast
-                          ? (isME ? 'Complete' : '가입 완료')
-                          : (isME ? 'Next' : '다음'),
+                      isLast ? l.complete : l.next,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,

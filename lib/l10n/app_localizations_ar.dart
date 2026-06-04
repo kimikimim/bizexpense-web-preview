@@ -1165,4 +1165,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileSaveButton => 'حفظ';
+
+  @override
+  String get signupTypeSoleProp => 'مؤسسة فردية';
+
+  @override
+  String get signupTypeSolePropSub =>
+      'مالك فردي · تتبع ضريبة القيمة المضافة وإدارة المصروفات';
+
+  @override
+  String get signupTypeLlc => 'شركة ذ.م.م';
+
+  @override
+  String get signupTypeLlcSub => 'شركة ذات مسؤولية محدودة · محاسبة الشركات';
+
+  @override
+  String get signupTypeFreeZone => 'شركة منطقة حرة';
+
+  @override
+  String get signupTypeFreeZoneSub =>
+      'DMCC · DIFC · ADGM · NEOM ومناطق حرة أخرى';
+
+  @override
+  String signupStepCounter(String current, String total) {
+    return '$current / $total';
+  }
 }

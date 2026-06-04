@@ -385,5 +385,12 @@
   "profileAgeHint": "예) 35",
   "profileNickname": "닉네임",
   "profileNicknameSection": "닉네임",
-  "profileSaveButton": "저장하기"
+  "profileSaveButton": "저장하기",
+  "signupTypeSoleProp": "1인 사업자",
+  "signupTypeSolePropSub": "1인 소유주 · 부가세 추적 및 지출 관리",
+  "signupTypeLlc": "유한책임회사(LLC)",
+  "signupTypeLlcSub": "유한책임회사 · 법인 회계",
+  "signupTypeFreeZone": "프리존 법인",
+  "signupTypeFreeZoneSub": "DMCC · DIFC · ADGM · NEOM 등 프리존",
+  "signupStepCounter": "{current} / {total}"
 }

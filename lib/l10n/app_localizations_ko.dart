@@ -1134,4 +1134,27 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get profileSaveButton => '저장하기';
+
+  @override
+  String get signupTypeSoleProp => '1인 사업자';
+
+  @override
+  String get signupTypeSolePropSub => '1인 소유주 · 부가세 추적 및 지출 관리';
+
+  @override
+  String get signupTypeLlc => '유한책임회사(LLC)';
+
+  @override
+  String get signupTypeLlcSub => '유한책임회사 · 법인 회계';
+
+  @override
+  String get signupTypeFreeZone => '프리존 법인';
+
+  @override
+  String get signupTypeFreeZoneSub => 'DMCC · DIFC · ADGM · NEOM 등 프리존';
+
+  @override
+  String signupStepCounter(String current, String total) {
+    return '$current / $total';
+  }
 }

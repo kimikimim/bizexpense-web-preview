@@ -430,5 +430,12 @@
   "profileAgeHint": "مثال: 35",
   "profileNickname": "الاسم المستعار",
   "profileNicknameSection": "الاسم المستعار",
-  "profileSaveButton": "حفظ"
+  "profileSaveButton": "حفظ",
+  "signupTypeSoleProp": "مؤسسة فردية",
+  "signupTypeSolePropSub": "مالك فردي · تتبع ضريبة القيمة المضافة وإدارة المصروفات",
+  "signupTypeLlc": "شركة ذ.م.م",
+  "signupTypeLlcSub": "شركة ذات مسؤولية محدودة · محاسبة الشركات",
+  "signupTypeFreeZone": "شركة منطقة حرة",
+  "signupTypeFreeZoneSub": "DMCC · DIFC · ADGM · NEOM ومناطق حرة أخرى",
+  "signupStepCounter": "{current} / {total}"
 }
