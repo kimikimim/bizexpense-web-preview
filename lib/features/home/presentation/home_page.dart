@@ -234,11 +234,14 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _buildPrimaryActions() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
+    final isKorea = ref.watch(countryConfigProvider).countryCode == 'KR';
     final actions = [
       {'icon': Icons.add_rounded, 'label': l10n.actionAddIncome, 'color': const Color(0xFF2DB400), 'bg': const Color(0xFFEBF8E1)},
       {'icon': Icons.remove_rounded, 'label': l10n.actionAddExpense, 'color': const Color(0xFFFF4D4F), 'bg': const Color(0xFFFFECEC)},
       {'icon': Icons.document_scanner_rounded, 'label': l10n.actionScanReceipt, 'color': const Color(0xFF3182F6), 'bg': const Color(0xFFE8F1FF)},
-      {'icon': Icons.analytics_rounded, 'label': l10n.actionTaxReport, 'color': const Color(0xFF8A2BE2), 'bg': const Color(0xFFF3EAFF)},
+      // Tax report is Korea-specific; hide for ME
+      if (isKorea)
+        {'icon': Icons.analytics_rounded, 'label': l10n.actionTaxReport, 'color': const Color(0xFF8A2BE2), 'bg': const Color(0xFFF3EAFF)},
     ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),

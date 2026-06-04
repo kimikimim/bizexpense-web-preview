@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:characters/characters.dart';
 
 import '../../core/providers/theme_provider.dart';
+import '../../core/providers/country_config_provider.dart';
 import '../../core/utils/excel_service.dart';
 import 'package:expense_pro/l10n/app_localizations.dart';
 
@@ -109,6 +110,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeMode = ref.watch(themeProvider);
+    final isKorea = ref.watch(countryConfigProvider).countryCode == 'KR';
     final user = Supabase.instance.client.auth.currentUser;
 
     final displayName = (user?.userMetadata?['name'] as String?) ?? 'Boss';
@@ -136,7 +138,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
 
           const SizedBox(height: 16),
 
-          _buildQuickAppsSection(isDark, l10n),
+          _buildQuickAppsSection(isDark, l10n, isKorea),
 
           const SizedBox(height: 24),
 
@@ -176,34 +178,36 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                   }
                 },
               ),
-              _buildMenuTile(
-                icon: Icons.receipt_long,
-                iconColor: Colors.purple,
-                title: l10n.menuTaxReport,
-                subtitle: l10n.menuTaxReportSub,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TaxSummaryPage(),
-                    ),
-                  );
-                },
-              ),
-              _buildMenuTile(
-                icon: Icons.calendar_today,
-                iconColor: Colors.orange,
-                title: l10n.menuTaxSchedule,
-                subtitle: l10n.menuTaxScheduleSub,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TaxCalendarPage(),
-                    ),
-                  );
-                },
-              ),
+              if (isKorea)
+                _buildMenuTile(
+                  icon: Icons.receipt_long,
+                  iconColor: Colors.purple,
+                  title: l10n.menuTaxReport,
+                  subtitle: l10n.menuTaxReportSub,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const TaxSummaryPage(),
+                      ),
+                    );
+                  },
+                ),
+              if (isKorea)
+                _buildMenuTile(
+                  icon: Icons.calendar_today,
+                  iconColor: Colors.orange,
+                  title: l10n.menuTaxSchedule,
+                  subtitle: l10n.menuTaxScheduleSub,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const TaxCalendarPage(),
+                      ),
+                    );
+                  },
+                ),
               _buildMenuTile(
                 icon: Icons.repeat,
                 iconColor: Colors.teal,
@@ -390,7 +394,7 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
     );
   }
 
-  Widget _buildQuickAppsSection(bool isDark, AppLocalizations l10n) {
+  Widget _buildQuickAppsSection(bool isDark, AppLocalizations l10n, bool isKorea) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -425,30 +429,32 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                   );
                 },
               ),
-              _buildQuickIcon(
-                icon: Icons.receipt_long,
-                label: l10n.menuTaxReportShort,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TaxSummaryPage(),
-                    ),
-                  );
-                },
-              ),
-              _buildQuickIcon(
-                icon: Icons.calendar_today,
-                label: l10n.menuTaxScheduleShort,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TaxCalendarPage(),
-                    ),
-                  );
-                },
-              ),
+              if (isKorea)
+                _buildQuickIcon(
+                  icon: Icons.receipt_long,
+                  label: l10n.menuTaxReportShort,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const TaxSummaryPage(),
+                      ),
+                    );
+                  },
+                ),
+              if (isKorea)
+                _buildQuickIcon(
+                  icon: Icons.calendar_today,
+                  label: l10n.menuTaxScheduleShort,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const TaxCalendarPage(),
+                      ),
+                    );
+                  },
+                ),
               _buildQuickIcon(
                 icon: Icons.settings_outlined,
                 label: l10n.menuSettingsShort,

@@ -250,15 +250,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               Navigator.push(context, MaterialPageRoute(builder: (_) => MyBusinessPage()));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.calendar_month, color: Colors.indigo),
-            title: Text(l10n.settingsTaxScheduleSetup),
-            subtitle: Text(l10n.settingsTaxScheduleSetupSub),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => TaxSetupPage()));
-            },
-          ),
+          if (currentCountry.countryCode == 'KR')
+            ListTile(
+              leading: const Icon(Icons.calendar_month, color: Colors.indigo),
+              title: Text(l10n.settingsTaxScheduleSetup),
+              subtitle: Text(l10n.settingsTaxScheduleSetupSub),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => TaxSetupPage()));
+              },
+            ),
 
           const Divider(),
 
