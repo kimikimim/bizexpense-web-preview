@@ -406,7 +406,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 }
                 return;
               }
-              await _excelService.exportForAccounting(transactions);
+              await _excelService.exportForAccounting(
+                transactions,
+                config: ref.read(countryConfigProvider),
+              );
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(AppLocalizations.of(context)!.exportExcelSuccess)),
