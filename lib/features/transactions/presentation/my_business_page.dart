@@ -3,6 +3,7 @@ import '../../../core/widgets/primary_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../auth/presentation/login_page.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 class MyBusinessPage extends StatefulWidget {
   const MyBusinessPage({super.key});
@@ -75,28 +76,29 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("저장되었습니다!")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.addTransactionSaved)));
         Navigator.pop(context);
       }
     } catch (e) {
-      appLogger.e("저장 에러: $e", error: e);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패: $e")));
+      appLogger.e("save error", error: e);
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.myBizSaveFailed('$e'))));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   Future<void> _deleteAccount() async {
+    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("회원 탈퇴"),
-        content: const Text("정말 탈퇴하시겠습니까?\n모든 데이터가 즉시 삭제되며 복구할 수 없습니다."),
+        title: Text(l10n.myBizWithdraw),
+        content: Text(l10n.myBizWithdrawConfirm),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("취소")),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text("탈퇴하기", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            child: Text(l10n.myBizWithdrawButton, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -110,7 +112,7 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
       await _supabase.auth.signOut();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("탈퇴가 완료되었습니다.")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.myBizWithdrawDone)));
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
@@ -118,16 +120,17 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
         );
       }
     } catch (e) {
-      appLogger.e("탈퇴 에러: $e", error: e);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("오류가 발생했습니다.")));
+      appLogger.e("delete account error", error: e);
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.myBizError)));
       setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text("내 정보 설정")),
+      appBar: AppBar(title: Text(l10n.myBizTitle)),
       body: _isLoading 
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -146,15 +149,15 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("프로필", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                        Text(l10n.myBizProfileSection, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
                         const SizedBox(height: 10),
                         TextField(
                           controller: _nicknameController,
-                          decoration: const InputDecoration(
-                            labelText: "닉네임",
-                            hintText: "예: 김사장, 대박나자",
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.face),
+                          decoration: InputDecoration(
+                            labelText: l10n.profileNickname,
+                            hintText: l10n.myBizNicknameHint,
+                            border: const OutlineInputBorder(),
+                            prefixIcon: const Icon(Icons.face),
                           ),
                         ),
                       ],
@@ -162,17 +165,17 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
                   ),
                   const SizedBox(height: 30),
 
-                  const Text("🧾 견적서/청구서용 정보", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(l10n.myBizInvoiceInfo, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 10),
-                  _buildTextField("상호명 (법인명)", _companyController, "예: BizExpense"),
-                  _buildTextField("대표자 성명", _ceoController, "예: 홍길동"),
-                  _buildTextField("사업자등록번호", _bizNumController, "예: 123-45-67890"),
-                  _buildTextField("사업장 주소", _addressController, "예: 서울시 강남구..."),
-                  _buildTextField("업태 / 종목", _categoryController, "예: 서비스 / 소프트웨어 개발"),
+                  _buildTextField(l10n.myBizCompany, _companyController, l10n.myBizCompanyHint),
+                  _buildTextField(l10n.myBizCeo, _ceoController, l10n.myBizCeoHint),
+                  _buildTextField(l10n.myBizTaxNumber, _bizNumController, l10n.myBizTaxNumberHint),
+                  _buildTextField(l10n.myBizAddress, _addressController, l10n.myBizAddressHint),
+                  _buildTextField(l10n.myBizActivity, _categoryController, l10n.myBizActivityHint),
 
                   const SizedBox(height: 30),
                   PrimaryButton(
-                    label: "저장하기",
+                    label: l10n.profileSaveButton,
                     onPressed: _saveMyInfo,
                   ),
                   
@@ -183,7 +186,7 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
                   TextButton.icon(
                     onPressed: _deleteAccount,
                     icon: const Icon(Icons.delete_forever, color: Colors.grey),
-                    label: const Text("회원 탈퇴", style: TextStyle(color: Colors.grey)),
+                    label: Text(l10n.myBizWithdraw, style: const TextStyle(color: Colors.grey)),
                   ),
                   const SizedBox(height: 20),
                 ],

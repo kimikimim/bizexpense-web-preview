@@ -2337,6 +2337,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Withdrawal'**
   String get txWithdrawal;
+
+  /// No description provided for @cameraTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Receipt'**
+  String get cameraTitle;
+
+  /// No description provided for @cameraPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo of your receipt'**
+  String get cameraPrompt;
+
+  /// No description provided for @cameraCapture.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get cameraCapture;
+
+  /// No description provided for @cameraAlbum.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get cameraAlbum;
+
+  /// No description provided for @cameraAnalyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing with AI...'**
+  String get cameraAnalyzing;
+
+  /// No description provided for @cameraAnalyze.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze this receipt'**
+  String get cameraAnalyze;
+
+  /// No description provided for @cameraAnalyzeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis failed. Try again or enter manually.'**
+  String get cameraAnalyzeFailed;
+
+  /// No description provided for @myBizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Business Info'**
+  String get myBizTitle;
+
+  /// No description provided for @myBizSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed: {error}'**
+  String myBizSaveFailed(String error);
+
+  /// No description provided for @myBizProfileSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get myBizProfileSection;
+
+  /// No description provided for @myBizNicknameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Boss Kim'**
+  String get myBizNicknameHint;
+
+  /// No description provided for @myBizInvoiceInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'🧾 Invoice / Quote Info'**
+  String get myBizInvoiceInfo;
+
+  /// No description provided for @myBizCompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name'**
+  String get myBizCompany;
+
+  /// No description provided for @myBizCompanyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. BizExpense'**
+  String get myBizCompanyHint;
+
+  /// No description provided for @myBizCeo.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner / Representative'**
+  String get myBizCeo;
+
+  /// No description provided for @myBizCeoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. John Smith'**
+  String get myBizCeoHint;
+
+  /// No description provided for @myBizTaxNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Registration No. (TRN)'**
+  String get myBizTaxNumber;
+
+  /// No description provided for @myBizTaxNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 100123456700003'**
+  String get myBizTaxNumberHint;
+
+  /// No description provided for @myBizAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Address'**
+  String get myBizAddress;
+
+  /// No description provided for @myBizAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Dubai, UAE'**
+  String get myBizAddressHint;
+
+  /// No description provided for @myBizActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Activity'**
+  String get myBizActivity;
+
+  /// No description provided for @myBizActivityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Services / Software'**
+  String get myBizActivityHint;
+
+  /// No description provided for @myBizWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get myBizWithdraw;
+
+  /// No description provided for @myBizWithdrawConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account?\nAll data will be permanently deleted and cannot be recovered.'**
+  String get myBizWithdrawConfirm;
+
+  /// No description provided for @myBizWithdrawButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get myBizWithdrawButton;
+
+  /// No description provided for @myBizWithdrawDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get myBizWithdrawDone;
+
+  /// No description provided for @myBizError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred.'**
+  String get myBizError;
 }
 
 class _AppLocalizationsDelegate

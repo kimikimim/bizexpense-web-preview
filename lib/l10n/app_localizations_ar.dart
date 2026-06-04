@@ -1196,4 +1196,89 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get txWithdrawal => 'سحب';
+
+  @override
+  String get cameraTitle => 'مسح الإيصال';
+
+  @override
+  String get cameraPrompt => 'التقط صورة لإيصالك';
+
+  @override
+  String get cameraCapture => 'الكاميرا';
+
+  @override
+  String get cameraAlbum => 'المعرض';
+
+  @override
+  String get cameraAnalyzing => 'جارٍ التحليل بالذكاء الاصطناعي...';
+
+  @override
+  String get cameraAnalyze => 'تحليل هذا الإيصال';
+
+  @override
+  String get cameraAnalyzeFailed =>
+      'فشل التحليل. حاول مرة أخرى أو أدخل يدوياً.';
+
+  @override
+  String get myBizTitle => 'معلومات نشاطي';
+
+  @override
+  String myBizSaveFailed(String error) {
+    return 'فشل الحفظ: $error';
+  }
+
+  @override
+  String get myBizProfileSection => 'الملف الشخصي';
+
+  @override
+  String get myBizNicknameHint => 'مثال: أبو محمد';
+
+  @override
+  String get myBizInvoiceInfo => '🧾 معلومات الفاتورة / عرض السعر';
+
+  @override
+  String get myBizCompany => 'اسم الشركة';
+
+  @override
+  String get myBizCompanyHint => 'مثال: BizExpense';
+
+  @override
+  String get myBizCeo => 'المالك / الممثل';
+
+  @override
+  String get myBizCeoHint => 'مثال: أحمد محمد';
+
+  @override
+  String get myBizTaxNumber => 'الرقم الضريبي (TRN)';
+
+  @override
+  String get myBizTaxNumberHint => 'مثال: 100123456700003';
+
+  @override
+  String get myBizAddress => 'عنوان النشاط';
+
+  @override
+  String get myBizAddressHint => 'مثال: دبي، الإمارات';
+
+  @override
+  String get myBizActivity => 'النشاط التجاري';
+
+  @override
+  String get myBizActivityHint => 'مثال: خدمات / برمجيات';
+
+  @override
+  String get myBizWithdraw => 'حذف الحساب';
+
+  @override
+  String get myBizWithdrawConfirm =>
+      'هل أنت متأكد أنك تريد حذف حسابك؟\nسيتم حذف جميع البيانات نهائياً ولا يمكن استرجاعها.';
+
+  @override
+  String get myBizWithdrawButton => 'حذف الحساب';
+
+  @override
+  String get myBizWithdrawDone => 'تم حذف حسابك.';
+
+  @override
+  String get myBizError => 'حدث خطأ.';
 }

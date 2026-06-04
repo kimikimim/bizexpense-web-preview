@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../transactions/data/transaction_repository.dart';
 import '../../transactions/data/transaction_model.dart';
 import '../../receipts/services/receipt_service.dart';
@@ -100,7 +101,7 @@ class _CameraPageState extends State<CameraPage> {
       setState(() { _isUploading = false; });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("분석 실패. 다시 시도하거나 수동으로 입력해주세요.")),
+          SnackBar(content: Text(AppLocalizations.of(context)!.cameraAnalyzeFailed)),
         );
       }
     }
@@ -108,8 +109,9 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text("영수증 촬영")),
+      appBar: AppBar(title: Text(l10n.cameraTitle)),
       body: Stack(
         children: [
           Column(
@@ -119,12 +121,12 @@ class _CameraPageState extends State<CameraPage> {
                   width: double.infinity,
                   color: Colors.grey[200],
                   child: _pickedFile == null
-                      ? const Column(
+                      ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.camera_alt, size: 50, color: Colors.grey),
-                            SizedBox(height: 10),
-                            Text("영수증을 찍어주세요"),
+                            const Icon(Icons.camera_alt, size: 50, color: Colors.grey),
+                            const SizedBox(height: 10),
+                            Text(l10n.cameraPrompt),
                           ],
                         )
                       : _buildImage(),
@@ -136,8 +138,8 @@ class _CameraPageState extends State<CameraPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildButton(Icons.camera, "촬영", () => _pickImage(ImageSource.camera)),
-                    _buildButton(Icons.photo, "앨범", () => _pickImage(ImageSource.gallery)),
+                    _buildButton(Icons.camera, l10n.cameraCapture, () => _pickImage(ImageSource.camera)),
+                    _buildButton(Icons.photo, l10n.cameraAlbum, () => _pickImage(ImageSource.gallery)),
                   ],
                 ),
               ),
@@ -145,7 +147,7 @@ class _CameraPageState extends State<CameraPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: PrimaryButton(
-                    label: _isUploading ? "AI 분석 중..." : "이 영수증 분석하기",
+                    label: _isUploading ? l10n.cameraAnalyzing : l10n.cameraAnalyze,
                     isLoading: _isUploading,
                     onPressed: _processReceipt,
                   ),

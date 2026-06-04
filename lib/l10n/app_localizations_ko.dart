@@ -1163,4 +1163,88 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get txWithdrawal => '출금';
+
+  @override
+  String get cameraTitle => '영수증 촬영';
+
+  @override
+  String get cameraPrompt => '영수증을 찍어주세요';
+
+  @override
+  String get cameraCapture => '촬영';
+
+  @override
+  String get cameraAlbum => '앨범';
+
+  @override
+  String get cameraAnalyzing => 'AI 분석 중...';
+
+  @override
+  String get cameraAnalyze => '이 영수증 분석하기';
+
+  @override
+  String get cameraAnalyzeFailed => '분석 실패. 다시 시도하거나 수동으로 입력해주세요.';
+
+  @override
+  String get myBizTitle => '내 정보 설정';
+
+  @override
+  String myBizSaveFailed(String error) {
+    return '저장 실패: $error';
+  }
+
+  @override
+  String get myBizProfileSection => '프로필';
+
+  @override
+  String get myBizNicknameHint => '예: 김사장, 대박나자';
+
+  @override
+  String get myBizInvoiceInfo => '🧾 견적서/청구서용 정보';
+
+  @override
+  String get myBizCompany => '상호명 (법인명)';
+
+  @override
+  String get myBizCompanyHint => '예: BizExpense';
+
+  @override
+  String get myBizCeo => '대표자 성명';
+
+  @override
+  String get myBizCeoHint => '예: 홍길동';
+
+  @override
+  String get myBizTaxNumber => '사업자등록번호';
+
+  @override
+  String get myBizTaxNumberHint => '예: 123-45-67890';
+
+  @override
+  String get myBizAddress => '사업장 주소';
+
+  @override
+  String get myBizAddressHint => '예: 서울시 강남구...';
+
+  @override
+  String get myBizActivity => '업태 / 종목';
+
+  @override
+  String get myBizActivityHint => '예: 서비스 / 소프트웨어 개발';
+
+  @override
+  String get myBizWithdraw => '회원 탈퇴';
+
+  @override
+  String get myBizWithdrawConfirm =>
+      '정말 탈퇴하시겠습니까?\n모든 데이터가 즉시 삭제되며 복구할 수 없습니다.';
+
+  @override
+  String get myBizWithdrawButton => '탈퇴하기';
+
+  @override
+  String get myBizWithdrawDone => '탈퇴가 완료되었습니다.';
+
+  @override
+  String get myBizError => '오류가 발생했습니다.';
 }

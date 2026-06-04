@@ -1199,4 +1199,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get txWithdrawal => 'Withdrawal';
+
+  @override
+  String get cameraTitle => 'Scan Receipt';
+
+  @override
+  String get cameraPrompt => 'Take a photo of your receipt';
+
+  @override
+  String get cameraCapture => 'Camera';
+
+  @override
+  String get cameraAlbum => 'Gallery';
+
+  @override
+  String get cameraAnalyzing => 'Analyzing with AI...';
+
+  @override
+  String get cameraAnalyze => 'Analyze this receipt';
+
+  @override
+  String get cameraAnalyzeFailed =>
+      'Analysis failed. Try again or enter manually.';
+
+  @override
+  String get myBizTitle => 'My Business Info';
+
+  @override
+  String myBizSaveFailed(String error) {
+    return 'Save failed: $error';
+  }
+
+  @override
+  String get myBizProfileSection => 'Profile';
+
+  @override
+  String get myBizNicknameHint => 'e.g. Boss Kim';
+
+  @override
+  String get myBizInvoiceInfo => '🧾 Invoice / Quote Info';
+
+  @override
+  String get myBizCompany => 'Company Name';
+
+  @override
+  String get myBizCompanyHint => 'e.g. BizExpense';
+
+  @override
+  String get myBizCeo => 'Owner / Representative';
+
+  @override
+  String get myBizCeoHint => 'e.g. John Smith';
+
+  @override
+  String get myBizTaxNumber => 'Tax Registration No. (TRN)';
+
+  @override
+  String get myBizTaxNumberHint => 'e.g. 100123456700003';
+
+  @override
+  String get myBizAddress => 'Business Address';
+
+  @override
+  String get myBizAddressHint => 'e.g. Dubai, UAE';
+
+  @override
+  String get myBizActivity => 'Business Activity';
+
+  @override
+  String get myBizActivityHint => 'e.g. Services / Software';
+
+  @override
+  String get myBizWithdraw => 'Delete Account';
+
+  @override
+  String get myBizWithdrawConfirm =>
+      'Are you sure you want to delete your account?\nAll data will be permanently deleted and cannot be recovered.';
+
+  @override
+  String get myBizWithdrawButton => 'Delete Account';
+
+  @override
+  String get myBizWithdrawDone => 'Your account has been deleted.';
+
+  @override
+  String get myBizError => 'An error occurred.';
 }
