@@ -1335,4 +1335,93 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get invoiceShare => 'مشاركة PDF';
+
+  @override
+  String get taxCalEmptyTitle => 'لا توجد مواعيد قادمة.';
+
+  @override
+  String get taxCalEmptySub =>
+      'أعدّ ملفك الضريبي وسنذكّرك بمواعيد تقديم ضريبة القيمة المضافة تلقائياً.';
+
+  @override
+  String get taxCalSetupButton => 'إعداد الجدول الضريبي';
+
+  @override
+  String get taxCalLoadError => 'تعذّر تحميل الجدول الضريبي';
+
+  @override
+  String get taxBadgeVat => 'ض.ق.م';
+
+  @override
+  String get taxBadgeIncome => 'ضريبة الدخل';
+
+  @override
+  String get taxBadgeCorporate => 'ضريبة الشركات';
+
+  @override
+  String get taxBadgeLocal => 'ضريبة محلية';
+
+  @override
+  String get taxBadgeCar => 'ضريبة المركبات';
+
+  @override
+  String get taxBadgeProperty => 'ضريبة العقار';
+
+  @override
+  String get taxBadgeWht => 'استقطاع';
+
+  @override
+  String get taxBadgeInsure => 'تأمين';
+
+  @override
+  String taxEventVat(String period) {
+    return 'إقرار ضريبة القيمة المضافة — $period';
+  }
+
+  @override
+  String taxEventVatPayment(String period) {
+    return 'سداد ضريبة القيمة المضافة — $period';
+  }
+
+  @override
+  String taxEventCorporate(String year) {
+    return 'إقرار ضريبة الشركات $year';
+  }
+
+  @override
+  String get meTaxSetupTitle => 'الإعداد الضريبي';
+
+  @override
+  String get meTaxSetupIntro =>
+      'حدّد تفاصيل تقديم ضريبة القيمة المضافة وسننشئ مواعيدك.';
+
+  @override
+  String get meTaxVatRegistered => 'مسجّل في ضريبة القيمة المضافة';
+
+  @override
+  String get meTaxVatRegisteredSub => 'هل نشاطك مسجّل في ضريبة القيمة المضافة؟';
+
+  @override
+  String get meTaxFilingFrequency => 'دورة الإقرار';
+
+  @override
+  String get meTaxQuarterly => 'ربع سنوي';
+
+  @override
+  String get meTaxMonthly => 'شهري';
+
+  @override
+  String get meTaxCorporate => 'خاضع لضريبة الشركات';
+
+  @override
+  String get meTaxCorporateSub =>
+      'الشركات (ذ.م.م / منطقة حرة) تقدّم إقرار ضريبة الشركات مرة سنوياً.';
+
+  @override
+  String get meTaxSaved => 'تم إنشاء الجدول الضريبي.';
+
+  @override
+  String meTaxQuarterLabel(String q, String year) {
+    return 'الربع $q $year';
+  }
 }

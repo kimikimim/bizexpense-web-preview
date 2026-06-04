@@ -1,8 +1,79 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 class TaxService {
   final SupabaseClient _supabase = Supabase.instance.client;
+
+  // ── Middle East: VAT (+ corporate tax) schedule generation ──
+  String _fmtDate(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
+
+  /// VAT return due date for a period ending in [periodEndMonth] of [year].
+  /// UAE: 28th of the following month. KSA: last day of the following month.
+  DateTime _vatDueDate(String countryCode, int year, int periodEndMonth) {
+    if (countryCode == 'SA') {
+      return DateTime(year, periodEndMonth + 2, 0); // last day of next month
+    }
+    return DateTime(year, periodEndMonth + 1, 28); // UAE default
+  }
+
+  Future<void> saveMeProfileAndGenerateEvents({
+    required AppLocalizations l10n,
+    required String localeName,
+    required String countryCode,
+    required bool vatRegistered,
+    required String filingFrequency, // 'monthly' | 'quarterly'
+    required bool corporate,
+    String? vatNumber,
+    bool hasEmployees = false,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return;
+
+    await _supabase.from('tax_profiles').upsert({
+      'user_id': userId,
+      'vat_registered': vatRegistered,
+      'filing_frequency': filingFrequency,
+      'vat_registration_number': vatNumber,
+      'has_employees': hasEmployees,
+    });
+
+    await _supabase.from('tax_events').delete().eq('user_id', userId);
+
+    final events = <Map<String, dynamic>>[];
+    final currentYear = DateTime.now().year;
+
+    for (int i = 0; i < 3; i++) {
+      final year = currentYear + i;
+
+      if (vatRegistered) {
+        if (filingFrequency == 'monthly') {
+          for (int m = 1; m <= 12; m++) {
+            final due = _vatDueDate(countryCode, year, m);
+            final period = DateFormat.yMMM(localeName).format(DateTime(year, m));
+            events.add(_createEvent(userId, l10n.taxEventVat(period), 'vat', _fmtDate(due)));
+          }
+        } else {
+          const quarterEndMonths = [3, 6, 9, 12];
+          for (int q = 0; q < 4; q++) {
+            final due = _vatDueDate(countryCode, year, quarterEndMonths[q]);
+            final period = l10n.meTaxQuarterLabel('${q + 1}', '$year');
+            events.add(_createEvent(userId, l10n.taxEventVat(period), 'vat', _fmtDate(due)));
+          }
+        }
+      }
+
+      if (corporate) {
+        // UAE Corporate Tax: due 9 months after a Dec-31 financial year end.
+        final due = DateTime(year + 1, 9, 30);
+        events.add(_createEvent(userId, l10n.taxEventCorporate('$year'), 'corporate', _fmtDate(due)));
+      }
+    }
+
+    if (events.isNotEmpty) {
+      await _supabase.from('tax_events').insert(events);
+    }
+  }
 
   Future<void> saveProfileAndGenerateEvents({
     required String businessType,

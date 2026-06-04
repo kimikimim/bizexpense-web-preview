@@ -1300,4 +1300,91 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get invoiceShare => 'PDF 공유 / 팩스 전송';
+
+  @override
+  String get taxCalEmptyTitle => '예정된 일정이 없습니다.';
+
+  @override
+  String get taxCalEmptySub =>
+      '사업자 유형과 과세 유형을 설정하면\n부가세 / 종소세 신고일을 자동으로 알려드려요.';
+
+  @override
+  String get taxCalSetupButton => '세무 일정 설정하러 가기';
+
+  @override
+  String get taxCalLoadError => '세무 일정을 불러오지 못했어요';
+
+  @override
+  String get taxBadgeVat => '부가세';
+
+  @override
+  String get taxBadgeIncome => '소득세·법인세';
+
+  @override
+  String get taxBadgeCorporate => '법인세';
+
+  @override
+  String get taxBadgeLocal => '지방세';
+
+  @override
+  String get taxBadgeCar => '자동차세';
+
+  @override
+  String get taxBadgeProperty => '재산세';
+
+  @override
+  String get taxBadgeWht => '원천세';
+
+  @override
+  String get taxBadgeInsure => '4대보험';
+
+  @override
+  String taxEventVat(String period) {
+    return '$period 부가세 신고';
+  }
+
+  @override
+  String taxEventVatPayment(String period) {
+    return '$period 부가세 납부';
+  }
+
+  @override
+  String taxEventCorporate(String year) {
+    return '$year 법인세 신고';
+  }
+
+  @override
+  String get meTaxSetupTitle => '세무 설정';
+
+  @override
+  String get meTaxSetupIntro => '부가세 신고 정보를 설정하면 신고 일정을 생성해 드려요.';
+
+  @override
+  String get meTaxVatRegistered => 'VAT 등록 사업자';
+
+  @override
+  String get meTaxVatRegisteredSub => 'VAT에 등록되어 있나요?';
+
+  @override
+  String get meTaxFilingFrequency => '신고 주기';
+
+  @override
+  String get meTaxQuarterly => '분기별';
+
+  @override
+  String get meTaxMonthly => '월별';
+
+  @override
+  String get meTaxCorporate => '법인세 대상';
+
+  @override
+  String get meTaxCorporateSub => '법인(LLC / 프리존)은 연 1회 법인세를 신고합니다.';
+
+  @override
+  String get meTaxSaved => '세무 일정이 생성되었습니다.';
+
+  @override
+  String meTaxQuarterLabel(String q, String year) {
+    return '$year $q분기';
+  }
 }

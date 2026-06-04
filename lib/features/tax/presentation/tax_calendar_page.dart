@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../../../core/widgets/primary_button.dart';
+import '../../../core/providers/country_config_provider.dart';
 import 'tax_setup_page.dart';
+import 'me_tax_setup_page.dart';
 
-class TaxCalendarPage extends StatefulWidget {
+class TaxCalendarPage extends ConsumerStatefulWidget {
   const TaxCalendarPage({super.key});
 
   @override
-  State<TaxCalendarPage> createState() => _TaxCalendarPageState();
+  ConsumerState<TaxCalendarPage> createState() => _TaxCalendarPageState();
 }
 
-class _TaxCalendarPageState extends State<TaxCalendarPage> {
+class _TaxCalendarPageState extends ConsumerState<TaxCalendarPage> {
   final _client = Supabase.instance.client;
 
   bool _isLoading = true;
@@ -54,7 +58,7 @@ class _TaxCalendarPageState extends State<TaxCalendarPage> {
       if (!mounted) return;
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('세무 일정을 불러오지 못했어요: $e')),
+        SnackBar(content: Text('${AppLocalizations.of(context)!.taxCalLoadError}: $e')),
       );
     }
   }
@@ -63,7 +67,7 @@ class _TaxCalendarPageState extends State<TaxCalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('세무 일정'),
+        title: Text(AppLocalizations.of(context)!.taxEventDefaultTitle),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -75,6 +79,8 @@ class _TaxCalendarPageState extends State<TaxCalendarPage> {
 
   Widget _buildEmptyView() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
+    final isKorea = ref.read(countryConfigProvider).countryCode == 'KR';
 
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -92,14 +98,13 @@ class _TaxCalendarPageState extends State<TaxCalendarPage> {
                   color: isDark ? Colors.grey[600] : Colors.grey[400],
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  '예정된 일정이 없습니다.',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Text(
+                  l10n.taxCalEmptyTitle,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '사업자 유형과 과세 유형을 설정하면\n'
-                  '부가세 / 종소세 신고일을 자동으로 알려드려요.',
+                  l10n.taxCalEmptySub,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -110,12 +115,14 @@ class _TaxCalendarPageState extends State<TaxCalendarPage> {
             ),
           ),
           PrimaryButton(
-            label: '세무 일정 설정하러 가기',
+            label: l10n.taxCalSetupButton,
             onPressed: () async {
               final changed = await Navigator.push<bool>(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const TaxSetupPage(),
+                  builder: (_) => isKorea
+                      ? const TaxSetupPage()
+                      : const MeTaxSetupPage(),
                 ),
               );
 
@@ -141,8 +148,9 @@ class _TaxCalendarPageState extends State<TaxCalendarPage> {
         final type = e['type'] as String? ?? '';
         final isPaid = e['is_paid'] as bool? ?? false;
 
-        final dateStr = DateFormat('M월 d일 (E)', 'ko_KR').format(dueDate);
-        final badge = _typeLabel(type);
+        final localeName = Localizations.localeOf(context).toString();
+        final dateStr = DateFormat.MMMMEEEEd(localeName).format(dueDate);
+        final badge = _typeLabel(type, AppLocalizations.of(context)!);
 
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -215,22 +223,24 @@ class _TaxCalendarPageState extends State<TaxCalendarPage> {
     );
   }
 
-  _Badge? _typeLabel(String type) {
+  _Badge? _typeLabel(String type, AppLocalizations l10n) {
     switch (type) {
       case 'vat':
-        return _Badge('부가세', Colors.purple);
+        return _Badge(l10n.taxBadgeVat, Colors.purple);
       case 'income':
-        return _Badge('소득세/법인세', Colors.indigo);
+        return _Badge(l10n.taxBadgeIncome, Colors.indigo);
+      case 'corporate':
+        return _Badge(l10n.taxBadgeCorporate, Colors.indigo);
       case 'local':
-        return _Badge('지방세', Colors.teal);
+        return _Badge(l10n.taxBadgeLocal, Colors.teal);
       case 'car':
-        return _Badge('자동차세', Colors.orange);
+        return _Badge(l10n.taxBadgeCar, Colors.orange);
       case 'property':
-        return _Badge('재산세', Colors.brown);
+        return _Badge(l10n.taxBadgeProperty, Colors.brown);
       case 'wht':
-        return _Badge('원천세', Colors.blueGrey);
+        return _Badge(l10n.taxBadgeWht, Colors.blueGrey);
       case 'insure':
-        return _Badge('4대보험', Colors.green);
+        return _Badge(l10n.taxBadgeInsure, Colors.green);
       default:
         return null;
     }

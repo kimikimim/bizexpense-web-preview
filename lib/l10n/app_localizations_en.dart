@@ -1338,4 +1338,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invoiceShare => 'Share PDF';
+
+  @override
+  String get taxCalEmptyTitle => 'No upcoming deadlines.';
+
+  @override
+  String get taxCalEmptySub =>
+      'Set up your tax profile and we\'ll remind you of VAT filing deadlines automatically.';
+
+  @override
+  String get taxCalSetupButton => 'Set up tax schedule';
+
+  @override
+  String get taxCalLoadError => 'Couldn\'t load tax schedule';
+
+  @override
+  String get taxBadgeVat => 'VAT';
+
+  @override
+  String get taxBadgeIncome => 'Income Tax';
+
+  @override
+  String get taxBadgeCorporate => 'Corporate Tax';
+
+  @override
+  String get taxBadgeLocal => 'Local Tax';
+
+  @override
+  String get taxBadgeCar => 'Vehicle Tax';
+
+  @override
+  String get taxBadgeProperty => 'Property Tax';
+
+  @override
+  String get taxBadgeWht => 'Withholding';
+
+  @override
+  String get taxBadgeInsure => 'Insurance';
+
+  @override
+  String taxEventVat(String period) {
+    return 'VAT Return — $period';
+  }
+
+  @override
+  String taxEventVatPayment(String period) {
+    return 'VAT Payment — $period';
+  }
+
+  @override
+  String taxEventCorporate(String year) {
+    return 'Corporate Tax Return $year';
+  }
+
+  @override
+  String get meTaxSetupTitle => 'Tax Setup';
+
+  @override
+  String get meTaxSetupIntro =>
+      'Set your VAT filing details and we\'ll generate your deadlines.';
+
+  @override
+  String get meTaxVatRegistered => 'VAT registered';
+
+  @override
+  String get meTaxVatRegisteredSub => 'Is your business registered for VAT?';
+
+  @override
+  String get meTaxFilingFrequency => 'Filing frequency';
+
+  @override
+  String get meTaxQuarterly => 'Quarterly';
+
+  @override
+  String get meTaxMonthly => 'Monthly';
+
+  @override
+  String get meTaxCorporate => 'Subject to Corporate Tax';
+
+  @override
+  String get meTaxCorporateSub =>
+      'Companies (LLC / Free Zone) file corporate tax once a year.';
+
+  @override
+  String get meTaxSaved => 'Tax schedule created.';
+
+  @override
+  String meTaxQuarterLabel(String q, String year) {
+    return 'Q$q $year';
+  }
 }

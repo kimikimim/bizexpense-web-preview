@@ -194,21 +194,20 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                     );
                   },
                 ),
-              if (isKorea)
-                _buildMenuTile(
-                  icon: Icons.calendar_today,
-                  iconColor: Colors.orange,
-                  title: l10n.menuTaxSchedule,
-                  subtitle: l10n.menuTaxScheduleSub,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const TaxCalendarPage(),
-                      ),
-                    );
-                  },
-                ),
+              _buildMenuTile(
+                icon: Icons.calendar_today,
+                iconColor: Colors.orange,
+                title: l10n.menuTaxSchedule,
+                subtitle: l10n.menuTaxScheduleSub,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TaxCalendarPage(),
+                    ),
+                  );
+                },
+              ),
               _buildMenuTile(
                 icon: Icons.repeat,
                 iconColor: Colors.teal,
@@ -452,19 +451,18 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                     );
                   },
                 ),
-              if (isKorea)
-                _buildQuickIcon(
-                  icon: Icons.calendar_today,
-                  label: l10n.menuTaxScheduleShort,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const TaxCalendarPage(),
-                      ),
-                    );
-                  },
-                ),
+              _buildQuickIcon(
+                icon: Icons.calendar_today,
+                label: l10n.menuTaxScheduleShort,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TaxCalendarPage(),
+                    ),
+                  );
+                },
+              ),
               _buildQuickIcon(
                 icon: Icons.settings_outlined,
                 label: l10n.menuSettingsShort,

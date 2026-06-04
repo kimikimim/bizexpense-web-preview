@@ -2601,6 +2601,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share PDF'**
   String get invoiceShare;
+
+  /// No description provided for @taxCalEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming deadlines.'**
+  String get taxCalEmptyTitle;
+
+  /// No description provided for @taxCalEmptySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your tax profile and we\'ll remind you of VAT filing deadlines automatically.'**
+  String get taxCalEmptySub;
+
+  /// No description provided for @taxCalSetupButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up tax schedule'**
+  String get taxCalSetupButton;
+
+  /// No description provided for @taxCalLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load tax schedule'**
+  String get taxCalLoadError;
+
+  /// No description provided for @taxBadgeVat.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT'**
+  String get taxBadgeVat;
+
+  /// No description provided for @taxBadgeIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Tax'**
+  String get taxBadgeIncome;
+
+  /// No description provided for @taxBadgeCorporate.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate Tax'**
+  String get taxBadgeCorporate;
+
+  /// No description provided for @taxBadgeLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Tax'**
+  String get taxBadgeLocal;
+
+  /// No description provided for @taxBadgeCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Tax'**
+  String get taxBadgeCar;
+
+  /// No description provided for @taxBadgeProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Tax'**
+  String get taxBadgeProperty;
+
+  /// No description provided for @taxBadgeWht.
+  ///
+  /// In en, this message translates to:
+  /// **'Withholding'**
+  String get taxBadgeWht;
+
+  /// No description provided for @taxBadgeInsure.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance'**
+  String get taxBadgeInsure;
+
+  /// No description provided for @taxEventVat.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT Return — {period}'**
+  String taxEventVat(String period);
+
+  /// No description provided for @taxEventVatPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT Payment — {period}'**
+  String taxEventVatPayment(String period);
+
+  /// No description provided for @taxEventCorporate.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate Tax Return {year}'**
+  String taxEventCorporate(String year);
+
+  /// No description provided for @meTaxSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Setup'**
+  String get meTaxSetupTitle;
+
+  /// No description provided for @meTaxSetupIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your VAT filing details and we\'ll generate your deadlines.'**
+  String get meTaxSetupIntro;
+
+  /// No description provided for @meTaxVatRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT registered'**
+  String get meTaxVatRegistered;
+
+  /// No description provided for @meTaxVatRegisteredSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Is your business registered for VAT?'**
+  String get meTaxVatRegisteredSub;
+
+  /// No description provided for @meTaxFilingFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Filing frequency'**
+  String get meTaxFilingFrequency;
+
+  /// No description provided for @meTaxQuarterly.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get meTaxQuarterly;
+
+  /// No description provided for @meTaxMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get meTaxMonthly;
+
+  /// No description provided for @meTaxCorporate.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject to Corporate Tax'**
+  String get meTaxCorporate;
+
+  /// No description provided for @meTaxCorporateSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Companies (LLC / Free Zone) file corporate tax once a year.'**
+  String get meTaxCorporateSub;
+
+  /// No description provided for @meTaxSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax schedule created.'**
+  String get meTaxSaved;
+
+  /// No description provided for @meTaxQuarterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Q{q} {year}'**
+  String meTaxQuarterLabel(String q, String year);
 }
 
 class _AppLocalizationsDelegate
