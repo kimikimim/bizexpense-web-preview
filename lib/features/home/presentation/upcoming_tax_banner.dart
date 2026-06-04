@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../../tax/services/tax_service.dart';
 import '../../tax/presentation/tax_calendar_page.dart';
@@ -64,8 +65,10 @@ class _UpcomingTaxBannerState extends State<UpcomingTaxBanner> {
       ddayLabel = 'D+${diff.abs()}';
     }
 
-    final title = _event!['title'] as String? ?? '세무 일정';
-    final dateLabel = DateFormat('M월 d일 (E)', 'ko_KR').format(dueDate);
+    final l10n = AppLocalizations.of(context)!;
+    final localeName = Localizations.localeOf(context).toString();
+    final title = _event!['title'] as String? ?? l10n.taxEventDefaultTitle;
+    final dateLabel = DateFormat.MMMMEEEEd(localeName).format(dueDate);
 
     final Color cardColor =
         isDark ? const Color(0xFF30343A) : const Color(0xFFF3F4F6);

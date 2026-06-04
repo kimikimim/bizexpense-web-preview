@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../../core/widgets/primary_button.dart';
 
 class ProfileEditPage extends StatefulWidget {
@@ -65,13 +66,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('프로필이 저장되었습니다.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.profileEditSaved)),
       );
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('저장 중 오류가 발생했습니다: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.profileEditSaveError('$e'))),
       );
     } finally {
       if (mounted) {
@@ -91,11 +92,12 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('프로필 설정'),
+        title: Text(l10n.menuProfileSettings),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -103,7 +105,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '기본 정보',
+              l10n.basicInfo,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -113,26 +115,26 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             const SizedBox(height: 12),
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: '이름',
-                hintText: '실제 이름',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.fullName,
+                hintText: l10n.profileNameHint,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _ageController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: '나이',
-                hintText: '예) 35',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.age,
+                hintText: l10n.profileAgeHint,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
 
             Text(
-              '닉네임',
+              l10n.profileNicknameSection,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -142,24 +144,24 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             const SizedBox(height: 12),
             TextField(
               controller: _nicknameController,
-              decoration: const InputDecoration(
-                labelText: '닉네임',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.profileNickname,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _introController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: '한 줄 소개 (선택)',
-                hintText: '예) 카페 운영 3년차 사장님입니다.',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.bio,
+                hintText: l10n.bioHint,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
             PrimaryButton(
-              label: '저장하기',
+              label: l10n.profileSaveButton,
               isLoading: _isSaving,
               onPressed: _save,
             ),

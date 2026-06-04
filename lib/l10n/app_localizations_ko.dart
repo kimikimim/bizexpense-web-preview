@@ -1089,4 +1089,49 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get recurringAutoOff => '자동 생성 꺼짐';
+
+  @override
+  String get homeDefaultName => '사장님';
+
+  @override
+  String homeGreeting(String name) {
+    return '$name 님';
+  }
+
+  @override
+  String statisticsScorePoints(String score) {
+    return '$score점';
+  }
+
+  @override
+  String get taxEventDefaultTitle => '세무 일정';
+
+  @override
+  String get settingsInquirySubject => '[BizExpense] 문의합니다';
+
+  @override
+  String get settingsInquiryBody => '1. 문의 유형:\n2. 내용:\n\n(여기에 내용을 적어주세요)';
+
+  @override
+  String get profileEditSaved => '프로필이 저장되었습니다.';
+
+  @override
+  String profileEditSaveError(String error) {
+    return '저장 중 오류가 발생했습니다: $error';
+  }
+
+  @override
+  String get profileNameHint => '실제 이름';
+
+  @override
+  String get profileAgeHint => '예) 35';
+
+  @override
+  String get profileNickname => '닉네임';
+
+  @override
+  String get profileNicknameSection => '닉네임';
+
+  @override
+  String get profileSaveButton => '저장하기';
 }

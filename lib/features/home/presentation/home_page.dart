@@ -332,7 +332,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(tx.storeName, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white : const Color(0xFF191F28))),
                         const SizedBox(height: 2),
-                        Text(tx.category ?? '기타', style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : const Color(0xFF8B95A1))),
+                        Text(tx.category ?? AppLocalizations.of(context)!.addTransactionUncategorized, style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : const Color(0xFF8B95A1))),
                       ])),
                       Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                         Text(
@@ -357,7 +357,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _buildHeroCard() {
     final f = _getMonthlyForecast();
     final user = Supabase.instance.client.auth.currentUser;
-    final name = (user?.userMetadata?['name'] as String?) ?? '사장님';
+    final name = (user?.userMetadata?['name'] as String?) ?? AppLocalizations.of(context)!.homeDefaultName;
     final net = f['forecastNet'] ?? 0;
     final income = f['forecastIncome'] ?? 0;
     final expense = f['forecastExpense'] ?? 0;
@@ -386,7 +386,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 style: TextStyle(fontSize: 13, color: Colors.white.withAlpha(160), fontWeight: FontWeight.w500),
               ),
               Text(
-                '$name 님',
+                AppLocalizations.of(context)!.homeGreeting(name),
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
               ),
             ],

@@ -2205,6 +2205,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto-generation off'**
   String get recurringAutoOff;
+
+  /// No description provided for @homeDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Boss'**
+  String get homeDefaultName;
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}'**
+  String homeGreeting(String name);
+
+  /// No description provided for @statisticsScorePoints.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} pts'**
+  String statisticsScorePoints(String score);
+
+  /// No description provided for @taxEventDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax Schedule'**
+  String get taxEventDefaultTitle;
+
+  /// No description provided for @settingsInquirySubject.
+  ///
+  /// In en, this message translates to:
+  /// **'[BizExpense] Inquiry'**
+  String get settingsInquirySubject;
+
+  /// No description provided for @settingsInquiryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Inquiry type:\n2. Details:\n\n(Please write your message here)'**
+  String get settingsInquiryBody;
+
+  /// No description provided for @profileEditSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved.'**
+  String get profileEditSaved;
+
+  /// No description provided for @profileEditSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while saving: {error}'**
+  String profileEditSaveError(String error);
+
+  /// No description provided for @profileNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your real name'**
+  String get profileNameHint;
+
+  /// No description provided for @profileAgeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 35'**
+  String get profileAgeHint;
+
+  /// No description provided for @profileNickname.
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname'**
+  String get profileNickname;
+
+  /// No description provided for @profileNicknameSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname'**
+  String get profileNicknameSection;
+
+  /// No description provided for @profileSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get profileSaveButton;
 }
 
 class _AppLocalizationsDelegate

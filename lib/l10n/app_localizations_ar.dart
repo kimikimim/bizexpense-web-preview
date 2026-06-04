@@ -1119,4 +1119,50 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get recurringAutoOff => 'الإنشاء التلقائي متوقف';
+
+  @override
+  String get homeDefaultName => 'المدير';
+
+  @override
+  String homeGreeting(String name) {
+    return '$name';
+  }
+
+  @override
+  String statisticsScorePoints(String score) {
+    return '$score نقطة';
+  }
+
+  @override
+  String get taxEventDefaultTitle => 'جدول الضرائب';
+
+  @override
+  String get settingsInquirySubject => '[BizExpense] استفسار';
+
+  @override
+  String get settingsInquiryBody =>
+      '1. نوع الاستفسار:\n2. التفاصيل:\n\n(يرجى كتابة رسالتك هنا)';
+
+  @override
+  String get profileEditSaved => 'تم حفظ الملف الشخصي.';
+
+  @override
+  String profileEditSaveError(String error) {
+    return 'حدث خطأ أثناء الحفظ: $error';
+  }
+
+  @override
+  String get profileNameHint => 'اسمك الحقيقي';
+
+  @override
+  String get profileAgeHint => 'مثال: 35';
+
+  @override
+  String get profileNickname => 'الاسم المستعار';
+
+  @override
+  String get profileNicknameSection => 'الاسم المستعار';
+
+  @override
+  String get profileSaveButton => 'حفظ';
 }

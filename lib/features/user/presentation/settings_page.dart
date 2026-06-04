@@ -141,12 +141,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 
   Future<void> _sendEmail() async {
+    final l10n = AppLocalizations.of(context)!;
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: _supportEmail,
       query: _encodeQueryParameters(<String, String>{
-        'subject': '[BizExpense] 문의합니다',
-        'body': '1. 문의 유형:\n2. 내용:\n\n(여기에 내용을 적어주세요)',
+        'subject': l10n.settingsInquirySubject,
+        'body': l10n.settingsInquiryBody,
       }),
     );
 

@@ -372,5 +372,18 @@
   "recurringSkipDone": "이번 달은 건너뛰기로 설정되었습니다.",
   "recurringSkipButton": "이번 달만 건너뛰기",
   "recurringDeleteFailed": "삭제에 실패했습니다.",
-  "recurringAutoOff": "자동 생성 꺼짐"
+  "recurringAutoOff": "자동 생성 꺼짐",
+  "homeDefaultName": "사장님",
+  "homeGreeting": "{name} 님",
+  "statisticsScorePoints": "{score}점",
+  "taxEventDefaultTitle": "세무 일정",
+  "settingsInquirySubject": "[BizExpense] 문의합니다",
+  "settingsInquiryBody": "1. 문의 유형:\n2. 내용:\n\n(여기에 내용을 적어주세요)",
+  "profileEditSaved": "프로필이 저장되었습니다.",
+  "profileEditSaveError": "저장 중 오류가 발생했습니다: {error}",
+  "profileNameHint": "실제 이름",
+  "profileAgeHint": "예) 35",
+  "profileNickname": "닉네임",
+  "profileNicknameSection": "닉네임",
+  "profileSaveButton": "저장하기"
 }

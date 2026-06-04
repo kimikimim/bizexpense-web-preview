@@ -109,9 +109,10 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
         .toList();
     final bigNoReceiptSum = _sumAmount(bigNoReceipt);
 
+    final uncategorized = AppLocalizations.of(context)!.addTransactionUncategorized;
     final Map<String, int> nonDeductibleByCat = {};
     for (final t in nonDeductible) {
-      final key = t.category ?? '미분류';
+      final key = t.category ?? uncategorized;
       nonDeductibleByCat[key] =
           (nonDeductibleByCat[key] ?? 0) + t.amount;
     }
@@ -168,9 +169,10 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
     final total = _sumAmount(expense);
     if (total == 0) return [];
 
+    final uncategorized = AppLocalizations.of(context)!.addTransactionUncategorized;
     final Map<String, int> byCat = {};
     for (final t in expense) {
-      final key = t.category ?? '미분류';
+      final key = t.category ?? uncategorized;
       byCat[key] = (byCat[key] ?? 0) + t.amount;
     }
 
@@ -373,7 +375,7 @@ class _TaxScoreCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  '${score.toStringAsFixed(0)}점',
+                  l10n.statisticsScorePoints(score.toStringAsFixed(0)),
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

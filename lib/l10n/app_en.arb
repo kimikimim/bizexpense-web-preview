@@ -426,5 +426,21 @@
   "recurringSkipDone": "Set to skip this month.",
   "recurringSkipButton": "Skip this month only",
   "recurringDeleteFailed": "Failed to delete.",
-  "recurringAutoOff": "Auto-generation off"
+  "recurringAutoOff": "Auto-generation off",
+  "homeDefaultName": "Boss",
+  "homeGreeting": "{name}",
+  "@homeGreeting": {"placeholders": {"name": {"type": "String"}}},
+  "statisticsScorePoints": "{score} pts",
+  "@statisticsScorePoints": {"placeholders": {"score": {"type": "String"}}},
+  "taxEventDefaultTitle": "Tax Schedule",
+  "settingsInquirySubject": "[BizExpense] Inquiry",
+  "settingsInquiryBody": "1. Inquiry type:\n2. Details:\n\n(Please write your message here)",
+  "profileEditSaved": "Profile saved.",
+  "profileEditSaveError": "An error occurred while saving: {error}",
+  "@profileEditSaveError": {"placeholders": {"error": {"type": "String"}}},
+  "profileNameHint": "Your real name",
+  "profileAgeHint": "e.g. 35",
+  "profileNickname": "Nickname",
+  "profileNicknameSection": "Nickname",
+  "profileSaveButton": "Save"
 }

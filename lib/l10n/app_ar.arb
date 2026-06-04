@@ -417,5 +417,18 @@
   "recurringSkipDone": "تم ضبطه لتخطّي هذا الشهر.",
   "recurringSkipButton": "تخطّي هذا الشهر فقط",
   "recurringDeleteFailed": "فشل الحذف.",
-  "recurringAutoOff": "الإنشاء التلقائي متوقف"
+  "recurringAutoOff": "الإنشاء التلقائي متوقف",
+  "homeDefaultName": "المدير",
+  "homeGreeting": "{name}",
+  "statisticsScorePoints": "{score} نقطة",
+  "taxEventDefaultTitle": "جدول الضرائب",
+  "settingsInquirySubject": "[BizExpense] استفسار",
+  "settingsInquiryBody": "1. نوع الاستفسار:\n2. التفاصيل:\n\n(يرجى كتابة رسالتك هنا)",
+  "profileEditSaved": "تم حفظ الملف الشخصي.",
+  "profileEditSaveError": "حدث خطأ أثناء الحفظ: {error}",
+  "profileNameHint": "اسمك الحقيقي",
+  "profileAgeHint": "مثال: 35",
+  "profileNickname": "الاسم المستعار",
+  "profileNicknameSection": "الاسم المستعار",
+  "profileSaveButton": "حفظ"
 }

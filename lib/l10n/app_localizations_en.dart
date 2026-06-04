@@ -1121,4 +1121,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recurringAutoOff => 'Auto-generation off';
+
+  @override
+  String get homeDefaultName => 'Boss';
+
+  @override
+  String homeGreeting(String name) {
+    return '$name';
+  }
+
+  @override
+  String statisticsScorePoints(String score) {
+    return '$score pts';
+  }
+
+  @override
+  String get taxEventDefaultTitle => 'Tax Schedule';
+
+  @override
+  String get settingsInquirySubject => '[BizExpense] Inquiry';
+
+  @override
+  String get settingsInquiryBody =>
+      '1. Inquiry type:\n2. Details:\n\n(Please write your message here)';
+
+  @override
+  String get profileEditSaved => 'Profile saved.';
+
+  @override
+  String profileEditSaveError(String error) {
+    return 'An error occurred while saving: $error';
+  }
+
+  @override
+  String get profileNameHint => 'Your real name';
+
+  @override
+  String get profileAgeHint => 'e.g. 35';
+
+  @override
+  String get profileNickname => 'Nickname';
+
+  @override
+  String get profileNicknameSection => 'Nickname';
+
+  @override
+  String get profileSaveButton => 'Save';
 }
