@@ -77,15 +77,16 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
       final List<TransactionModel> txs = await repo.getTransactions();
 
       final l10n = AppLocalizations.of(context)!;
+      final config = ref.read(countryConfigProvider);
       if (txs.isEmpty) {
         _showSnackBar(l10n.noDataToExport);
       } else {
         final excel = ExcelService();
         if (forAccounting) {
-          await excel.exportForAccounting(txs);
+          await excel.exportForAccounting(txs, config: config);
           _showSnackBar(l10n.exportExcelSuccess);
         } else {
-          await excel.exportToExcel(txs);
+          await excel.exportToExcel(txs, config: config);
           _showSnackBar(l10n.exportExcelBasicSuccess);
         }
       }
