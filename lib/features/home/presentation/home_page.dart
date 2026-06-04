@@ -26,7 +26,6 @@ import '../../recurring/data/recurring_transaction_repository.dart';
 import '../../recurring/services/recurring_service.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import 'package:expense_pro/l10n/app_localizations.dart';
-import '../../cards/presentation/card_list_page.dart';
 import '../../cards/data/card_repository.dart';
 import '../../tax/presentation/tax_summary_page.dart';
 import '../../../core/providers/country_config_provider.dart';
@@ -114,7 +113,10 @@ class _HomePageState extends ConsumerState<HomePage> {
       _isLoading = false;
     });
 
-    CardRepository().syncTransactions();
+    // Korea-only: card sync parses Korean bank SMS/data formats
+    if (ref.read(countryConfigProvider).countryCode == 'KR') {
+      CardRepository().syncTransactions();
+    }
   }
   
   int _getMonthlyIncome() {
