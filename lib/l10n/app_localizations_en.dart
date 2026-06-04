@@ -1284,4 +1284,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myBizError => 'An error occurred.';
+
+  @override
+  String get invoiceMinItem => 'At least one item is required.';
+
+  @override
+  String get invoiceClientRequired => 'Please enter the client name.';
+
+  @override
+  String get invoiceItemNamesRequired => 'Please fill in all item names.';
+
+  @override
+  String get invoicePdfFailed => 'Failed to generate PDF.';
+
+  @override
+  String get invoiceTitle => 'Send a Quote in Seconds';
+
+  @override
+  String get invoiceRecipient => 'Recipient (Client)';
+
+  @override
+  String get invoiceClientHint => 'e.g. ABC Trading LLC';
+
+  @override
+  String get invoiceClientLabel => 'Client Name';
+
+  @override
+  String get invoiceItems => 'Items';
+
+  @override
+  String get invoiceAddItem => 'Add Item';
+
+  @override
+  String invoiceItemName(String n) {
+    return 'Item $n';
+  }
+
+  @override
+  String get invoiceItemNameHint => 'e.g. Design work';
+
+  @override
+  String get invoiceUnitPrice => 'Unit Price';
+
+  @override
+  String get invoiceQty => 'Quantity';
+
+  @override
+  String get invoiceShareHint =>
+      'Use the share sheet to send or print the quote.';
+
+  @override
+  String get invoiceGenerating => 'Generating...';
+
+  @override
+  String get invoiceShare => 'Share PDF';
 }

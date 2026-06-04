@@ -466,5 +466,22 @@
   "myBizWithdrawConfirm": "هل أنت متأكد أنك تريد حذف حسابك؟\nسيتم حذف جميع البيانات نهائياً ولا يمكن استرجاعها.",
   "myBizWithdrawButton": "حذف الحساب",
   "myBizWithdrawDone": "تم حذف حسابك.",
-  "myBizError": "حدث خطأ."
+  "myBizError": "حدث خطأ.",
+  "invoiceMinItem": "يجب إضافة بند واحد على الأقل.",
+  "invoiceClientRequired": "يرجى إدخال اسم العميل.",
+  "invoiceItemNamesRequired": "يرجى تعبئة جميع أسماء البنود.",
+  "invoicePdfFailed": "فشل إنشاء ملف PDF.",
+  "invoiceTitle": "أرسل عرض سعر في ثوانٍ",
+  "invoiceRecipient": "المستلم (العميل)",
+  "invoiceClientHint": "مثال: شركة ABC للتجارة",
+  "invoiceClientLabel": "اسم العميل",
+  "invoiceItems": "البنود",
+  "invoiceAddItem": "إضافة بند",
+  "invoiceItemName": "البند {n}",
+  "invoiceItemNameHint": "مثال: أعمال تصميم",
+  "invoiceUnitPrice": "سعر الوحدة",
+  "invoiceQty": "الكمية",
+  "invoiceShareHint": "استخدم نافذة المشاركة لإرسال أو طباعة عرض السعر.",
+  "invoiceGenerating": "جارٍ الإنشاء...",
+  "invoiceShare": "مشاركة PDF"
 }

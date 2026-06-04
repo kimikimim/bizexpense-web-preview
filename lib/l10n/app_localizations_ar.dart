@@ -1281,4 +1281,58 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get myBizError => 'حدث خطأ.';
+
+  @override
+  String get invoiceMinItem => 'يجب إضافة بند واحد على الأقل.';
+
+  @override
+  String get invoiceClientRequired => 'يرجى إدخال اسم العميل.';
+
+  @override
+  String get invoiceItemNamesRequired => 'يرجى تعبئة جميع أسماء البنود.';
+
+  @override
+  String get invoicePdfFailed => 'فشل إنشاء ملف PDF.';
+
+  @override
+  String get invoiceTitle => 'أرسل عرض سعر في ثوانٍ';
+
+  @override
+  String get invoiceRecipient => 'المستلم (العميل)';
+
+  @override
+  String get invoiceClientHint => 'مثال: شركة ABC للتجارة';
+
+  @override
+  String get invoiceClientLabel => 'اسم العميل';
+
+  @override
+  String get invoiceItems => 'البنود';
+
+  @override
+  String get invoiceAddItem => 'إضافة بند';
+
+  @override
+  String invoiceItemName(String n) {
+    return 'البند $n';
+  }
+
+  @override
+  String get invoiceItemNameHint => 'مثال: أعمال تصميم';
+
+  @override
+  String get invoiceUnitPrice => 'سعر الوحدة';
+
+  @override
+  String get invoiceQty => 'الكمية';
+
+  @override
+  String get invoiceShareHint =>
+      'استخدم نافذة المشاركة لإرسال أو طباعة عرض السعر.';
+
+  @override
+  String get invoiceGenerating => 'جارٍ الإنشاء...';
+
+  @override
+  String get invoiceShare => 'مشاركة PDF';
 }

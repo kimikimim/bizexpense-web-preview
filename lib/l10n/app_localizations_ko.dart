@@ -1247,4 +1247,57 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get myBizError => '오류가 발생했습니다.';
+
+  @override
+  String get invoiceMinItem => '최소 1개의 품목은 있어야 합니다.';
+
+  @override
+  String get invoiceClientRequired => '거래처명을 입력해주세요.';
+
+  @override
+  String get invoiceItemNamesRequired => '품목명을 모두 입력해주세요.';
+
+  @override
+  String get invoicePdfFailed => 'PDF 생성 실패';
+
+  @override
+  String get invoiceTitle => '3초 견적서 보내기';
+
+  @override
+  String get invoiceRecipient => '받는 분 (거래처)';
+
+  @override
+  String get invoiceClientHint => '예: (주)한국상사';
+
+  @override
+  String get invoiceClientLabel => '거래처명';
+
+  @override
+  String get invoiceItems => '품목 내용';
+
+  @override
+  String get invoiceAddItem => '항목 추가';
+
+  @override
+  String invoiceItemName(String n) {
+    return '품목명 $n';
+  }
+
+  @override
+  String get invoiceItemNameHint => '예: 디자인 개발';
+
+  @override
+  String get invoiceUnitPrice => '단가';
+
+  @override
+  String get invoiceQty => '수량';
+
+  @override
+  String get invoiceShareHint => '팩스로 보내려면? 공유창에서 [모바일 팩스] 앱 선택';
+
+  @override
+  String get invoiceGenerating => '  생성 중...';
+
+  @override
+  String get invoiceShare => 'PDF 공유 / 팩스 전송';
 }

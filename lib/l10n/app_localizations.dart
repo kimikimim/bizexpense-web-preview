@@ -2499,6 +2499,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred.'**
   String get myBizError;
+
+  /// No description provided for @invoiceMinItem.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one item is required.'**
+  String get invoiceMinItem;
+
+  /// No description provided for @invoiceClientRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the client name.'**
+  String get invoiceClientRequired;
+
+  /// No description provided for @invoiceItemNamesRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all item names.'**
+  String get invoiceItemNamesRequired;
+
+  /// No description provided for @invoicePdfFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to generate PDF.'**
+  String get invoicePdfFailed;
+
+  /// No description provided for @invoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a Quote in Seconds'**
+  String get invoiceTitle;
+
+  /// No description provided for @invoiceRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient (Client)'**
+  String get invoiceRecipient;
+
+  /// No description provided for @invoiceClientHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. ABC Trading LLC'**
+  String get invoiceClientHint;
+
+  /// No description provided for @invoiceClientLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client Name'**
+  String get invoiceClientLabel;
+
+  /// No description provided for @invoiceItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get invoiceItems;
+
+  /// No description provided for @invoiceAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Item'**
+  String get invoiceAddItem;
+
+  /// No description provided for @invoiceItemName.
+  ///
+  /// In en, this message translates to:
+  /// **'Item {n}'**
+  String invoiceItemName(String n);
+
+  /// No description provided for @invoiceItemNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Design work'**
+  String get invoiceItemNameHint;
+
+  /// No description provided for @invoiceUnitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit Price'**
+  String get invoiceUnitPrice;
+
+  /// No description provided for @invoiceQty.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get invoiceQty;
+
+  /// No description provided for @invoiceShareHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the share sheet to send or print the quote.'**
+  String get invoiceShareHint;
+
+  /// No description provided for @invoiceGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating...'**
+  String get invoiceGenerating;
+
+  /// No description provided for @invoiceShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get invoiceShare;
 }
 
 class _AppLocalizationsDelegate

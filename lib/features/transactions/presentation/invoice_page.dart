@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../../core/utils/invoice_service.dart';
 import '../../../core/widgets/primary_button.dart';
+import '../../../core/providers/country_config_provider.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 
 class InvoiceItemInput {
@@ -20,14 +23,14 @@ class InvoiceItemInput {
   }
 }
 
-class InvoicePage extends StatefulWidget {
+class InvoicePage extends ConsumerStatefulWidget {
   const InvoicePage({super.key});
 
   @override
-  State<InvoicePage> createState() => _InvoicePageState();
+  ConsumerState<InvoicePage> createState() => _InvoicePageState();
 }
 
-class _InvoicePageState extends State<InvoicePage> {
+class _InvoicePageState extends ConsumerState<InvoicePage> {
   final _clientController = TextEditingController();
   final List<InvoiceItemInput> _items = [];
   bool _isLoading = false;
@@ -61,14 +64,16 @@ class _InvoicePageState extends State<InvoicePage> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("최소 1개의 품목은 있어야 합니다.")),
+        SnackBar(content: Text(AppLocalizations.of(context)!.invoiceMinItem)),
       );
     }
   }
 
   Future<void> _sendInvoice() async {
+    final l10n = AppLocalizations.of(context)!;
+    final config = ref.read(countryConfigProvider);
     if (_clientController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("거래처명을 입력해주세요.")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.invoiceClientRequired)));
       return;
     }
 
@@ -77,13 +82,13 @@ class _InvoicePageState extends State<InvoicePage> {
 
     for (var item in _items) {
       if (item.name.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("품목명을 모두 입력해주세요.")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.invoiceItemNamesRequired)));
         return;
       }
 
       int price = int.tryParse(item.price.text.replaceAll(',', '')) ?? 0;
       int qty = int.tryParse(item.qty.text) ?? 1;
-      int lineTotal = (price * qty * 1.1).round();
+      int lineTotal = (price * qty * (1 + config.vatRate)).round();
       totalAmount += lineTotal;
 
       itemsData.add({
@@ -100,13 +105,14 @@ class _InvoicePageState extends State<InvoicePage> {
         clientName: _clientController.text,
         items: itemsData,
         totalAmount: totalAmount,
+        config: config,
       );
     } catch (e) {
-      appLogger.e("견적서 에러: $e", error: e);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("PDF 생성 실패")));
+      appLogger.e("invoice error", error: e);
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.invoicePdfFailed)));
     }
 
-    setState(() => _isLoading = false);
+    if (mounted) setState(() => _isLoading = false);
   }
 
   Widget _buildSectionTitle(String title, {Widget? trailing}) {
@@ -136,13 +142,14 @@ class _InvoicePageState extends State<InvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final l10n = AppLocalizations.of(context)!;
+    final config = ref.watch(countryConfigProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("3초 견적서 보내기"),
+        title: Text(l10n.invoiceTitle),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
       ),
@@ -151,26 +158,26 @@ class _InvoicePageState extends State<InvoicePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
-            _buildSectionTitle("받는 분 (거래처)"),
+
+            _buildSectionTitle(l10n.invoiceRecipient),
             _buildInputCard(
               child: TextField(
                 controller: _clientController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "예: (주)한국상사",
-                  icon: Icon(Icons.business_outlined),
-                  labelText: "거래처명",
+                  hintText: l10n.invoiceClientHint,
+                  icon: const Icon(Icons.business_outlined),
+                  labelText: l10n.invoiceClientLabel,
                 ),
               ),
             ),
 
             _buildSectionTitle(
-              "품목 내용",
+              l10n.invoiceItems,
               trailing: TextButton.icon(
                 onPressed: _addItem,
                 icon: const Icon(Icons.add_circle_outline, size: 18),
-                label: const Text("항목 추가"),
+                label: Text(l10n.invoiceAddItem),
                 style: TextButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   foregroundColor: Colors.indigoAccent,
@@ -205,8 +212,8 @@ class _InvoicePageState extends State<InvoicePage> {
                           child: TextField(
                             controller: item.name,
                             decoration: InputDecoration(
-                              labelText: "품목명 ${index + 1}",
-                              hintText: "예: 디자인 개발",
+                              labelText: l10n.invoiceItemName('${index + 1}'),
+                              hintText: l10n.invoiceItemNameHint,
                               isDense: true,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -221,7 +228,7 @@ class _InvoicePageState extends State<InvoicePage> {
                             child: IconButton(
                               icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
                               onPressed: () => _removeItem(index),
-                              tooltip: "삭제",
+                              tooltip: l10n.delete,
                             ),
                           ),
                       ],
@@ -235,8 +242,8 @@ class _InvoicePageState extends State<InvoicePage> {
                             controller: item.price,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: "단가",
-                              suffixText: "원",
+                              labelText: l10n.invoiceUnitPrice,
+                              suffixText: config.currencySymbol,
                               isDense: true,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -253,7 +260,7 @@ class _InvoicePageState extends State<InvoicePage> {
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
                             decoration: InputDecoration(
-                              labelText: "수량",
+                              labelText: l10n.invoiceQty,
                               isDense: true,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -284,9 +291,11 @@ class _InvoicePageState extends State<InvoicePage> {
                   children: [
                     Icon(Icons.lightbulb_outline, size: 16, color: isDark ? Colors.grey : Colors.amber[800]),
                     const SizedBox(width: 6),
-                    Text(
-                      "팩스로 보내려면? 공유창에서 [모바일 팩스] 앱 선택",
-                      style: TextStyle(color: isDark ? Colors.grey : Colors.brown, fontSize: 11, fontWeight: FontWeight.bold),
+                    Flexible(
+                      child: Text(
+                        l10n.invoiceShareHint,
+                        style: TextStyle(color: isDark ? Colors.grey : Colors.brown, fontSize: 11, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
@@ -298,7 +307,7 @@ class _InvoicePageState extends State<InvoicePage> {
               child: SizedBox(
                 width: 260, 
                 child: PrimaryButton(
-                  label: _isLoading ? "  생성 중..." : "PDF 공유 / 팩스 전송",
+                  label: _isLoading ? l10n.invoiceGenerating : l10n.invoiceShare,
                   icon: _isLoading ? null : Icons.send_rounded,
                   isLoading: _isLoading,
                   onPressed: _sendInvoice,
