@@ -439,9 +439,10 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
       isVatExempt: _isVatExempt,
     );
 
+    final currencyCode = ref.read(countryConfigProvider).persistCurrencyCode;
     final success = widget.isExistingRecord
-        ? await _repository.updateTransaction(tx)
-        : await _repository.addTransaction(tx);
+        ? await _repository.updateTransaction(tx, currencyCode: currencyCode)
+        : await _repository.addTransaction(tx, currencyCode: currencyCode);
 
     setState(() => _isLoading = false);
 

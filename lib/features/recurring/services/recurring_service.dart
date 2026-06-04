@@ -7,6 +7,7 @@ import '../data/recurring_transaction_repository.dart';
 import '../../transactions/data/transaction_model.dart';
 import '../../transactions/data/transaction_repository.dart';
 import '../../../core/config/transaction_options.dart';
+import '../../../core/config/country_tax_config.dart';
 
 class RecurringService {
   final RecurringTransactionRepository _recRepo;
@@ -27,7 +28,10 @@ class RecurringService {
     if (userId == null) return;
 
     final prefs = await SharedPreferences.getInstance();
-    final opts = TxOptions.forCountry(prefs.getString('country_code') ?? 'KR');
+    final countryCode = prefs.getString('country_code') ?? 'KR';
+    final opts = TxOptions.forCountry(countryCode);
+    final config = kCountryConfigs[countryCode] ?? kCountryConfigs['KR']!;
+    final currencyCode = config.persistCurrencyCode;
     final fallbackCategory = opts.isKorea ? '미분류' : 'Uncategorized';
 
     for (final r in dueList) {
@@ -49,7 +53,7 @@ class RecurringService {
             : false,
       );
 
-      await _txRepo.addTransaction(tx);
+      await _txRepo.addTransaction(tx, currencyCode: currencyCode);
       await _recRepo.markAsAppliedToday(r.id);
     }
   }

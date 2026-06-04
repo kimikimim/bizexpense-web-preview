@@ -9,6 +9,7 @@ class TransactionRepository {
   Map<String, dynamic> _toDbJson(
     TransactionModel tx, {
     required String userId,
+    String? currencyCode,
   }) {
     return {
       'user_id': userId,
@@ -23,6 +24,8 @@ class TransactionRepository {
       'is_tax_deductible': tx.isTaxDeductible,
       'approval_number': tx.approvalNumber,
       'cash_receipt_type': tx.cashReceiptType,
+      // Only sent for non-KR; KR tables have no currency_code column.
+      if (currencyCode != null) 'currency_code': currencyCode,
     };
   }
 
@@ -48,12 +51,12 @@ class TransactionRepository {
     }
   }
 
-  Future<bool> addTransaction(TransactionModel tx) async {
+  Future<bool> addTransaction(TransactionModel tx, {String? currencyCode}) async {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) return false;
 
-      final payload = _toDbJson(tx, userId: userId);
+      final payload = _toDbJson(tx, userId: userId, currencyCode: currencyCode);
       await _supabase.from('transactions').insert(payload);
       return true;
     } catch (e) {
@@ -62,12 +65,12 @@ class TransactionRepository {
     }
   }
 
-  Future<bool> updateTransaction(TransactionModel tx) async {
+  Future<bool> updateTransaction(TransactionModel tx, {String? currencyCode}) async {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) return false;
 
-      final payload = _toDbJson(tx, userId: userId);
+      final payload = _toDbJson(tx, userId: userId, currencyCode: currencyCode);
       await _supabase
           .from('transactions')
           .update(payload)

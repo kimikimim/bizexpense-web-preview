@@ -62,6 +62,28 @@ class CountryTaxConfig {
       symbol: currencySymbol,
     ).format(amount);
   }
+
+  /// ISO 4217 currency code (matches the ME DB currency_code CHECK).
+  String get currencyCode {
+    switch (countryCode) {
+      case 'KR':
+        return 'KRW';
+      case 'AE':
+        return 'AED';
+      case 'SA':
+        return 'SAR';
+      case 'ID':
+        return 'IDR';
+      case 'VN':
+        return 'VND';
+      default:
+        return 'USD';
+    }
+  }
+
+  /// Currency code to persist, or null for KR whose tables have no
+  /// currency_code column (sending it there would break the insert).
+  String? get persistCurrencyCode => countryCode == 'KR' ? null : currencyCode;
 }
 
 const Map<String, CountryTaxConfig> kCountryConfigs = {
