@@ -2325,6 +2325,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{current} / {total}'**
   String signupStepCounter(String current, String total);
+
+  /// No description provided for @txDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get txDeposit;
+
+  /// No description provided for @txWithdrawal.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal'**
+  String get txWithdrawal;
 }
 
 class _AppLocalizationsDelegate

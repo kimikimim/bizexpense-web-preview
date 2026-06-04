@@ -392,5 +392,7 @@
   "signupTypeLlcSub": "유한책임회사 · 법인 회계",
   "signupTypeFreeZone": "프리존 법인",
   "signupTypeFreeZoneSub": "DMCC · DIFC · ADGM · NEOM 등 프리존",
-  "signupStepCounter": "{current} / {total}"
+  "signupStepCounter": "{current} / {total}",
+  "txDeposit": "입금",
+  "txWithdrawal": "출금"
 }

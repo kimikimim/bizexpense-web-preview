@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../data/transaction_model.dart';
-import '../../../core/constants/category_icons.dart';
+import '../../../core/providers/country_config_provider.dart';
 
-class TransactionListItem extends StatelessWidget {
+class TransactionListItem extends ConsumerWidget {
   final TransactionModel tx;
   final bool isDark;
   final IconData leadingIcon;
   final VoidCallback onTap;
 
   TransactionListItem({
-
     super.key,
     required this.tx,
     required this.isDark,
@@ -20,13 +21,14 @@ class TransactionListItem extends StatelessWidget {
   });
 
   final _timeFormat = DateFormat('MM-dd HH:mm');
-  final _currency = NumberFormat.currency(locale: 'ko_KR', symbol: '₩');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final config = ref.watch(countryConfigProvider);
     final isIncome = tx.transactionType == 'income';
     final amountText =
-        (isIncome ? '+' : '-') + _currency.format(tx.amount);
+        (isIncome ? '+' : '-') + config.formatMoney(tx.amount);
 
     final amountColor = isIncome ? Colors.red : Colors.blue;
 
@@ -53,7 +55,7 @@ class TransactionListItem extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          "${tx.category ?? '미분류'} • ${_timeFormat.format(tx.date)}",
+          "${tx.category ?? l10n.addTransactionUncategorized} • ${_timeFormat.format(tx.date)}",
           style: TextStyle(
             fontSize: 12,
             color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -72,7 +74,7 @@ class TransactionListItem extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              isIncome ? '입금' : '출금',
+              isIncome ? l10n.txDeposit : l10n.txWithdrawal,
               style: TextStyle(
                 fontSize: 11,
                 color: isDark ? Colors.white54 : Colors.grey,

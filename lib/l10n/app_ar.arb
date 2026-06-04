@@ -437,5 +437,7 @@
   "signupTypeLlcSub": "شركة ذات مسؤولية محدودة · محاسبة الشركات",
   "signupTypeFreeZone": "شركة منطقة حرة",
   "signupTypeFreeZoneSub": "DMCC · DIFC · ADGM · NEOM ومناطق حرة أخرى",
-  "signupStepCounter": "{current} / {total}"
+  "signupStepCounter": "{current} / {total}",
+  "txDeposit": "إيداع",
+  "txWithdrawal": "سحب"
 }

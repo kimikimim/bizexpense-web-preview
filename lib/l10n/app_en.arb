@@ -450,5 +450,7 @@
   "signupTypeFreeZone": "Free Zone Company",
   "signupTypeFreeZoneSub": "DMCC · DIFC · ADGM · NEOM and other free zones",
   "signupStepCounter": "{current} / {total}",
-  "@signupStepCounter": {"placeholders": {"current": {"type": "String"}, "total": {"type": "String"}}}
+  "@signupStepCounter": {"placeholders": {"current": {"type": "String"}, "total": {"type": "String"}}},
+  "txDeposit": "Deposit",
+  "txWithdrawal": "Withdrawal"
 }

@@ -1190,4 +1190,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String signupStepCounter(String current, String total) {
     return '$current / $total';
   }
+
+  @override
+  String get txDeposit => 'إيداع';
+
+  @override
+  String get txWithdrawal => 'سحب';
 }

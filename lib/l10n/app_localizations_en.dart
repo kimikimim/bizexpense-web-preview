@@ -1193,4 +1193,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String signupStepCounter(String current, String total) {
     return '$current / $total';
   }
+
+  @override
+  String get txDeposit => 'Deposit';
+
+  @override
+  String get txWithdrawal => 'Withdrawal';
 }

@@ -1157,4 +1157,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String signupStepCounter(String current, String total) {
     return '$current / $total';
   }
+
+  @override
+  String get txDeposit => '입금';
+
+  @override
+  String get txWithdrawal => '출금';
 }
