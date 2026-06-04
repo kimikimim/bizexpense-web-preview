@@ -963,4 +963,130 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get taxReportNonDeductibleHigh =>
       '불공제 비율이 상당히 높습니다. 세무 상담이 필요할 수 있습니다.';
+
+  @override
+  String get recurringAddTitle => '정기 거래 추가';
+
+  @override
+  String get recurringEditTitle => '정기 거래 수정';
+
+  @override
+  String get recurringBasicInfo => '기본 정보';
+
+  @override
+  String get recurringNameLabel => '이름 (예: 월세, 직원 월급)';
+
+  @override
+  String get recurringRequired => '필수 입력입니다';
+
+  @override
+  String get recurringStoreLabel => '거래처 / 상호명 (선택)';
+
+  @override
+  String get recurringCycle => '반복 주기';
+
+  @override
+  String get recurringCycleMonthly => '매월';
+
+  @override
+  String get recurringCycleWeekly => '매주';
+
+  @override
+  String recurringDayOfMonth(String n) {
+    return '$n일';
+  }
+
+  @override
+  String get recurringMemoOptional => '메모 (선택)';
+
+  @override
+  String get recurringMemoHint => '예: 1호점 월세, 김대리 급여 등';
+
+  @override
+  String get recurringUpdate => '수정하기';
+
+  @override
+  String get recurringRegister => '등록하기';
+
+  @override
+  String get recurringLoginRequired => '로그인이 필요합니다.';
+
+  @override
+  String get recurringAmountInvalid => '금액을 올바르게 입력해주세요.';
+
+  @override
+  String get recurringAdded => '정기 거래가 추가되었습니다.';
+
+  @override
+  String get recurringUpdated => '정기 거래가 수정되었습니다.';
+
+  @override
+  String get recurringSaveError => '저장 중 오류가 발생했습니다.';
+
+  @override
+  String get recurringListTitle => '정기 거래';
+
+  @override
+  String get recurringListEmpty => '등록된 정기 거래가 없습니다.';
+
+  @override
+  String get recurringListEmptySub => '임대료, 급여, 구독료 등을 자동 등록하세요.';
+
+  @override
+  String get recurringDeleteTitle => '정기 거래를 삭제할까요?';
+
+  @override
+  String get recurringDeleteContent => '이 정기 거래가 삭제됩니다.';
+
+  @override
+  String recurringMonthlyDay(String n) {
+    return '매월 $n일';
+  }
+
+  @override
+  String recurringWeeklyDay(String weekday) {
+    return '매주 $weekday';
+  }
+
+  @override
+  String get recurringMonthlyDaySelect => '매월 몇 일?';
+
+  @override
+  String get recurringWeekdaySelect => '요일 선택';
+
+  @override
+  String get recurringCategoryOptional => '카테고리 (선택)';
+
+  @override
+  String get recurringMethodOptional => '결제/입금 수단 (선택)';
+
+  @override
+  String get recurringVatDeductibleToggle => '부가세 공제 대상 지출로 보기';
+
+  @override
+  String get recurringActiveToggle => '이 정기 거래 자동 생성 사용';
+
+  @override
+  String get recurringActiveToggleSub => '꺼두면 앞으로 자동으로 내역이 생성되지 않습니다.';
+
+  @override
+  String get recurringSkipTitle => '이번 달만 건너뛸까요?';
+
+  @override
+  String get recurringSkipContent => '이번 달에는 이 정기 거래로 인한 자동 생성이 일어나지 않습니다.';
+
+  @override
+  String get recurringSkip => '건너뛰기';
+
+  @override
+  String get recurringSkipDone => '이번 달은 건너뛰기로 설정되었습니다.';
+
+  @override
+  String get recurringSkipButton => '이번 달만 건너뛰기';
+
+  @override
+  String get recurringDeleteFailed => '삭제에 실패했습니다.';
+
+  @override
+  String get recurringAutoOff => '자동 생성 꺼짐';
 }

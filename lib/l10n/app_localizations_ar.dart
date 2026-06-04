@@ -989,4 +989,134 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get taxReportNonDeductibleHigh =>
       'نسبة غير القابل للخصم مرتفعة جداً. قد تحتاج إلى استشارة ضريبية.';
+
+  @override
+  String get recurringAddTitle => 'إضافة معاملة متكررة';
+
+  @override
+  String get recurringEditTitle => 'تعديل المعاملة المتكررة';
+
+  @override
+  String get recurringBasicInfo => 'المعلومات الأساسية';
+
+  @override
+  String get recurringNameLabel => 'الاسم (مثل: الإيجار، الرواتب)';
+
+  @override
+  String get recurringRequired => 'حقل مطلوب';
+
+  @override
+  String get recurringStoreLabel => 'العميل / اسم النشاط (اختياري)';
+
+  @override
+  String get recurringCycle => 'دورة التكرار';
+
+  @override
+  String get recurringCycleMonthly => 'شهرياً';
+
+  @override
+  String get recurringCycleWeekly => 'أسبوعياً';
+
+  @override
+  String recurringDayOfMonth(String n) {
+    return 'اليوم $n';
+  }
+
+  @override
+  String get recurringMemoOptional => 'ملاحظة (اختياري)';
+
+  @override
+  String get recurringMemoHint => 'مثل: إيجار الفرع الأول، راتب الموظف';
+
+  @override
+  String get recurringUpdate => 'تحديث';
+
+  @override
+  String get recurringRegister => 'تسجيل';
+
+  @override
+  String get recurringLoginRequired => 'تسجيل الدخول مطلوب.';
+
+  @override
+  String get recurringAmountInvalid => 'يرجى إدخال مبلغ صحيح.';
+
+  @override
+  String get recurringAdded => 'تمت إضافة المعاملة المتكررة.';
+
+  @override
+  String get recurringUpdated => 'تم تحديث المعاملة المتكررة.';
+
+  @override
+  String get recurringSaveError => 'حدث خطأ أثناء الحفظ.';
+
+  @override
+  String get recurringListTitle => 'المعاملات المتكررة';
+
+  @override
+  String get recurringListEmpty => 'لا توجد معاملات متكررة بعد.';
+
+  @override
+  String get recurringListEmptySub =>
+      'سجّل الإيجار والرواتب والاشتراكات تلقائياً.';
+
+  @override
+  String get recurringDeleteTitle => 'حذف المعاملة المتكررة؟';
+
+  @override
+  String get recurringDeleteContent => 'سيتم حذف هذه المعاملة المتكررة.';
+
+  @override
+  String recurringMonthlyDay(String n) {
+    return 'كل شهر في اليوم $n';
+  }
+
+  @override
+  String recurringWeeklyDay(String weekday) {
+    return 'كل $weekday';
+  }
+
+  @override
+  String get recurringMonthlyDaySelect => 'أي يوم من الشهر؟';
+
+  @override
+  String get recurringWeekdaySelect => 'اختر اليوم';
+
+  @override
+  String get recurringCategoryOptional => 'الفئة (اختياري)';
+
+  @override
+  String get recurringMethodOptional => 'طريقة الدفع / الإيداع (اختياري)';
+
+  @override
+  String get recurringVatDeductibleToggle =>
+      'اعتبارها مصروفاً قابلاً لخصم الضريبة';
+
+  @override
+  String get recurringActiveToggle => 'تفعيل الإنشاء التلقائي';
+
+  @override
+  String get recurringActiveToggleSub =>
+      'عند الإيقاف، لن يتم إنشاء القيود تلقائياً بعد الآن.';
+
+  @override
+  String get recurringSkipTitle => 'تخطّي هذا الشهر فقط؟';
+
+  @override
+  String get recurringSkipContent =>
+      'لن يتم إنشاء قيد تلقائي لهذه المعاملة المتكررة هذا الشهر.';
+
+  @override
+  String get recurringSkip => 'تخطّي';
+
+  @override
+  String get recurringSkipDone => 'تم ضبطه لتخطّي هذا الشهر.';
+
+  @override
+  String get recurringSkipButton => 'تخطّي هذا الشهر فقط';
+
+  @override
+  String get recurringDeleteFailed => 'فشل الحذف.';
+
+  @override
+  String get recurringAutoOff => 'الإنشاء التلقائي متوقف';
 }

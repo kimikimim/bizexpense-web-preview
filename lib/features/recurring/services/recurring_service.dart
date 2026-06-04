@@ -1,11 +1,12 @@
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import '../data/recurring_transaction_model.dart';
 import '../data/recurring_transaction_repository.dart';
 import '../../transactions/data/transaction_model.dart';
 import '../../transactions/data/transaction_repository.dart';
+import '../../../core/config/transaction_options.dart';
 
 class RecurringService {
   final RecurringTransactionRepository _recRepo;
@@ -25,15 +26,19 @@ class RecurringService {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
 
+    final prefs = await SharedPreferences.getInstance();
+    final opts = TxOptions.forCountry(prefs.getString('country_code') ?? 'KR');
+    final fallbackCategory = opts.isKorea ? '미분류' : 'Uncategorized';
+
     for (final r in dueList) {
       final tx = TransactionModel(
         id: const Uuid().v4(),
         userId: userId,
         date: DateTime.now(),
         amount: r.amount,
-        storeName: r.title, 
-        category: r.category ?? '미분류',
-        method: r.method ?? '기타',
+        storeName: r.title,
+        category: r.category ?? fallbackCategory,
+        method: r.method ?? opts.otherMethod,
         receiptUrl: null,
         memo: r.memo ?? '',
         transactionType: r.transactionType, 

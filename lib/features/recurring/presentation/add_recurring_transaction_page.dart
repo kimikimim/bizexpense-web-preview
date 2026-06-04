@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../../core/widgets/primary_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../core/widgets/primary_button.dart';
+import '../../../core/providers/country_config_provider.dart';
+import '../../../core/config/transaction_options.dart';
 import '../data/recurring_transaction_model.dart';
 import '../data/recurring_transaction_repository.dart';
 
-class AddRecurringTransactionPage extends StatefulWidget {
+class AddRecurringTransactionPage extends ConsumerStatefulWidget {
   final RecurringTransactionModel? initialData;
 
   const AddRecurringTransactionPage({
@@ -16,12 +20,15 @@ class AddRecurringTransactionPage extends StatefulWidget {
   });
 
   @override
-  State<AddRecurringTransactionPage> createState() => _AddRecurringTransactionPageState();
+  ConsumerState<AddRecurringTransactionPage> createState() =>
+      _AddRecurringTransactionPageState();
 }
 
-class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPage> {
+class _AddRecurringTransactionPageState
+    extends ConsumerState<AddRecurringTransactionPage> {
   final _formKey = GlobalKey<FormState>();
-  final RecurringTransactionRepository _repository = RecurringTransactionRepository();
+  final RecurringTransactionRepository _repository =
+      RecurringTransactionRepository();
 
   late TextEditingController _titleController;
   late TextEditingController _storeController;
@@ -29,42 +36,23 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
   late TextEditingController _memoController;
   late TextEditingController _categoryController;
 
-  String _type = 'expense'; 
-  String _cycle = 'monthly'; 
-  int _day = 1; 
+  String _type = 'expense';
+  String _cycle = 'monthly';
+  int _day = 1;
   String? _method;
 
   bool _isSaving = false;
 
-  final List<String> _methods = [
-    '계좌이체',
-    '현금',
-    '카드',
-    '자동이체',
-    '기타',
-  ];
-
-  final List<String> _expenseCategories = [
-    '임대료',
-    '인건비',
-    '광고비',
-    '식자재',
-    '관리비',
-    '통신비',
-    '기타',
-  ];
-
-  final List<String> _incomeCategories = [
-    '사업수입',
-    '급여',
-    '정기매출',
-    '임대수익',
-    '기타',
-  ];
+  late TxOptions _opts;
+  List<String> get _methods => _opts.recurringMethods;
+  List<String> get _expenseCategories => _opts.recurringExpenseCategories;
+  List<String> get _incomeCategories => _opts.recurringIncomeCategories;
 
   @override
   void initState() {
     super.initState();
+    _opts = TxOptions.forCountry(ref.read(countryConfigProvider).countryCode);
+
     final data = widget.initialData;
 
     _titleController = TextEditingController(text: data?.title ?? '');
@@ -91,39 +79,38 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
     super.dispose();
   }
 
-  List<DropdownMenuItem<int>> _buildDayItems() {
+  List<DropdownMenuItem<int>> _buildDayItems(AppLocalizations l10n) {
     if (_cycle == 'monthly') {
       return List.generate(
         31,
         (i) => DropdownMenuItem(
           value: i + 1,
-          child: Text('${i + 1}일'),
+          child: Text(l10n.recurringDayOfMonth('${i + 1}')),
         ),
       );
     } else {
-      const names = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+      final localeName = Localizations.localeOf(context).toString();
+      // 2024-01-01 is a Monday → i=1..7 maps Mon..Sun
       return List.generate(
         7,
         (i) => DropdownMenuItem(
           value: i + 1,
-          child: Text(names[i]),
+          child: Text(
+            DateFormat.EEEE(localeName).format(DateTime(2024, 1, i + 1)),
+          ),
         ),
       );
     }
   }
 
-  String _cycleLabel() {
-    if (_cycle == 'monthly') return '매월';
-    return '매주';
-  }
-
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('로그인이 필요합니다.')),
+        SnackBar(content: Text(l10n.recurringLoginRequired)),
       );
       return;
     }
@@ -131,7 +118,7 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
     final amount = int.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('금액을 올바르게 입력해주세요.')),
+        SnackBar(content: Text(l10n.recurringAmountInvalid)),
       );
       return;
     }
@@ -173,29 +160,33 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
     if (ok) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(widget.initialData == null ? '정기 거래가 추가되었습니다.' : '정기 거래가 수정되었습니다.'),
+          content: Text(widget.initialData == null
+              ? l10n.recurringAdded
+              : l10n.recurringUpdated),
         ),
       );
       Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('저장 중 오류가 발생했습니다.')),
+        SnackBar(content: Text(l10n.recurringSaveError)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEdit = widget.initialData != null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
     final hintColor = isDark ? Colors.grey[400] : Colors.grey[600];
 
-    final categories = _type == 'income' ? _incomeCategories : _expenseCategories;
+    final categories =
+        _type == 'income' ? _incomeCategories : _expenseCategories;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEdit ? '정기 거래 수정' : '정기 거래 추가'),
+        title: Text(isEdit ? l10n.recurringEditTitle : l10n.recurringAddTitle),
       ),
       body: _isSaving
           ? const Center(child: CircularProgressIndicator())
@@ -206,9 +197,8 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     Text(
-                      '거래 유형',
+                      l10n.addTransactionType,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -225,11 +215,14 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                               _categoryController.clear();
                             }),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: _type == 'expense' ? Colors.red : Colors.grey.shade400,
+                                  color: _type == 'expense'
+                                      ? Colors.red
+                                      : Colors.grey.shade400,
                                   width: _type == 'expense' ? 2 : 1,
                                 ),
                                 color: _type == 'expense'
@@ -240,14 +233,20 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                                 children: [
                                   Icon(
                                     Icons.arrow_upward,
-                                    color: _type == 'expense' ? Colors.red : Colors.grey,
+                                    color: _type == 'expense'
+                                        ? Colors.red
+                                        : Colors.grey,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '지출',
+                                    l10n.addTransactionExpense,
                                     style: TextStyle(
-                                      color: _type == 'expense' ? Colors.red : Colors.grey,
-                                      fontWeight: _type == 'expense' ? FontWeight.bold : FontWeight.normal,
+                                      color: _type == 'expense'
+                                          ? Colors.red
+                                          : Colors.grey,
+                                      fontWeight: _type == 'expense'
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                     ),
                                   ),
                                 ],
@@ -263,11 +262,14 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                               _categoryController.clear();
                             }),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: _type == 'income' ? Colors.green : Colors.grey.shade400,
+                                  color: _type == 'income'
+                                      ? Colors.green
+                                      : Colors.grey.shade400,
                                   width: _type == 'income' ? 2 : 1,
                                 ),
                                 color: _type == 'income'
@@ -278,14 +280,20 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                                 children: [
                                   Icon(
                                     Icons.arrow_downward,
-                                    color: _type == 'income' ? Colors.green : Colors.grey,
+                                    color: _type == 'income'
+                                        ? Colors.green
+                                        : Colors.grey,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '수입',
+                                    l10n.addTransactionIncome,
                                     style: TextStyle(
-                                      color: _type == 'income' ? Colors.green : Colors.grey,
-                                      fontWeight: _type == 'income' ? FontWeight.bold : FontWeight.normal,
+                                      color: _type == 'income'
+                                          ? Colors.green
+                                          : Colors.grey,
+                                      fontWeight: _type == 'income'
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                     ),
                                   ),
                                 ],
@@ -299,7 +307,7 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                     const SizedBox(height: 24),
 
                     Text(
-                      '기본 정보',
+                      l10n.recurringBasicInfo,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -307,39 +315,28 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
-                      ),
+                    _fieldBox(
                       child: TextFormField(
                         controller: _titleController,
                         style: TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          labelText: '이름 (예: 월세, 직원 월급)',
+                          labelText: l10n.recurringNameLabel,
                           border: InputBorder.none,
                           labelStyle: TextStyle(color: hintColor),
                           icon: Icon(Icons.label_outline, color: hintColor),
                         ),
-                        validator: (val) =>
-                            val == null || val.trim().isEmpty ? '필수 입력입니다' : null,
+                        validator: (val) => val == null || val.trim().isEmpty
+                            ? l10n.recurringRequired
+                            : null,
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
-                      ),
+                    _fieldBox(
                       child: TextFormField(
                         controller: _storeController,
                         style: TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          labelText: '거래처 / 상호명 (선택)',
+                          labelText: l10n.recurringStoreLabel,
                           border: InputBorder.none,
                           labelStyle: TextStyle(color: hintColor),
                           icon: Icon(Icons.store_outlined, color: hintColor),
@@ -347,34 +344,29 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
-                      ),
+                    _fieldBox(
                       child: TextFormField(
                         controller: _amountController,
                         keyboardType: TextInputType.number,
                         style: TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          labelText: '금액',
-                          suffixText: '원',
+                          labelText: l10n.addTransactionAmountLabel,
+                          suffixText: l10n.addTransactionAmountUnit,
                           border: InputBorder.none,
                           labelStyle: TextStyle(color: hintColor),
                           suffixStyle: TextStyle(color: textColor),
                           icon: Icon(Icons.attach_money, color: hintColor),
                         ),
-                        validator: (val) =>
-                            val == null || val.trim().isEmpty ? '필수 입력입니다' : null,
+                        validator: (val) => val == null || val.trim().isEmpty
+                            ? l10n.recurringRequired
+                            : null,
                       ),
                     ),
 
                     const SizedBox(height: 24),
 
                     Text(
-                      '반복 주기',
+                      l10n.recurringCycle,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -382,26 +374,20 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
-                      ),
+                    _fieldBox(
                       child: Row(
                         children: [
                           DropdownButton<String>(
                             value: _cycle,
                             underline: const SizedBox(),
-                            items: const [
+                            items: [
                               DropdownMenuItem(
                                 value: 'monthly',
-                                child: Text('매월'),
+                                child: Text(l10n.recurringCycleMonthly),
                               ),
                               DropdownMenuItem(
                                 value: 'weekly',
-                                child: Text('매주'),
+                                child: Text(l10n.recurringCycleWeekly),
                               ),
                             ],
                             onChanged: (val) {
@@ -419,7 +405,7 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
                               ),
-                              items: _buildDayItems(),
+                              items: _buildDayItems(l10n),
                               onChanged: (val) {
                                 if (val == null) return;
                                 setState(() => _day = val);
@@ -433,7 +419,7 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                     const SizedBox(height: 24),
 
                     Text(
-                      '분류',
+                      l10n.addTransactionCategoryLabel,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -458,18 +444,12 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                       }).toList(),
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
-                      ),
+                    _fieldBox(
                       child: TextFormField(
                         controller: _categoryController,
                         style: TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          hintText: '직접 입력',
+                          hintText: l10n.addTransactionCategoryDirectInput,
                           border: InputBorder.none,
                           hintStyle: TextStyle(color: hintColor),
                           icon: Icon(Icons.category_outlined, color: hintColor),
@@ -477,13 +457,7 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
-                      ),
+                    _fieldBox(
                       child: DropdownButtonFormField<String>(
                         value: _method ?? _methods.first,
                         decoration: const InputDecoration(
@@ -503,7 +477,7 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                     const SizedBox(height: 24),
 
                     Text(
-                      '메모 (선택)',
+                      l10n.recurringMemoOptional,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -512,18 +486,20 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
+                        border:
+                            Border.all(color: Theme.of(context).dividerColor),
                       ),
                       child: TextFormField(
                         controller: _memoController,
                         maxLines: 3,
                         style: TextStyle(color: textColor),
                         decoration: InputDecoration(
-                          hintText: '예: 1호점 월세, 김대리 급여 등',
+                          hintText: l10n.recurringMemoHint,
                           hintStyle: TextStyle(color: hintColor),
                           border: InputBorder.none,
                         ),
@@ -533,8 +509,10 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                     const SizedBox(height: 32),
                     PrimaryButton(
                       label: _isSaving
-                          ? '저장 중...'
-                          : (isEdit ? '수정하기' : '등록하기'),
+                          ? l10n.addTransactionSaving
+                          : (isEdit
+                              ? l10n.recurringUpdate
+                              : l10n.recurringRegister),
                       isLoading: _isSaving,
                       onPressed: _save,
                     ),
@@ -542,6 +520,18 @@ class _AddRecurringTransactionPageState extends State<AddRecurringTransactionPag
                 ),
               ),
             ),
+    );
+  }
+
+  Widget _fieldBox({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).dividerColor),
+      ),
+      child: child,
     );
   }
 }

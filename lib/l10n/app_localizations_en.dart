@@ -991,4 +991,134 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get taxReportNonDeductibleHigh =>
       'Non-deductible ratio is quite high. You may need a tax consultant.';
+
+  @override
+  String get recurringAddTitle => 'Add Recurring';
+
+  @override
+  String get recurringEditTitle => 'Edit Recurring';
+
+  @override
+  String get recurringBasicInfo => 'Basic Info';
+
+  @override
+  String get recurringNameLabel => 'Name (e.g. Rent, Payroll)';
+
+  @override
+  String get recurringRequired => 'Required field';
+
+  @override
+  String get recurringStoreLabel => 'Client / Business Name (Optional)';
+
+  @override
+  String get recurringCycle => 'Repeat Cycle';
+
+  @override
+  String get recurringCycleMonthly => 'Monthly';
+
+  @override
+  String get recurringCycleWeekly => 'Weekly';
+
+  @override
+  String recurringDayOfMonth(String n) {
+    return 'Day $n';
+  }
+
+  @override
+  String get recurringMemoOptional => 'Memo (Optional)';
+
+  @override
+  String get recurringMemoHint => 'e.g. Store 1 rent, employee payroll';
+
+  @override
+  String get recurringUpdate => 'Update';
+
+  @override
+  String get recurringRegister => 'Register';
+
+  @override
+  String get recurringLoginRequired => 'Login required.';
+
+  @override
+  String get recurringAmountInvalid => 'Please enter a valid amount.';
+
+  @override
+  String get recurringAdded => 'Recurring transaction added.';
+
+  @override
+  String get recurringUpdated => 'Recurring transaction updated.';
+
+  @override
+  String get recurringSaveError => 'An error occurred while saving.';
+
+  @override
+  String get recurringListTitle => 'Recurring Transactions';
+
+  @override
+  String get recurringListEmpty => 'No recurring transactions yet.';
+
+  @override
+  String get recurringListEmptySub =>
+      'Auto-register rent, payroll, subscriptions, etc.';
+
+  @override
+  String get recurringDeleteTitle => 'Delete recurring transaction?';
+
+  @override
+  String get recurringDeleteContent =>
+      'This recurring transaction will be deleted.';
+
+  @override
+  String recurringMonthlyDay(String n) {
+    return 'Every month on day $n';
+  }
+
+  @override
+  String recurringWeeklyDay(String weekday) {
+    return 'Every $weekday';
+  }
+
+  @override
+  String get recurringMonthlyDaySelect => 'Which day of the month?';
+
+  @override
+  String get recurringWeekdaySelect => 'Select weekday';
+
+  @override
+  String get recurringCategoryOptional => 'Category (Optional)';
+
+  @override
+  String get recurringMethodOptional => 'Payment / Deposit Method (Optional)';
+
+  @override
+  String get recurringVatDeductibleToggle => 'Treat as VAT-deductible expense';
+
+  @override
+  String get recurringActiveToggle => 'Enable auto-generation';
+
+  @override
+  String get recurringActiveToggleSub =>
+      'When off, entries will no longer be created automatically.';
+
+  @override
+  String get recurringSkipTitle => 'Skip this month only?';
+
+  @override
+  String get recurringSkipContent =>
+      'This recurring transaction will not auto-generate an entry this month.';
+
+  @override
+  String get recurringSkip => 'Skip';
+
+  @override
+  String get recurringSkipDone => 'Set to skip this month.';
+
+  @override
+  String get recurringSkipButton => 'Skip this month only';
+
+  @override
+  String get recurringDeleteFailed => 'Failed to delete.';
+
+  @override
+  String get recurringAutoOff => 'Auto-generation off';
 }

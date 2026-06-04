@@ -1,21 +1,26 @@
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
-import '../../../core/widgets/primary_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/widgets/primary_button.dart';
+import '../../../core/providers/country_config_provider.dart';
+import '../../../core/config/transaction_options.dart';
 import '../data/recurring_transaction_model.dart';
 import '../data/recurring_transaction_repository.dart';
 
-class EditRecurringPage extends StatefulWidget {
+class EditRecurringPage extends ConsumerStatefulWidget {
   final RecurringTransactionModel? initial;
 
   const EditRecurringPage({super.key, this.initial});
 
   @override
-  State<EditRecurringPage> createState() => _EditRecurringPageState();
+  ConsumerState<EditRecurringPage> createState() => _EditRecurringPageState();
 }
 
-class _EditRecurringPageState extends State<EditRecurringPage> {
+class _EditRecurringPageState extends ConsumerState<EditRecurringPage> {
   final _formKey = GlobalKey<FormState>();
   final _repo = RecurringTransactionRepository();
 
@@ -23,48 +28,28 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
   late TextEditingController _amountController;
   late TextEditingController _memoController;
 
-  String _transactionType = 'expense'; 
-  String _cycle = 'monthly';           
-  int _day = 1;                        
+  String _transactionType = 'expense';
+  String _cycle = 'monthly';
+  int _day = 1;
   String? _category;
   String? _method;
   bool _isTaxDeductible = true;
 
   bool _isSaving = false;
-  bool _isActive = true;               
+  bool _isActive = true;
 
-  final _expenseCategories = [
-    '식비',
-    '카페/간식',
-    '교통비',
-    '쇼핑',
-    '소모품',
-    '접대비',
-    '통신비',
-    '임대료',
-    '광고비',
-    '기타',
-  ];
-
-  final _incomeCategories = [
-    '사업수입',
-    '정기매출',
-    '임대수익',
-    '서비스수익',
-    '기타',
-  ];
-
-  final _methods = [
-    '계좌이체',
-    '카드결제',
-    '현금',
-    '자동이체',
-    '기타',
-  ];
+  late TxOptions _opts;
+  bool _isKorea = true;
+  List<String> get _expenseCategories => _opts.recurringExpenseCategories;
+  List<String> get _incomeCategories => _opts.recurringIncomeCategories;
+  List<String> get _methods => _opts.recurringMethods;
 
   @override
   void initState() {
     super.initState();
+    final countryCode = ref.read(countryConfigProvider).countryCode;
+    _isKorea = countryCode == 'KR';
+    _opts = TxOptions.forCountry(countryCode);
 
     final data = widget.initial;
     _titleController = TextEditingController(text: data?.title ?? '');
@@ -91,13 +76,20 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
     super.dispose();
   }
 
+  String _weekdayName(int day) {
+    // 2024-01-01 is a Monday → day 1..7 maps Mon..Sun
+    final localeName = Localizations.localeOf(context).toString();
+    return DateFormat.EEEE(localeName).format(DateTime(2024, 1, day));
+  }
+
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('로그인 정보가 없습니다.')),
+        SnackBar(content: Text(l10n.recurringLoginRequired)),
       );
       return;
     }
@@ -140,29 +132,30 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
       Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('저장에 실패했습니다.')),
+        SnackBar(content: Text(l10n.recurringSaveError)),
       );
     }
   }
 
   Future<void> _skipThisMonth() async {
     if (widget.initial == null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('이번 달만 건너뛸까요?'),
-        content: const Text('이번 달에는 이 정기 거래로 인한 자동 생성이 일어나지 않습니다.'),
+        title: Text(l10n.recurringSkipTitle),
+        content: Text(l10n.recurringSkipContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('취소'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(
-              '건너뛰기',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              l10n.recurringSkip,
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],
@@ -176,12 +169,13 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('이번 달은 건너뛰기로 설정되었습니다.')),
+      SnackBar(content: Text(l10n.recurringSkipDone)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
     final hintColor = isDark ? Colors.grey[400] : Colors.grey[600];
@@ -197,7 +191,7 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEdit ? '정기 거래 수정' : '정기 거래 추가'),
+        title: Text(isEdit ? l10n.recurringEditTitle : l10n.recurringAddTitle),
         actions: [
           if (isEdit)
             IconButton(
@@ -208,20 +202,18 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: const Text('삭제하시겠습니까?'),
-                          content: const Text('이 정기 거래는 더 이상 자동 생성되지 않습니다.'),
+                          title: Text(l10n.recurringDeleteTitle),
+                          content: Text(l10n.recurringDeleteContent),
                           actions: [
                             TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(ctx, false),
-                              child: const Text('취소'),
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: Text(l10n.cancel),
                             ),
                             TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(ctx, true),
-                              child: const Text(
-                                '삭제',
-                                style: TextStyle(color: Colors.red),
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: Text(
+                                l10n.delete,
+                                style: const TextStyle(color: Colors.red),
                               ),
                             ),
                           ],
@@ -229,14 +221,14 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                       );
 
                       if (confirm == true) {
-                        final ok = await _repo
-                            .deleteRecurring(widget.initial!.id);
+                        final ok =
+                            await _repo.deleteRecurring(widget.initial!.id);
                         if (!mounted) return;
                         if (ok) {
                           Navigator.pop(context, true);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('삭제에 실패했습니다.')),
+                            SnackBar(content: Text(l10n.recurringDeleteFailed)),
                           );
                         }
                       }
@@ -253,9 +245,8 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     Text(
-                      '거래 유형',
+                      l10n.addTransactionType,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: hintColor,
@@ -266,7 +257,7 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                       children: [
                         Expanded(
                           child: ChoiceChip(
-                            label: const Text('지출'),
+                            label: Text(l10n.addTransactionExpense),
                             selected: _transactionType == 'expense',
                             onSelected: (_) {
                               setState(() {
@@ -287,7 +278,7 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: ChoiceChip(
-                            label: const Text('수입'),
+                            label: Text(l10n.addTransactionIncome),
                             selected: _transactionType == 'income',
                             onSelected: (_) {
                               setState(() {
@@ -311,27 +302,29 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
 
                     TextFormField(
                       controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: '이름 (예: 월세, 직원 월급)',
+                      decoration: InputDecoration(
+                        labelText: l10n.recurringNameLabel,
                       ),
-                      validator: (v) =>
-                          v == null || v.trim().isEmpty ? '필수 입력입니다' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? l10n.recurringRequired
+                          : null,
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _amountController,
-                      decoration: const InputDecoration(
-                        labelText: '금액',
-                        suffixText: '원',
+                      decoration: InputDecoration(
+                        labelText: l10n.addTransactionAmountLabel,
+                        suffixText: l10n.addTransactionAmountUnit,
                       ),
                       keyboardType: TextInputType.number,
-                      validator: (v) =>
-                          v == null || v.trim().isEmpty ? '필수 입력입니다' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? l10n.recurringRequired
+                          : null,
                     ),
                     const SizedBox(height: 24),
 
                     Text(
-                      '반복 주기',
+                      l10n.recurringCycle,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: hintColor,
@@ -342,7 +335,7 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                       children: [
                         Expanded(
                           child: ChoiceChip(
-                            label: const Text('매월'),
+                            label: Text(l10n.recurringCycleMonthly),
                             selected: _cycle == 'monthly',
                             onSelected: (_) {
                               setState(() {
@@ -355,7 +348,7 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: ChoiceChip(
-                            label: const Text('매주'),
+                            label: Text(l10n.recurringCycleWeekly),
                             selected: _cycle == 'weekly',
                             onSelected: (_) {
                               setState(() {
@@ -371,14 +364,14 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                     if (_cycle == 'monthly')
                       DropdownButtonFormField<int>(
                         value: _day,
-                        decoration: const InputDecoration(
-                          labelText: '매월 몇 일?',
+                        decoration: InputDecoration(
+                          labelText: l10n.recurringMonthlyDaySelect,
                         ),
                         items: List.generate(
                           31,
                           (i) => DropdownMenuItem(
                             value: i + 1,
-                            child: Text('매월 ${i + 1}일'),
+                            child: Text(l10n.recurringMonthlyDay('${i + 1}')),
                           ),
                         ),
                         onChanged: (v) {
@@ -391,38 +384,16 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                     else
                       DropdownButtonFormField<int>(
                         value: _day,
-                        decoration:
-                            const InputDecoration(labelText: '요일 선택'),
-                        items: const [
-                          DropdownMenuItem(
-                            value: 1,
-                            child: Text('매주 월요일'),
+                        decoration: InputDecoration(
+                            labelText: l10n.recurringWeekdaySelect),
+                        items: List.generate(
+                          7,
+                          (i) => DropdownMenuItem(
+                            value: i + 1,
+                            child:
+                                Text(l10n.recurringWeeklyDay(_weekdayName(i + 1))),
                           ),
-                          DropdownMenuItem(
-                            value: 2,
-                            child: Text('매주 화요일'),
-                          ),
-                          DropdownMenuItem(
-                            value: 3,
-                            child: Text('매주 수요일'),
-                          ),
-                          DropdownMenuItem(
-                            value: 4,
-                            child: Text('매주 목요일'),
-                          ),
-                          DropdownMenuItem(
-                            value: 5,
-                            child: Text('매주 금요일'),
-                          ),
-                          DropdownMenuItem(
-                            value: 6,
-                            child: Text('매주 토요일'),
-                          ),
-                          DropdownMenuItem(
-                            value: 7,
-                            child: Text('매주 일요일'),
-                          ),
-                        ],
+                        ),
                         onChanged: (v) {
                           if (v == null) return;
                           setState(() {
@@ -434,8 +405,8 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
 
                     DropdownButtonFormField<String>(
                       value: safeCategory,
-                      decoration:
-                          const InputDecoration(labelText: '카테고리 (선택)'),
+                      decoration: InputDecoration(
+                          labelText: l10n.recurringCategoryOptional),
                       items: categoryList
                           .map(
                             (c) => DropdownMenuItem(
@@ -449,8 +420,8 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       value: safeMethod,
-                      decoration: const InputDecoration(
-                          labelText: '결제/입금 수단 (선택)'),
+                      decoration: InputDecoration(
+                          labelText: l10n.recurringMethodOptional),
                       items: _methods
                           .map(
                             (m) => DropdownMenuItem(
@@ -463,10 +434,10 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    if (_transactionType == 'expense')
+                    if (_isKorea && _transactionType == 'expense')
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text('부가세 공제 대상 지출로 보기'),
+                        title: Text(l10n.recurringVatDeductibleToggle),
                         value: _isTaxDeductible,
                         onChanged: (v) =>
                             setState(() => _isTaxDeductible = v),
@@ -475,9 +446,9 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _memoController,
-                      decoration: const InputDecoration(
-                        labelText: '메모 (선택)',
-                        hintText: '예: 1호점 월세, 배달앱 광고비 등',
+                      decoration: InputDecoration(
+                        labelText: l10n.recurringMemoOptional,
+                        hintText: l10n.recurringMemoHint,
                       ),
                       maxLines: 2,
                     ),
@@ -485,8 +456,8 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                     const SizedBox(height: 24),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('이 정기 거래 자동 생성 사용'),
-                      subtitle: const Text('꺼두면 앞으로 자동으로 내역이 생성되지 않습니다.'),
+                      title: Text(l10n.recurringActiveToggle),
+                      subtitle: Text(l10n.recurringActiveToggleSub),
                       value: _isActive,
                       onChanged: (v) => setState(() => _isActive = v),
                     ),
@@ -498,14 +469,16 @@ class _EditRecurringPageState extends State<EditRecurringPage> {
                         child: TextButton.icon(
                           onPressed: _isSaving ? null : _skipThisMonth,
                           icon: const Icon(Icons.skip_next),
-                          label: const Text('이번 달만 건너뛰기'),
+                          label: Text(l10n.recurringSkipButton),
                         ),
                       ),
                     ],
 
                     const SizedBox(height: 32),
                     PrimaryButton(
-                      label: isEdit ? '수정하기' : '등록하기',
+                      label: isEdit
+                          ? l10n.recurringUpdate
+                          : l10n.recurringRegister,
                       isLoading: _isSaving,
                       onPressed: _save,
                     ),

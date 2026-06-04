@@ -1965,6 +1965,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Non-deductible ratio is quite high. You may need a tax consultant.'**
   String get taxReportNonDeductibleHigh;
+
+  /// No description provided for @recurringAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Recurring'**
+  String get recurringAddTitle;
+
+  /// No description provided for @recurringEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Recurring'**
+  String get recurringEditTitle;
+
+  /// No description provided for @recurringBasicInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Info'**
+  String get recurringBasicInfo;
+
+  /// No description provided for @recurringNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (e.g. Rent, Payroll)'**
+  String get recurringNameLabel;
+
+  /// No description provided for @recurringRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required field'**
+  String get recurringRequired;
+
+  /// No description provided for @recurringStoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client / Business Name (Optional)'**
+  String get recurringStoreLabel;
+
+  /// No description provided for @recurringCycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat Cycle'**
+  String get recurringCycle;
+
+  /// No description provided for @recurringCycleMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get recurringCycleMonthly;
+
+  /// No description provided for @recurringCycleWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get recurringCycleWeekly;
+
+  /// No description provided for @recurringDayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {n}'**
+  String recurringDayOfMonth(String n);
+
+  /// No description provided for @recurringMemoOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Memo (Optional)'**
+  String get recurringMemoOptional;
+
+  /// No description provided for @recurringMemoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Store 1 rent, employee payroll'**
+  String get recurringMemoHint;
+
+  /// No description provided for @recurringUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get recurringUpdate;
+
+  /// No description provided for @recurringRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get recurringRegister;
+
+  /// No description provided for @recurringLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Login required.'**
+  String get recurringLoginRequired;
+
+  /// No description provided for @recurringAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount.'**
+  String get recurringAmountInvalid;
+
+  /// No description provided for @recurringAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring transaction added.'**
+  String get recurringAdded;
+
+  /// No description provided for @recurringUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring transaction updated.'**
+  String get recurringUpdated;
+
+  /// No description provided for @recurringSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while saving.'**
+  String get recurringSaveError;
+
+  /// No description provided for @recurringListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring Transactions'**
+  String get recurringListTitle;
+
+  /// No description provided for @recurringListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring transactions yet.'**
+  String get recurringListEmpty;
+
+  /// No description provided for @recurringListEmptySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-register rent, payroll, subscriptions, etc.'**
+  String get recurringListEmptySub;
+
+  /// No description provided for @recurringDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete recurring transaction?'**
+  String get recurringDeleteTitle;
+
+  /// No description provided for @recurringDeleteContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This recurring transaction will be deleted.'**
+  String get recurringDeleteContent;
+
+  /// No description provided for @recurringMonthlyDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Every month on day {n}'**
+  String recurringMonthlyDay(String n);
+
+  /// No description provided for @recurringWeeklyDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {weekday}'**
+  String recurringWeeklyDay(String weekday);
+
+  /// No description provided for @recurringMonthlyDaySelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Which day of the month?'**
+  String get recurringMonthlyDaySelect;
+
+  /// No description provided for @recurringWeekdaySelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select weekday'**
+  String get recurringWeekdaySelect;
+
+  /// No description provided for @recurringCategoryOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Category (Optional)'**
+  String get recurringCategoryOptional;
+
+  /// No description provided for @recurringMethodOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment / Deposit Method (Optional)'**
+  String get recurringMethodOptional;
+
+  /// No description provided for @recurringVatDeductibleToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Treat as VAT-deductible expense'**
+  String get recurringVatDeductibleToggle;
+
+  /// No description provided for @recurringActiveToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable auto-generation'**
+  String get recurringActiveToggle;
+
+  /// No description provided for @recurringActiveToggleSub.
+  ///
+  /// In en, this message translates to:
+  /// **'When off, entries will no longer be created automatically.'**
+  String get recurringActiveToggleSub;
+
+  /// No description provided for @recurringSkipTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this month only?'**
+  String get recurringSkipTitle;
+
+  /// No description provided for @recurringSkipContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This recurring transaction will not auto-generate an entry this month.'**
+  String get recurringSkipContent;
+
+  /// No description provided for @recurringSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get recurringSkip;
+
+  /// No description provided for @recurringSkipDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Set to skip this month.'**
+  String get recurringSkipDone;
+
+  /// No description provided for @recurringSkipButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this month only'**
+  String get recurringSkipButton;
+
+  /// No description provided for @recurringDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete.'**
+  String get recurringDeleteFailed;
+
+  /// No description provided for @recurringAutoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-generation off'**
+  String get recurringAutoOff;
 }
 
 class _AppLocalizationsDelegate

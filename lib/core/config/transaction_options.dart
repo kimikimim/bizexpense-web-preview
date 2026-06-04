@@ -111,4 +111,31 @@ class TxOptions {
 
   /// Korea-only cash-receipt method.
   bool isCashReceipt(String method) => isKorea && method == '현금영수증';
+
+  // ---- Recurring transactions ----
+  List<String> get recurringMethods => isKorea
+      ? const ['계좌이체', '현금', '카드', '자동이체', '기타']
+      : const ['Bank Transfer', 'Cash', 'Card', 'Auto-debit', 'Other'];
+
+  List<String> get recurringExpenseCategories => isKorea
+      ? const ['임대료', '인건비', '광고비', '식자재', '관리비', '통신비', '기타']
+      : const [
+          'Rent',
+          'Payroll',
+          'Advertising',
+          'Inventory',
+          'Utilities',
+          'Telecom',
+          'Other',
+        ];
+
+  List<String> get recurringIncomeCategories => isKorea
+      ? const ['사업수입', '급여', '정기매출', '임대수익', '기타']
+      : const [
+          'Business Income',
+          'Salary',
+          'Recurring Revenue',
+          'Rental Income',
+          'Other',
+        ];
 }

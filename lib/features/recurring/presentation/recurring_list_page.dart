@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:expense_pro/l10n/app_localizations.dart';
 
+import '../../../core/providers/country_config_provider.dart';
 import '../data/recurring_transaction_model.dart';
 import '../data/recurring_transaction_repository.dart';
 import 'edit_recurring_page.dart';
 
-class RecurringListPage extends StatefulWidget {
+class RecurringListPage extends ConsumerStatefulWidget {
   const RecurringListPage({super.key});
 
   @override
-  State<RecurringListPage> createState() => _RecurringListPageState();
+  ConsumerState<RecurringListPage> createState() => _RecurringListPageState();
 }
 
-class _RecurringListPageState extends State<RecurringListPage> {
+class _RecurringListPageState extends ConsumerState<RecurringListPage> {
   final _repo = RecurringTransactionRepository();
-  final _currency = NumberFormat.currency(locale: 'ko_KR', symbol: '₩');
 
   bool _isLoading = true;
   List<RecurringTransactionModel> _items = [];
@@ -35,14 +37,16 @@ class _RecurringListPageState extends State<RecurringListPage> {
     });
   }
 
-  String _buildCycleText(RecurringTransactionModel r) {
+  String _buildCycleText(RecurringTransactionModel r, AppLocalizations l10n) {
     if (r.cycle == 'monthly') {
-      return '매월 ${r.day}일';
+      return l10n.recurringMonthlyDay('${r.day}');
     } else {
-      const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
-      final label =
-          (r.day >= 1 && r.day <= 7) ? weekdays[r.day - 1] : '?';
-      return '매주 $label요일';
+      final localeName = Localizations.localeOf(context).toString();
+      final day = (r.day >= 1 && r.day <= 7) ? r.day : 1;
+      // 2024-01-01 is a Monday → 1..7 maps Mon..Sun
+      final weekday =
+          DateFormat.EEEE(localeName).format(DateTime(2024, 1, day));
+      return l10n.recurringWeeklyDay(weekday);
     }
   }
 
@@ -54,18 +58,20 @@ class _RecurringListPageState extends State<RecurringListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final config = ref.watch(countryConfigProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('정기 거래 관리'),
+        title: Text(l10n.recurringListTitle),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _items.isEmpty
               ? Center(
                   child: Text(
-                    '등록된 정기 거래가 없습니다.\n\n예: 월세, 직원 급여, 광고비, 정기 납품 매출 등',
+                    '${l10n.recurringListEmpty}\n\n${l10n.recurringListEmptySub}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -112,7 +118,7 @@ class _RecurringListPageState extends State<RecurringListPage> {
                               children: [
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${_buildCycleText(r)} · ${_currency.format(r.amount)}',
+                                  '${_buildCycleText(r, l10n)} · ${config.formatMoney(r.amount)}',
                                 ),
                                 if (r.category != null)
                                   Text(
@@ -143,9 +149,9 @@ class _RecurringListPageState extends State<RecurringListPage> {
                                           color: Colors.grey.withOpacity(0.5),
                                         ),
                                       ),
-                                      child: const Text(
-                                        '자동 생성 꺼짐',
-                                        style: TextStyle(
+                                      child: Text(
+                                        l10n.recurringAutoOff,
+                                        style: const TextStyle(
                                           fontSize: 11,
                                           color: Colors.grey,
                                         ),
@@ -186,7 +192,7 @@ class _RecurringListPageState extends State<RecurringListPage> {
           if (created == true) _load();
         },
         icon: const Icon(Icons.add),
-        label: const Text('정기 거래 추가'),
+        label: Text(l10n.recurringAddTitle),
       ),
     );
   }

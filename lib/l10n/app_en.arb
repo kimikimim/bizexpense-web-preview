@@ -376,5 +376,55 @@
   "taxReportNoDataYet": "Almost no expense data this month yet.",
   "taxReportNonDeductibleLow": "Non-deductible ratio is low — relatively stable.",
   "taxReportNonDeductibleMedium": "Non-deductible ratio is a bit high. Consider separating personal expenses.",
-  "taxReportNonDeductibleHigh": "Non-deductible ratio is quite high. You may need a tax consultant."
+  "taxReportNonDeductibleHigh": "Non-deductible ratio is quite high. You may need a tax consultant.",
+
+  "recurringAddTitle": "Add Recurring",
+  "recurringEditTitle": "Edit Recurring",
+  "recurringBasicInfo": "Basic Info",
+  "recurringNameLabel": "Name (e.g. Rent, Payroll)",
+  "recurringRequired": "Required field",
+  "recurringStoreLabel": "Client / Business Name (Optional)",
+  "recurringCycle": "Repeat Cycle",
+  "recurringCycleMonthly": "Monthly",
+  "recurringCycleWeekly": "Weekly",
+  "recurringDayOfMonth": "Day {n}",
+  "@recurringDayOfMonth": {
+    "placeholders": { "n": { "type": "String" } }
+  },
+  "recurringMemoOptional": "Memo (Optional)",
+  "recurringMemoHint": "e.g. Store 1 rent, employee payroll",
+  "recurringUpdate": "Update",
+  "recurringRegister": "Register",
+  "recurringLoginRequired": "Login required.",
+  "recurringAmountInvalid": "Please enter a valid amount.",
+  "recurringAdded": "Recurring transaction added.",
+  "recurringUpdated": "Recurring transaction updated.",
+  "recurringSaveError": "An error occurred while saving.",
+  "recurringListTitle": "Recurring Transactions",
+  "recurringListEmpty": "No recurring transactions yet.",
+  "recurringListEmptySub": "Auto-register rent, payroll, subscriptions, etc.",
+  "recurringDeleteTitle": "Delete recurring transaction?",
+  "recurringDeleteContent": "This recurring transaction will be deleted.",
+  "recurringMonthlyDay": "Every month on day {n}",
+  "@recurringMonthlyDay": {
+    "placeholders": { "n": { "type": "String" } }
+  },
+  "recurringWeeklyDay": "Every {weekday}",
+  "@recurringWeeklyDay": {
+    "placeholders": { "weekday": { "type": "String" } }
+  },
+  "recurringMonthlyDaySelect": "Which day of the month?",
+  "recurringWeekdaySelect": "Select weekday",
+  "recurringCategoryOptional": "Category (Optional)",
+  "recurringMethodOptional": "Payment / Deposit Method (Optional)",
+  "recurringVatDeductibleToggle": "Treat as VAT-deductible expense",
+  "recurringActiveToggle": "Enable auto-generation",
+  "recurringActiveToggleSub": "When off, entries will no longer be created automatically.",
+  "recurringSkipTitle": "Skip this month only?",
+  "recurringSkipContent": "This recurring transaction will not auto-generate an entry this month.",
+  "recurringSkip": "Skip",
+  "recurringSkipDone": "Set to skip this month.",
+  "recurringSkipButton": "Skip this month only",
+  "recurringDeleteFailed": "Failed to delete.",
+  "recurringAutoOff": "Auto-generation off"
 }

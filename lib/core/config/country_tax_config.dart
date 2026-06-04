@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class TaxFilingPeriod {
   final String label;
   final int startMonth;
@@ -51,6 +53,14 @@ class CountryTaxConfig {
     return yearPeriodFormat
         .replaceAll('{year}', '$year')
         .replaceAll('{period}', period.label);
+  }
+
+  /// Format a money amount using this country's currency & locale.
+  String formatMoney(num amount) {
+    return NumberFormat.currency(
+      locale: currencyLocale,
+      symbol: currencySymbol,
+    ).format(amount);
   }
 }
 
