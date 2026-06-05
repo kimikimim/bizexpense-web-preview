@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:characters/characters.dart';
 
@@ -29,7 +28,6 @@ class AllMenuPage extends ConsumerStatefulWidget {
 }
 
 class _AllMenuPageState extends ConsumerState<AllMenuPage> {
-  final _currency = NumberFormat.currency(locale: 'ko_KR', symbol: '₩');
   bool _isExporting = false;
 
   Future<void> _logout() async {

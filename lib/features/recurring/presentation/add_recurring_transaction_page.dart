@@ -351,7 +351,7 @@ class _AddRecurringTransactionPageState
                         style: TextStyle(color: textColor),
                         decoration: InputDecoration(
                           labelText: l10n.addTransactionAmountLabel,
-                          suffixText: l10n.addTransactionAmountUnit,
+                          suffixText: ref.watch(countryConfigProvider).currencySymbol,
                           border: InputBorder.none,
                           labelStyle: TextStyle(color: hintColor),
                           suffixStyle: TextStyle(color: textColor),

@@ -922,7 +922,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                             TextStyle(color: textColor),
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context)!.addTransactionAmountLabel,
-                          suffixText: AppLocalizations.of(context)!.addTransactionAmountUnit,
+                          suffixText: ref.watch(countryConfigProvider).currencySymbol,
                           border: InputBorder.none,
                           icon: Icon(
                             Icons.attach_money,

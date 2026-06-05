@@ -314,7 +314,7 @@ class _EditRecurringPageState extends ConsumerState<EditRecurringPage> {
                       controller: _amountController,
                       decoration: InputDecoration(
                         labelText: l10n.addTransactionAmountLabel,
-                        suffixText: l10n.addTransactionAmountUnit,
+                        suffixText: ref.watch(countryConfigProvider).currencySymbol,
                       ),
                       keyboardType: TextInputType.number,
                       validator: (v) => v == null || v.trim().isEmpty

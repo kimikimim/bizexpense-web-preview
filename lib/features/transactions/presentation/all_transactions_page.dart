@@ -118,7 +118,9 @@ class AllTransactionsPage extends StatefulWidget {
 }
 
 class _AllTransactionsPageState extends State<AllTransactionsPage> {
-  final DateFormat _dateHeaderFormat = DateFormat('yyyy.MM.dd (E)', 'ko_KR');
+  // Locale-aware (set in didChangeDependencies); Korean weekday for ko,
+  // Arabic for ar, etc.
+  DateFormat _dateHeaderFormat = DateFormat('yyyy.MM.dd (E)', 'ko_KR');
 
   late List<TransactionModel> _filtered;
   late List<TransactionModel> _localTransactions;
@@ -133,6 +135,13 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
     super.initState();
     _localTransactions = List.from(widget.transactions);
     _applyFilter();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _dateHeaderFormat =
+        DateFormat('yyyy.MM.dd (E)', Localizations.localeOf(context).toString());
   }
 
   @override
