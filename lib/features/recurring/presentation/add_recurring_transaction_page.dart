@@ -115,7 +115,7 @@ class _AddRecurringTransactionPageState
       return;
     }
 
-    final amount = int.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
+    final amount = (num.tryParse(_amountController.text.replaceAll(',', '')) ?? 0).round();
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.recurringAmountInvalid)),

@@ -391,10 +391,13 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
       }
     }
 
-    final amount = int.tryParse(
-          _amountController.text.replaceAll(',', ''),
-        ) ??
-        0;
+    // num.tryParse tolerates decimal input (e.g. AED 10.50). Whole-unit
+    // storage still rounds — full fils/halala precision is a pending change.
+    final amount = (num.tryParse(
+              _amountController.text.replaceAll(',', ''),
+            ) ??
+            0)
+        .round();
 
         final txId =
         (widget.isExistingRecord && widget.initialData != null)
@@ -936,10 +939,16 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
                         ),
                         keyboardType:
                             TextInputType.number,
-                        validator: (val) => val == null ||
-                                val.isEmpty
-                            ? AppLocalizations.of(context)!.addTransactionAmountRequired
-                            : null,
+                        validator: (val) {
+                          if (val == null || val.isEmpty) {
+                            return AppLocalizations.of(context)!.addTransactionAmountRequired;
+                          }
+                          final n = num.tryParse(val.replaceAll(',', ''));
+                          if (n == null || n <= 0) {
+                            return AppLocalizations.of(context)!.recurringAmountInvalid;
+                          }
+                          return null;
+                        },
                       ),
                     ),
 

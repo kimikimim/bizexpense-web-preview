@@ -97,7 +97,7 @@ class _EditRecurringPageState extends ConsumerState<EditRecurringPage> {
     setState(() => _isSaving = true);
 
     final amount =
-        int.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
+        (num.tryParse(_amountController.text.replaceAll(',', '')) ?? 0).round();
 
     final model = RecurringTransactionModel(
       id: widget.initial?.id ?? const Uuid().v4(),
