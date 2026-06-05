@@ -4,6 +4,7 @@ import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../../core/utils/invoice_service.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/providers/country_config_provider.dart';
+import '../data/vat_invoice_repository.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 
 class InvoiceItemInput {
@@ -78,7 +79,7 @@ class _InvoicePageState extends ConsumerState<InvoicePage> {
     }
 
     List<Map<String, dynamic>> itemsData = [];
-    num totalAmount = 0;
+    num subtotal = 0;
 
     for (var item in _items) {
       if (item.name.text.isEmpty) {
@@ -89,7 +90,7 @@ class _InvoicePageState extends ConsumerState<InvoicePage> {
       // Invoice prices are entered directly in major units (decimals allowed for ME).
       num price = num.tryParse(item.price.text.replaceAll(',', '')) ?? 0;
       int qty = int.tryParse(item.qty.text) ?? 1;
-      totalAmount += price * qty * (1 + config.vatRate);
+      subtotal += price * qty;
 
       itemsData.add({
         'name': item.name.text,
@@ -97,6 +98,9 @@ class _InvoicePageState extends ConsumerState<InvoicePage> {
         'qty': qty,
       });
     }
+
+    final num vatAmount = subtotal * config.vatRate;
+    final num totalAmount = subtotal + vatAmount;
 
     setState(() => _isLoading = true);
 
@@ -107,6 +111,17 @@ class _InvoicePageState extends ConsumerState<InvoicePage> {
         totalAmount: totalAmount,
         config: config,
       );
+
+      // ME: record the issued invoice in the VAT ledger (ZATCA foundation).
+      if (config.countryCode != 'KR') {
+        await VatInvoiceRepository().saveInvoice(
+          config: config,
+          buyerName: _clientController.text,
+          subtotal: subtotal,
+          vatAmount: vatAmount,
+          total: totalAmount,
+        );
+      }
     } catch (e) {
       appLogger.e("invoice error", error: e);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.invoicePdfFailed)));
