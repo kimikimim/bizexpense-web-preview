@@ -54,7 +54,7 @@ class _CameraPageState extends State<CameraPage> {
           eagerError: false,
         );
       } catch (uploadOrOcrError) {
-        throw Exception("이미지 업로드 또는 AI 분석 중 오류가 발생했습니다: $uploadOrOcrError");
+        throw Exception("Image upload or AI analysis failed: $uploadOrOcrError");
       }
 
       final String? uploadedUrl = results[0] as String?;
@@ -93,7 +93,7 @@ class _CameraPageState extends State<CameraPage> {
           );
         }
       } else {
-        throw Exception("분석 또는 업로드 실패");
+        throw Exception("Analysis or upload failed");
       }
 
     } catch (e) {
