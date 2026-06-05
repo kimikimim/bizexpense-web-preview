@@ -476,5 +476,6 @@
   "invoiceStatusIssued": "발행됨",
   "invoiceStatusDraft": "임시저장",
   "invoiceStatusCancelled": "취소됨",
-  "invoiceVatOf": "VAT 포함 {vat}"
+  "invoiceVatOf": "VAT 포함 {vat}",
+  "signupConfirmEmail": "계정이 생성되었습니다. 이메일을 확인한 뒤 로그인해 주세요."
 }

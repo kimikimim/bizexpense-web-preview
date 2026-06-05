@@ -2829,6 +2829,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'incl. VAT {vat}'**
   String invoiceVatOf(String vat);
+
+  /// No description provided for @signupConfirmEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created. Please confirm your email, then sign in.'**
+  String get signupConfirmEmail;
 }
 
 class _AppLocalizationsDelegate

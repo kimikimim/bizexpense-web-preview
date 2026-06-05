@@ -1462,4 +1462,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String invoiceVatOf(String vat) {
     return 'شاملة الضريبة $vat';
   }
+
+  @override
+  String get signupConfirmEmail =>
+      'تم إنشاء الحساب. يرجى تأكيد بريدك الإلكتروني ثم تسجيل الدخول.';
 }

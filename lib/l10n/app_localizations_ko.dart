@@ -1425,4 +1425,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String invoiceVatOf(String vat) {
     return 'VAT 포함 $vat';
   }
+
+  @override
+  String get signupConfirmEmail => '계정이 생성되었습니다. 이메일을 확인한 뒤 로그인해 주세요.';
 }

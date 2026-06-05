@@ -138,6 +138,18 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
       final prefs = await SharedPreferences.getInstance();
       final countryCode = prefs.getString('country_code') ?? 'KR';
+      await prefs.setString('user_type', _userType);
+
+      // Email confirmation enabled → no session yet, so the (RLS-protected)
+      // profile upsert can't run. Tell the user to confirm + sign in instead
+      // of failing with a cryptic error. (Disable "Confirm email" for the
+      // smooth instant-entry flow.)
+      if (res.session == null) {
+        if (!mounted) return;
+        _showSnack(AppLocalizations.of(context)!.signupConfirmEmail);
+        Navigator.pop(context);
+        return;
+      }
 
       await supabase.from('profiles').upsert({
         'id': res.user!.id,
@@ -145,8 +157,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         'country_code': countryCode,
         'updated_at': DateTime.now().toIso8601String(),
       });
-
-      await prefs.setString('user_type', _userType);
 
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(

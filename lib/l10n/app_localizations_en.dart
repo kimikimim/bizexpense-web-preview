@@ -1465,4 +1465,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String invoiceVatOf(String vat) {
     return 'incl. VAT $vat';
   }
+
+  @override
+  String get signupConfirmEmail =>
+      'Account created. Please confirm your email, then sign in.';
 }

@@ -521,5 +521,6 @@
   "invoiceStatusIssued": "صادرة",
   "invoiceStatusDraft": "مسودة",
   "invoiceStatusCancelled": "ملغاة",
-  "invoiceVatOf": "شاملة الضريبة {vat}"
+  "invoiceVatOf": "شاملة الضريبة {vat}",
+  "signupConfirmEmail": "تم إنشاء الحساب. يرجى تأكيد بريدك الإلكتروني ثم تسجيل الدخول."
 }
