@@ -78,7 +78,7 @@ class _InvoicePageState extends ConsumerState<InvoicePage> {
     }
 
     List<Map<String, dynamic>> itemsData = [];
-    int totalAmount = 0;
+    num totalAmount = 0;
 
     for (var item in _items) {
       if (item.name.text.isEmpty) {
@@ -86,10 +86,10 @@ class _InvoicePageState extends ConsumerState<InvoicePage> {
         return;
       }
 
-      int price = int.tryParse(item.price.text.replaceAll(',', '')) ?? 0;
+      // Invoice prices are entered directly in major units (decimals allowed for ME).
+      num price = num.tryParse(item.price.text.replaceAll(',', '')) ?? 0;
       int qty = int.tryParse(item.qty.text) ?? 1;
-      int lineTotal = (price * qty * (1 + config.vatRate)).round();
-      totalAmount += lineTotal;
+      totalAmount += price * qty * (1 + config.vatRate);
 
       itemsData.add({
         'name': item.name.text,

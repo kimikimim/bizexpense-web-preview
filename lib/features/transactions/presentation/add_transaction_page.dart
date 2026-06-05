@@ -72,7 +72,8 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
   @override
   void initState() {
     super.initState();
-    final countryCode = ref.read(countryConfigProvider).countryCode;
+    final config = ref.read(countryConfigProvider);
+    final countryCode = config.countryCode;
     _isKorea = countryCode == 'KR';
     _opts = TxOptions.forCountry(countryCode);
     _selectedMethod = _opts.defaultExpenseMethod;
@@ -85,7 +86,8 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
     _storeName = data?.storeName ?? '';
     _storeController = TextEditingController(text: _storeName);
     _amountController = TextEditingController(
-      text: data != null ? data.amount.toString() : '',
+      // Stored amounts are minor units; show major units when editing.
+      text: data != null ? _trimAmount(config.toMajorUnits(data.amount)) : '',
     );
     _categoryController =
         TextEditingController(text: data?.category ?? '');
@@ -142,6 +144,10 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
       _isVatExempt = false;
     }
   }
+
+  /// Clean numeric string for an editable amount field (10.0 → "10", 10.5 → "10.5").
+  String _trimAmount(num v) =>
+      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
 
   Future<void> _loadUserType() async {
     final prefs = await SharedPreferences.getInstance();
@@ -391,13 +397,10 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
       }
     }
 
-    // num.tryParse tolerates decimal input (e.g. AED 10.50). Whole-unit
-    // storage still rounds — full fils/halala precision is a pending change.
-    final amount = (num.tryParse(
-              _amountController.text.replaceAll(',', ''),
-            ) ??
-            0)
-        .round();
+    // Store as integer minor units (AED 10.50 → 1050; KRW unaffected, factor 1).
+    final amount = ref.read(countryConfigProvider).toMinorUnits(
+          num.tryParse(_amountController.text.replaceAll(',', '')) ?? 0,
+        );
 
         final txId =
         (widget.isExistingRecord && widget.initialData != null)

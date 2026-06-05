@@ -51,14 +51,15 @@ class _AddRecurringTransactionPageState
   @override
   void initState() {
     super.initState();
-    _opts = TxOptions.forCountry(ref.read(countryConfigProvider).countryCode);
+    final config = ref.read(countryConfigProvider);
+    _opts = TxOptions.forCountry(config.countryCode);
 
     final data = widget.initialData;
 
     _titleController = TextEditingController(text: data?.title ?? '');
     _storeController = TextEditingController(text: '');
     _amountController = TextEditingController(
-      text: data != null ? data.amount.toString() : '',
+      text: data != null ? _trimAmount(config.toMajorUnits(data.amount)) : '',
     );
     _memoController = TextEditingController(text: data?.memo ?? '');
     _categoryController = TextEditingController(text: data?.category ?? '');
@@ -68,6 +69,9 @@ class _AddRecurringTransactionPageState
     _day = data?.day ?? 1;
     _method = data?.method ?? _methods.first;
   }
+
+  String _trimAmount(num v) =>
+      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
 
   @override
   void dispose() {
@@ -115,7 +119,8 @@ class _AddRecurringTransactionPageState
       return;
     }
 
-    final amount = (num.tryParse(_amountController.text.replaceAll(',', '')) ?? 0).round();
+    final amount = ref.read(countryConfigProvider).toMinorUnits(
+        num.tryParse(_amountController.text.replaceAll(',', '')) ?? 0);
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.recurringAmountInvalid)),

@@ -11,7 +11,7 @@ class InvoiceService {
   Future<void> generateAndSharePdf({
     required String clientName,
     required List<Map<String, dynamic>> items,
-    required int totalAmount,
+    required num totalAmount,
     required CountryTaxConfig config,
   }) async {
     final pdf = pw.Document();
@@ -20,7 +20,10 @@ class InvoiceService {
     // so non-KR invoices use English (the Gulf business standard).
     final fontData = await rootBundle.load("assets/fonts/NanumGothic.ttf");
     final ttf = pw.Font.ttf(fontData);
-    final currencyFormat = NumberFormat('#,###');
+    // Whole numbers for KRW, 2 decimals for AED/SAR.
+    final currencyFormat = NumberFormat(
+      config.decimalDigits == 0 ? '#,##0' : '#,##0.${'0' * config.decimalDigits}',
+    );
     final isKorea = config.countryCode == 'KR';
     final symbol = config.currencySymbol;
 
@@ -116,10 +119,10 @@ class InvoiceService {
                 headerDecoration: const pw.BoxDecoration(color: PdfColors.grey200),
                 headers: L.tableHeaders,
                 data: items.map((item) {
-                  int price = item['price'];
-                  int qty = item['qty'];
-                  int supply = price * qty;
-                  int tax = (supply * config.vatRate).round();
+                  final num price = item['price'] as num;
+                  final int qty = item['qty'] as int;
+                  final num supply = price * qty;
+                  final num tax = supply * config.vatRate;
                   return [
                     item['name'],
                     qty.toString(),

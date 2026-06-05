@@ -26,6 +26,14 @@ class CountryTaxConfig {
   final List<String> nonDeductibleCategories;
   final String languageCode;
 
+  /// Smallest-unit factor: 1 for no-decimal currencies (KRW, IDR, VND),
+  /// 100 for 2-decimal currencies (AED, SAR). Amounts are stored as integer
+  /// minor units (e.g. AED 10.50 → 1050).
+  final int minorUnitFactor;
+
+  /// Decimal places shown when formatting money (0 for KRW, 2 for AED/SAR).
+  final int decimalDigits;
+
   const CountryTaxConfig({
     required this.countryCode,
     required this.countryName,
@@ -39,7 +47,16 @@ class CountryTaxConfig {
     required this.filingPeriods,
     required this.nonDeductibleCategories,
     this.languageCode = 'en',
+    this.minorUnitFactor = 1,
+    this.decimalDigits = 0,
   });
+
+  /// Convert user-entered major units (e.g. 10.50) to stored minor units (1050).
+  int toMinorUnits(num major) => (major * minorUnitFactor).round();
+
+  /// Convert stored minor units back to major units for display/math.
+  num toMajorUnits(num stored) =>
+      minorUnitFactor == 1 ? stored : stored / minorUnitFactor;
 
   TaxFilingPeriod currentPeriod() {
     final month = DateTime.now().month;
@@ -55,12 +72,13 @@ class CountryTaxConfig {
         .replaceAll('{period}', period.label);
   }
 
-  /// Format a money amount using this country's currency & locale.
-  String formatMoney(num amount) {
+  /// Format a *stored* amount (minor units) for display, e.g. 1050 → "AED 10.50".
+  String formatMoney(num storedAmount) {
     return NumberFormat.currency(
       locale: currencyLocale,
       symbol: currencySymbol,
-    ).format(amount);
+      decimalDigits: decimalDigits,
+    ).format(toMajorUnits(storedAmount));
   }
 
   /// ISO 4217 currency code (matches the ME DB currency_code CHECK).
@@ -115,6 +133,8 @@ const Map<String, CountryTaxConfig> kCountryConfigs = {
     vatTerminology: 'VAT',
     yearPeriodFormat: '{year} {period}',
     languageCode: 'ar',
+    minorUnitFactor: 100,
+    decimalDigits: 2,
     filingPeriods: [
       TaxFilingPeriod(label: 'Q1', startMonth: 1, endMonth: 3),
       TaxFilingPeriod(label: 'Q2', startMonth: 4, endMonth: 6),
@@ -178,6 +198,8 @@ const Map<String, CountryTaxConfig> kCountryConfigs = {
     vatTerminology: 'VAT',
     yearPeriodFormat: '{year} {period}',
     languageCode: 'ar',
+    minorUnitFactor: 100,
+    decimalDigits: 2,
     filingPeriods: [
       TaxFilingPeriod(label: 'Q1', startMonth: 1, endMonth: 3),
       TaxFilingPeriod(label: 'Q2', startMonth: 4, endMonth: 6),

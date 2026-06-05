@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:expense_pro/l10n/app_localizations.dart';
 
 import '../../transactions/data/transaction_model.dart';
@@ -17,7 +16,8 @@ class StatisticsPage extends ConsumerStatefulWidget {
 class _StatisticsPageState extends ConsumerState<StatisticsPage>
     with SingleTickerProviderStateMixin {
   final TransactionRepository _repo = TransactionRepository();
-  late NumberFormat _currency;
+  // Formats a stored (minor-unit) amount to a display string.
+  late String Function(num) _currency;
 
   bool _isLoading = true;
   late TabController _tabController;
@@ -27,11 +27,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    final config = ref.read(countryConfigProvider);
-    _currency = NumberFormat.currency(
-      locale: config.currencyLocale,
-      symbol: config.currencySymbol,
-    );
+    _currency = ref.read(countryConfigProvider).formatMoney;
     _loadData();
   }
 
@@ -271,7 +267,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
         const SizedBox(height: 12),
         Center(
           child: Text(
-            l10n.statisticsTotalExpense(_currency.format(totalExpense)),
+            l10n.statisticsTotalExpense(_currency(totalExpense)),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -332,7 +328,7 @@ class CategorySlice {
 
 class _TaxScoreCard extends StatelessWidget {
   final TaxMetrics metrics;
-  final NumberFormat currency;
+  final String Function(num) currency;
   final AppLocalizations l10n;
 
   const _TaxScoreCard({
@@ -423,7 +419,7 @@ class _TaxScoreCard extends StatelessWidget {
                 if (metrics.bigNoReceiptCount > 0)
                   _smallBadge(
                     l10n.statisticsBigNoReceipt,
-                    '${metrics.bigNoReceiptCount} / ${currency.format(metrics.bigNoReceiptAmount)}',
+                    '${metrics.bigNoReceiptCount} / ${currency(metrics.bigNoReceiptAmount)}',
                   ),
               ],
             ),
@@ -474,7 +470,7 @@ class _TaxScoreCard extends StatelessWidget {
 
 class _DeductionSection extends StatelessWidget {
   final TaxMetrics metrics;
-  final NumberFormat currency;
+  final String Function(num) currency;
   final AppLocalizations l10n;
 
   const _DeductionSection({
@@ -521,7 +517,7 @@ class _DeductionSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        currency.format(deductible),
+                        currency(deductible),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -542,7 +538,7 @@ class _DeductionSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        currency.format(nonDeductible),
+                        currency(nonDeductible),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -595,7 +591,7 @@ class _DeductionSection extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        currency.format(e.value),
+                        currency(e.value),
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -615,7 +611,7 @@ class _DeductionSection extends StatelessWidget {
 
 class _ReceiptSection extends StatelessWidget {
   final TaxMetrics metrics;
-  final NumberFormat currency;
+  final String Function(num) currency;
   final AppLocalizations l10n;
 
   const _ReceiptSection({
@@ -802,7 +798,7 @@ class _DonutPainter extends CustomPainter {
 
 class _CategoryRow extends StatelessWidget {
   final CategorySlice slice;
-  final NumberFormat currency;
+  final String Function(num) currency;
 
   const _CategoryRow({
     required this.slice,
@@ -836,7 +832,7 @@ class _CategoryRow extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Text(
-            currency.format(slice.amount),
+            currency(slice.amount),
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,

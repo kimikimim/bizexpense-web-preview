@@ -7,6 +7,15 @@ import '../../features/transactions/data/transaction_model.dart';
 import '../config/country_tax_config.dart';
 
 class ExcelService {
+  /// Stored amounts are integer minor units; export the major value
+  /// (whole number for KRW, 2 decimals for AED/SAR).
+  CellValue _moneyCell(int storedMinor, CountryTaxConfig config) {
+    final major = config.toMajorUnits(storedMinor);
+    return config.decimalDigits == 0
+        ? IntCellValue(major.toInt())
+        : DoubleCellValue(major.toDouble());
+  }
+
   Future<void> exportToExcel(
     List<TransactionModel> transactions, {
     required CountryTaxConfig config,
@@ -31,7 +40,7 @@ class ExcelService {
         TextCellValue(tx.transactionType == 'income' ? incomeLabel : expenseLabel),
         TextCellValue(dateFormat.format(tx.date)),
         TextCellValue(tx.storeName),
-        IntCellValue(tx.amount),
+        _moneyCell(tx.amount, config),
         TextCellValue(tx.category ?? ''),
         TextCellValue(tx.method),
         TextCellValue(tx.approvalNumber ?? ''),
@@ -56,9 +65,9 @@ class ExcelService {
       (i) => i == 0 ? TextCellValue(kr ? '합계' : 'Total') : TextCellValue(''),
     ));
 
-    sheet.appendRow(_buildSummaryRow(label: kr ? '수입 합계' : 'Total Income', amount: totalIncome, headersLength: headers.length));
-    sheet.appendRow(_buildSummaryRow(label: kr ? '지출 합계' : 'Total Expense', amount: totalExpense, headersLength: headers.length));
-    sheet.appendRow(_buildSummaryRow(label: kr ? '순이익' : 'Net Profit', amount: profit, headersLength: headers.length));
+    sheet.appendRow(_buildSummaryRow(label: kr ? '수입 합계' : 'Total Income', amount: totalIncome, headersLength: headers.length, config: config));
+    sheet.appendRow(_buildSummaryRow(label: kr ? '지출 합계' : 'Total Expense', amount: totalExpense, headersLength: headers.length, config: config));
+    sheet.appendRow(_buildSummaryRow(label: kr ? '순이익' : 'Net Profit', amount: profit, headersLength: headers.length, config: config));
 
     final fileBytes = excel.encode();
     if (fileBytes == null) return;
@@ -82,13 +91,14 @@ class ExcelService {
     required String label,
     required int amount,
     required int headersLength,
+    required CountryTaxConfig config,
   }) {
     final row = <CellValue>[];
     for (int i = 0; i < headersLength; i++) {
       if (i == 0) {
         row.add(TextCellValue(label));
       } else if (i == 3) {
-        row.add(IntCellValue(amount));
+        row.add(_moneyCell(amount, config));
       } else {
         row.add(TextCellValue(''));
       }
@@ -131,9 +141,9 @@ class ExcelService {
 
       final row = <CellValue>[
         TextCellValue(dateFormat.format(tx.date)),
-        IntCellValue(supplyAmount),
-        IntCellValue(taxAmount),
-        IntCellValue(tx.amount),
+        _moneyCell(supplyAmount, config),
+        _moneyCell(taxAmount, config),
+        _moneyCell(tx.amount, config),
         TextCellValue(tx.storeName),
         TextCellValue(tx.category ?? ''),
         TextCellValue(tx.method),

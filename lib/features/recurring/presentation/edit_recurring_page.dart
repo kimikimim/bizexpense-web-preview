@@ -47,14 +47,15 @@ class _EditRecurringPageState extends ConsumerState<EditRecurringPage> {
   @override
   void initState() {
     super.initState();
-    final countryCode = ref.read(countryConfigProvider).countryCode;
+    final config = ref.read(countryConfigProvider);
+    final countryCode = config.countryCode;
     _isKorea = countryCode == 'KR';
     _opts = TxOptions.forCountry(countryCode);
 
     final data = widget.initial;
     _titleController = TextEditingController(text: data?.title ?? '');
-    _amountController =
-        TextEditingController(text: data?.amount.toString() ?? '');
+    _amountController = TextEditingController(
+        text: data != null ? _trimAmount(config.toMajorUnits(data.amount)) : '');
     _memoController = TextEditingController(text: data?.memo ?? '');
 
     if (data != null) {
@@ -67,6 +68,9 @@ class _EditRecurringPageState extends ConsumerState<EditRecurringPage> {
       _isActive = data.isActive;
     }
   }
+
+  String _trimAmount(num v) =>
+      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
 
   @override
   void dispose() {
@@ -96,8 +100,8 @@ class _EditRecurringPageState extends ConsumerState<EditRecurringPage> {
 
     setState(() => _isSaving = true);
 
-    final amount =
-        (num.tryParse(_amountController.text.replaceAll(',', '')) ?? 0).round();
+    final amount = ref.read(countryConfigProvider).toMinorUnits(
+        num.tryParse(_amountController.text.replaceAll(',', '')) ?? 0);
 
     final model = RecurringTransactionModel(
       id: widget.initial?.id ?? const Uuid().v4(),

@@ -29,6 +29,7 @@ import 'package:expense_pro/l10n/app_localizations.dart';
 import '../../cards/data/card_repository.dart';
 import '../../tax/presentation/tax_summary_page.dart';
 import '../../../core/providers/country_config_provider.dart';
+import '../../../core/config/country_tax_config.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -53,16 +54,12 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool _isLoading = true;
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
-  late NumberFormat currencyFormat;
+  late CountryTaxConfig _config;
 
   @override
   void initState() {
     super.initState();
-    final config = ref.read(countryConfigProvider);
-    currencyFormat = NumberFormat.currency(
-      locale: config.currencyLocale,
-      symbol: config.currencySymbol,
-    );
+    _config = ref.read(countryConfigProvider);
     _loadData();
   }
 
@@ -341,7 +338,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ])),
                       Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                         Text(
-                          '${isIncome ? "+" : "-"}${currencyFormat.format(tx.amount)}',
+                          '${isIncome ? "+" : "-"}${_config.formatMoney(tx.amount)}',
                           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: isIncome ? const Color(0xFF2DB400) : const Color(0xFFFF4D4F)),
                         ),
                         const SizedBox(height: 2),
@@ -398,7 +395,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           const SizedBox(height: 10),
           Text(
-            currencyFormat.format(net.abs()),
+            _config.formatMoney(net.abs()),
             style: const TextStyle(
               fontSize: 34,
               fontWeight: FontWeight.bold,
@@ -439,7 +436,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       Text(AppLocalizations.of(context)!.heroExpectedIncome, style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(150))),
                     ]),
                     const SizedBox(height: 4),
-                    Text(currencyFormat.format(income),
+                    Text(_config.formatMoney(income),
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                   ],
                 ),
@@ -457,7 +454,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         Text(AppLocalizations.of(context)!.heroExpectedExpense, style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(150))),
                       ]),
                       const SizedBox(height: 4),
-                      Text(currencyFormat.format(expense),
+                      Text(_config.formatMoney(expense),
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                     ],
                   ),
