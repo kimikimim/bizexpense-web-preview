@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../features/user/presentation/user_type_page.dart';
@@ -15,6 +14,7 @@ import '../features/onboarding/presentation/country_select_page.dart';
 import '../core/providers/theme_provider.dart';
 import '../core/providers/font_size_provider.dart';
 import '../core/providers/country_config_provider.dart';
+import '../core/providers/locale_provider.dart';
 import '../core/config/country_tax_config.dart';
 
 import '../features/shell/main_shell_page.dart';
@@ -59,6 +59,9 @@ Future<void> main() async {
     await prefs.setBool('isDark', false);
   }
 
+  // Language is independent of country; null = follow region default.
+  final savedLanguage = prefs.getString('app_language');
+
   final userType = prefs.getString('user_type');
   final session = Supabase.instance.client.auth.currentSession;
 
@@ -79,6 +82,9 @@ Future<void> main() async {
         countryConfigProvider.overrideWith(
           (ref) => CountryConfigNotifier(initialCountry: resolvedCountry),
         ),
+        localeProvider.overrideWith(
+          (ref) => LocaleNotifier(initial: savedLanguage),
+        ),
       ],
       child: MyApp(startPage: startPage),
     ),
@@ -96,7 +102,9 @@ class MyApp extends ConsumerWidget {
     final fontSizeLevel = ref.watch(fontSizeProvider);
     final double textScale = getFontScale(fontSizeLevel);
     final countryConfig = ref.watch(countryConfigProvider);
-    final locale = Locale(countryConfig.languageCode);
+    // User-chosen language overrides the region default; null = region default.
+    final selectedLanguage = ref.watch(localeProvider);
+    final locale = Locale(selectedLanguage ?? countryConfig.languageCode);
 
     return MaterialApp(
       title: 'BizExpense',

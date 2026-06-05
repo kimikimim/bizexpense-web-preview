@@ -464,5 +464,8 @@
   "meTaxCorporate": "법인세 대상",
   "meTaxCorporateSub": "법인(LLC / 프리존)은 연 1회 법인세를 신고합니다.",
   "meTaxSaved": "세무 일정이 생성되었습니다.",
-  "meTaxQuarterLabel": "{year} {q}분기"
+  "meTaxQuarterLabel": "{year} {q}분기",
+  "settingsLanguage": "언어",
+  "settingsLanguagePickerTitle": "언어 선택",
+  "settingsRegionFixedNote": "계정 생성 시 설정됨"
 }

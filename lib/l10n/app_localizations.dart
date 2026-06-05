@@ -2757,6 +2757,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Q{q} {year}'**
   String meTaxQuarterLabel(String q, String year);
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsLanguagePickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get settingsLanguagePickerTitle;
+
+  /// No description provided for @settingsRegionFixedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Set when you created your account'**
+  String get settingsRegionFixedNote;
 }
 
 class _AppLocalizationsDelegate

@@ -1387,4 +1387,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String meTaxQuarterLabel(String q, String year) {
     return '$year $q분기';
   }
+
+  @override
+  String get settingsLanguage => '언어';
+
+  @override
+  String get settingsLanguagePickerTitle => '언어 선택';
+
+  @override
+  String get settingsRegionFixedNote => '계정 생성 시 설정됨';
 }

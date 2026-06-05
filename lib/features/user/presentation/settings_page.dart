@@ -6,7 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/providers/font_size_provider.dart';
 import '../../../core/providers/country_config_provider.dart';
-import '../../../core/config/country_tax_config.dart';
+import '../../../core/providers/locale_provider.dart';
 
 import '../../transactions/presentation/my_business_page.dart';
 import '../../tax/presentation/tax_setup_page.dart';
@@ -43,10 +43,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _loadVersion();
   }
 
-  void _showCountryPicker(BuildContext context, bool isDark) {
-    final countries = kCountryConfigs.values.toList();
-    final current = ref.read(countryConfigProvider);
+  static const _languages = [
+    ('ko', '한국어'),
+    ('en', 'English'),
+    ('ar', 'العربية'),
+  ];
 
+  String _languageLabel(String code) {
+    for (final l in _languages) {
+      if (l.$1 == code) return l.$2;
+    }
+    return code;
+  }
+
+  void _showLanguagePicker(BuildContext context, bool isDark, String currentLang) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -73,7 +83,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                 child: Text(
-                  AppLocalizations.of(ctx)!.settingsCountryPickerTitle,
+                  AppLocalizations.of(ctx)!.settingsLanguagePickerTitle,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -81,39 +91,23 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ),
                 ),
               ),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: countries.length,
-                separatorBuilder: (_, __) => Divider(
-                  height: 1,
-                  indent: 20,
-                  endIndent: 20,
-                  color: isDark ? Colors.white10 : Colors.grey.shade100,
-                ),
-                itemBuilder: (_, i) {
-                  final c = countries[i];
-                  final isSelected = c.countryCode == current.countryCode;
-                  return ListTile(
-                    leading: Text(c.flagEmoji, style: const TextStyle(fontSize: 24)),
-                    title: Text(
-                      c.countryName,
-                      style: TextStyle(
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        color: isSelected ? const Color(0xFF3182F6) : null,
-                      ),
+              for (final lang in _languages)
+                ListTile(
+                  title: Text(
+                    lang.$2,
+                    style: TextStyle(
+                      fontWeight: lang.$1 == currentLang ? FontWeight.bold : FontWeight.normal,
+                      color: lang.$1 == currentLang ? const Color(0xFF3182F6) : null,
                     ),
-                    subtitle: Text('${c.vatTerminology} ${(c.vatRate * 100).toStringAsFixed(0)}% · ${c.currencySymbol}'),
-                    trailing: isSelected
-                        ? const Icon(Icons.check_rounded, color: Color(0xFF3182F6))
-                        : null,
-                    onTap: () async {
-                      await ref.read(countryConfigProvider.notifier).setCountry(c.countryCode);
-                      if (context.mounted) Navigator.pop(ctx);
-                    },
-                  );
-                },
-              ),
+                  ),
+                  trailing: lang.$1 == currentLang
+                      ? const Icon(Icons.check_rounded, color: Color(0xFF3182F6))
+                      : null,
+                  onTap: () async {
+                    await ref.read(localeProvider.notifier).setLanguage(lang.$1);
+                    if (context.mounted) Navigator.pop(ctx);
+                  },
+                ),
               const SizedBox(height: 8),
             ],
           ),
@@ -172,6 +166,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final currentFontSizeLevel = ref.watch(fontSizeProvider);
     final currentCountry = ref.watch(countryConfigProvider);
     final isKorea = currentCountry.countryCode == 'KR';
+    final selectedLanguage = ref.watch(localeProvider);
+    final effectiveLang = selectedLanguage ?? currentCountry.languageCode;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -187,11 +183,24 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           _sectionLabel(l10n.settingsDisplaySettings, isDark),
           _card(isDark, [
             _fontSizeControl(currentFontSizeLevel, l10n),
+            // Language — changeable independently of the account's region.
             _tile(
+              leading: _leadingIcon(Icons.language, Colors.blue),
+              title: l10n.settingsLanguage,
+              subtitle: _languageLabel(effectiveLang),
+              onTap: () => _showLanguagePicker(context, isDark, effectiveLang),
+            ),
+            // Region — fixed at signup (determines which data center the
+            // account lives in), so it's read-only here.
+            ListTile(
               leading: Text(currentCountry.flagEmoji, style: const TextStyle(fontSize: 22)),
-              title: l10n.settingsCountryRegion,
-              subtitle: "${currentCountry.countryName} · ${currentCountry.vatTerminology} ${(currentCountry.vatRate * 100).toStringAsFixed(0)}%",
-              onTap: () => _showCountryPicker(context, isDark),
+              title: Text(l10n.settingsCountryRegion,
+                  style: const TextStyle(fontWeight: FontWeight.w500)),
+              subtitle: Text(
+                "${currentCountry.countryName} · ${l10n.settingsRegionFixedNote}",
+                style: const TextStyle(fontSize: 11),
+              ),
+              trailing: Icon(Icons.lock_outline, size: 16, color: Colors.grey[400]),
             ),
           ]),
           const SizedBox(height: 22),

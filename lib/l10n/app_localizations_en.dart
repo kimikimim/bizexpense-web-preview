@@ -1427,4 +1427,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String meTaxQuarterLabel(String q, String year) {
     return 'Q$q $year';
   }
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsLanguagePickerTitle => 'Select Language';
+
+  @override
+  String get settingsRegionFixedNote => 'Set when you created your account';
 }

@@ -528,5 +528,8 @@
   "meTaxCorporateSub": "Companies (LLC / Free Zone) file corporate tax once a year.",
   "meTaxSaved": "Tax schedule created.",
   "meTaxQuarterLabel": "Q{q} {year}",
-  "@meTaxQuarterLabel": {"placeholders": {"q": {"type": "String"}, "year": {"type": "String"}}}
+  "@meTaxQuarterLabel": {"placeholders": {"q": {"type": "String"}, "year": {"type": "String"}}},
+  "settingsLanguage": "Language",
+  "settingsLanguagePickerTitle": "Select Language",
+  "settingsRegionFixedNote": "Set when you created your account"
 }

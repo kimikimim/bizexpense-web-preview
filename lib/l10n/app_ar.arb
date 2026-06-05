@@ -509,5 +509,8 @@
   "meTaxCorporate": "خاضع لضريبة الشركات",
   "meTaxCorporateSub": "الشركات (ذ.م.م / منطقة حرة) تقدّم إقرار ضريبة الشركات مرة سنوياً.",
   "meTaxSaved": "تم إنشاء الجدول الضريبي.",
-  "meTaxQuarterLabel": "الربع {q} {year}"
+  "meTaxQuarterLabel": "الربع {q} {year}",
+  "settingsLanguage": "اللغة",
+  "settingsLanguagePickerTitle": "اختر اللغة",
+  "settingsRegionFixedNote": "تم تحديدها عند إنشاء حسابك"
 }
