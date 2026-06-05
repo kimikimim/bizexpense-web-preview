@@ -251,13 +251,17 @@ class _SignupPageState extends ConsumerState<SignupPage> {
               ],
             ),
           ),
-          Text(
-            AppLocalizations.of(context)!
-                .signupStepCounter('${_currentStep + 1}', '${titles.length}'),
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[400],
+          // Force LTR so "1 / 3" doesn't bidi-reverse to "3 / 1" in Arabic.
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Text(
+              AppLocalizations.of(context)!
+                  .signupStepCounter('${_currentStep + 1}', '${titles.length}'),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[400],
+              ),
             ),
           ),
         ],
