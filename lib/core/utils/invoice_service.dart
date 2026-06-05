@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import 'package:expense_pro/core/config/country_tax_config.dart';
+import 'package:expense_pro/core/utils/zatca_qr.dart';
 
 class InvoiceService {
   Future<void> generateAndSharePdf({
@@ -57,6 +58,23 @@ class InvoiceService {
     } catch (e) {
       appLogger.e("Error loading profile: $e", error: e);
     }
+
+    // ZATCA (Saudi) simplified tax-invoice QR — Phase 1.
+    final bool isZatca = config.countryCode == 'SA';
+    num subtotal = 0;
+    for (final item in items) {
+      subtotal += (item['price'] as num) * (item['qty'] as int);
+    }
+    final num vatTotal = subtotal * config.vatRate;
+    final String? zatcaData = isZatca
+        ? zatcaQrPayload(
+            sellerName: myCompany,
+            vatNumber: myBizNum,
+            timestamp: DateTime.now(),
+            totalWithVat: totalAmount,
+            vatTotal: vatTotal,
+          )
+        : null;
 
     pdf.addPage(
       pw.Page(
@@ -140,7 +158,36 @@ class InvoiceService {
                   style: pw.TextStyle(font: ttf, fontSize: 18, fontWeight: pw.FontWeight.bold),
                 ),
               ),
-              pw.SizedBox(height: 50),
+              if (zatcaData != null) ...[
+                pw.SizedBox(height: 16),
+                pw.Container(
+                  alignment: pw.Alignment.centerRight,
+                  child: pw.Text(
+                    "VAT total: $symbol ${currencyFormat.format(vatTotal)}",
+                    style: pw.TextStyle(font: ttf, fontSize: 12),
+                  ),
+                ),
+                pw.SizedBox(height: 20),
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.center,
+                  children: [
+                    pw.BarcodeWidget(
+                      barcode: pw.Barcode.qrCode(),
+                      data: zatcaData,
+                      width: 90,
+                      height: 90,
+                    ),
+                    pw.SizedBox(width: 12),
+                    pw.Expanded(
+                      child: pw.Text(
+                        "Simplified Tax Invoice (ZATCA)\nScan the QR code to verify.",
+                        style: pw.TextStyle(font: ttf, fontSize: 10, color: PdfColors.grey700),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              pw.SizedBox(height: 40),
               pw.Divider(),
               pw.Center(
                 child: pw.Text(L.validity, style: pw.TextStyle(font: ttf, fontSize: 10, color: PdfColors.grey)),
