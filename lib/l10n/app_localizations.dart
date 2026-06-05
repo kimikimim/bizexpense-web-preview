@@ -2775,6 +2775,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set when you created your account'**
   String get settingsRegionFixedNote;
+
+  /// No description provided for @menuMyInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'My Invoices'**
+  String get menuMyInvoices;
+
+  /// No description provided for @menuMyInvoicesSub.
+  ///
+  /// In en, this message translates to:
+  /// **'View issued invoices'**
+  String get menuMyInvoicesSub;
+
+  /// No description provided for @invoiceListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Invoices'**
+  String get invoiceListTitle;
+
+  /// No description provided for @invoiceListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoices issued yet.'**
+  String get invoiceListEmpty;
+
+  /// No description provided for @invoiceListEmptySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices you issue will appear here.'**
+  String get invoiceListEmptySub;
+
+  /// No description provided for @invoiceStatusIssued.
+  ///
+  /// In en, this message translates to:
+  /// **'Issued'**
+  String get invoiceStatusIssued;
+
+  /// No description provided for @invoiceStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get invoiceStatusDraft;
+
+  /// No description provided for @invoiceStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get invoiceStatusCancelled;
+
+  /// No description provided for @invoiceVatOf.
+  ///
+  /// In en, this message translates to:
+  /// **'incl. VAT {vat}'**
+  String invoiceVatOf(String vat);
 }
 
 class _AppLocalizationsDelegate

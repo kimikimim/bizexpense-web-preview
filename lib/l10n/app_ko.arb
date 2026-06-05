@@ -467,5 +467,14 @@
   "meTaxQuarterLabel": "{year} {q}분기",
   "settingsLanguage": "언어",
   "settingsLanguagePickerTitle": "언어 선택",
-  "settingsRegionFixedNote": "계정 생성 시 설정됨"
+  "settingsRegionFixedNote": "계정 생성 시 설정됨",
+  "menuMyInvoices": "내 인보이스",
+  "menuMyInvoicesSub": "발행 내역 보기",
+  "invoiceListTitle": "내 인보이스",
+  "invoiceListEmpty": "발행한 인보이스가 없습니다.",
+  "invoiceListEmptySub": "발행한 인보이스가 여기에 표시됩니다.",
+  "invoiceStatusIssued": "발행됨",
+  "invoiceStatusDraft": "임시저장",
+  "invoiceStatusCancelled": "취소됨",
+  "invoiceVatOf": "VAT 포함 {vat}"
 }

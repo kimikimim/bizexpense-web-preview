@@ -1433,4 +1433,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsRegionFixedNote => 'تم تحديدها عند إنشاء حسابك';
+
+  @override
+  String get menuMyInvoices => 'فواتيري';
+
+  @override
+  String get menuMyInvoicesSub => 'عرض الفواتير الصادرة';
+
+  @override
+  String get invoiceListTitle => 'فواتيري';
+
+  @override
+  String get invoiceListEmpty => 'لا توجد فواتير صادرة بعد.';
+
+  @override
+  String get invoiceListEmptySub => 'ستظهر الفواتير التي تصدرها هنا.';
+
+  @override
+  String get invoiceStatusIssued => 'صادرة';
+
+  @override
+  String get invoiceStatusDraft => 'مسودة';
+
+  @override
+  String get invoiceStatusCancelled => 'ملغاة';
+
+  @override
+  String invoiceVatOf(String vat) {
+    return 'شاملة الضريبة $vat';
+  }
 }

@@ -531,5 +531,15 @@
   "@meTaxQuarterLabel": {"placeholders": {"q": {"type": "String"}, "year": {"type": "String"}}},
   "settingsLanguage": "Language",
   "settingsLanguagePickerTitle": "Select Language",
-  "settingsRegionFixedNote": "Set when you created your account"
+  "settingsRegionFixedNote": "Set when you created your account",
+  "menuMyInvoices": "My Invoices",
+  "menuMyInvoicesSub": "View issued invoices",
+  "invoiceListTitle": "My Invoices",
+  "invoiceListEmpty": "No invoices issued yet.",
+  "invoiceListEmptySub": "Invoices you issue will appear here.",
+  "invoiceStatusIssued": "Issued",
+  "invoiceStatusDraft": "Draft",
+  "invoiceStatusCancelled": "Cancelled",
+  "invoiceVatOf": "incl. VAT {vat}",
+  "@invoiceVatOf": {"placeholders": {"vat": {"type": "String"}}}
 }

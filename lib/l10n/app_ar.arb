@@ -512,5 +512,14 @@
   "meTaxQuarterLabel": "الربع {q} {year}",
   "settingsLanguage": "اللغة",
   "settingsLanguagePickerTitle": "اختر اللغة",
-  "settingsRegionFixedNote": "تم تحديدها عند إنشاء حسابك"
+  "settingsRegionFixedNote": "تم تحديدها عند إنشاء حسابك",
+  "menuMyInvoices": "فواتيري",
+  "menuMyInvoicesSub": "عرض الفواتير الصادرة",
+  "invoiceListTitle": "فواتيري",
+  "invoiceListEmpty": "لا توجد فواتير صادرة بعد.",
+  "invoiceListEmptySub": "ستظهر الفواتير التي تصدرها هنا.",
+  "invoiceStatusIssued": "صادرة",
+  "invoiceStatusDraft": "مسودة",
+  "invoiceStatusCancelled": "ملغاة",
+  "invoiceVatOf": "شاملة الضريبة {vat}"
 }

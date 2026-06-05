@@ -16,6 +16,7 @@ import '../tax/presentation/tax_calendar_page.dart';
 import '../tax/presentation/tax_summary_page.dart';
 import '../recurring/presentation/recurring_list_page.dart';
 import '../transactions/presentation/invoice_page.dart';
+import '../transactions/presentation/my_invoices_page.dart';
 import '../user/presentation/settings_page.dart';
 import '../auth/presentation/login_page.dart';
 import '../user/presentation/profile_edit_page.dart';
@@ -234,6 +235,22 @@ class _AllMenuPageState extends ConsumerState<AllMenuPage> {
                   );
                 },
               ),
+              // ME-only: issued-invoice ledger (vat_invoices table is ME-only)
+              if (!isKorea)
+                _buildMenuTile(
+                  icon: Icons.receipt_long,
+                  iconColor: Colors.deepPurple,
+                  title: l10n.menuMyInvoices,
+                  subtitle: l10n.menuMyInvoicesSub,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const MyInvoicesPage(),
+                      ),
+                    );
+                  },
+                ),
             ],
           ),
 

@@ -53,6 +53,24 @@ class VatInvoiceRepository {
     }
   }
 
+  /// Issued invoices for the current user, newest first.
+  Future<List<Map<String, dynamic>>> getMyInvoices() async {
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) return [];
+      final rows = await _supabase
+          .from('vat_invoices')
+          .select()
+          .eq('user_id', userId)
+          .order('invoice_date', ascending: false)
+          .order('invoice_number', ascending: false);
+      return (rows as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      appLogger.e('getMyInvoices error', error: e);
+      return [];
+    }
+  }
+
   Future<String> _nextInvoiceNumber(String userId) async {
     final year = DateTime.now().year;
     int seq = 1;

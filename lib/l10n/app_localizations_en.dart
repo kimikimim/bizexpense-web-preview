@@ -1436,4 +1436,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsRegionFixedNote => 'Set when you created your account';
+
+  @override
+  String get menuMyInvoices => 'My Invoices';
+
+  @override
+  String get menuMyInvoicesSub => 'View issued invoices';
+
+  @override
+  String get invoiceListTitle => 'My Invoices';
+
+  @override
+  String get invoiceListEmpty => 'No invoices issued yet.';
+
+  @override
+  String get invoiceListEmptySub => 'Invoices you issue will appear here.';
+
+  @override
+  String get invoiceStatusIssued => 'Issued';
+
+  @override
+  String get invoiceStatusDraft => 'Draft';
+
+  @override
+  String get invoiceStatusCancelled => 'Cancelled';
+
+  @override
+  String invoiceVatOf(String vat) {
+    return 'incl. VAT $vat';
+  }
 }

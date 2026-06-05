@@ -1396,4 +1396,33 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsRegionFixedNote => '계정 생성 시 설정됨';
+
+  @override
+  String get menuMyInvoices => '내 인보이스';
+
+  @override
+  String get menuMyInvoicesSub => '발행 내역 보기';
+
+  @override
+  String get invoiceListTitle => '내 인보이스';
+
+  @override
+  String get invoiceListEmpty => '발행한 인보이스가 없습니다.';
+
+  @override
+  String get invoiceListEmptySub => '발행한 인보이스가 여기에 표시됩니다.';
+
+  @override
+  String get invoiceStatusIssued => '발행됨';
+
+  @override
+  String get invoiceStatusDraft => '임시저장';
+
+  @override
+  String get invoiceStatusCancelled => '취소됨';
+
+  @override
+  String invoiceVatOf(String vat) {
+    return 'VAT 포함 $vat';
+  }
 }
