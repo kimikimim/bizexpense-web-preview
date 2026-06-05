@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 import 'package:expense_pro/l10n/app_localizations.dart';
@@ -9,15 +10,16 @@ import '../../transactions/data/transaction_model.dart';
 import '../../receipts/services/receipt_service.dart';
 import '../../transactions/presentation/add_transaction_page.dart';
 import '../../../core/widgets/primary_button.dart';
+import '../../../core/providers/country_config_provider.dart';
 
-class CameraPage extends StatefulWidget {
+class CameraPage extends ConsumerStatefulWidget {
   const CameraPage({super.key});
 
   @override
-  State<CameraPage> createState() => _CameraPageState();
+  ConsumerState<CameraPage> createState() => _CameraPageState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class _CameraPageState extends ConsumerState<CameraPage> {
   final ImagePicker _picker = ImagePicker();
   final TransactionRepository _repository = TransactionRepository();
   
@@ -49,7 +51,10 @@ class _CameraPageState extends State<CameraPage> {
         results = await Future.wait(
           [
             _repository.uploadReceiptImage(_pickedFile!),
-            ReceiptService.analyzeReceipt(_pickedFile!), 
+            ReceiptService.analyzeReceipt(
+              _pickedFile!,
+              config: ref.read(countryConfigProvider),
+            ),
           ],
           eagerError: false,
         );

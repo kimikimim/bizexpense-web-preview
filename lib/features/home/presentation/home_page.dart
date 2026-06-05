@@ -482,7 +482,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           (tx.memo ?? '').toLowerCase().contains(keyword) ||
           (tx.category ?? '').toLowerCase().contains(keyword) ||
           tx.method.toLowerCase().contains(keyword) ||
-          tx.amount.toString().contains(keyword);
+          _config.toMajorUnits(tx.amount).toString().contains(keyword);
     }).toList();
 
     if (results.isEmpty) {

@@ -5,11 +5,15 @@ import 'package:uuid/uuid.dart';
 import 'package:expense_pro/core/utils/app_logger.dart';
 
 import '../../transactions/data/transaction_model.dart';
+import '../../../core/config/country_tax_config.dart';
 
 class ReceiptService {
   static final SupabaseClient _supabase = Supabase.instance.client;
 
-  static Future<TransactionModel?> analyzeReceipt(XFile imageFile) async {
+  static Future<TransactionModel?> analyzeReceipt(
+    XFile imageFile, {
+    required CountryTaxConfig config,
+  }) async {
     try {
       
       final bytes = await imageFile.readAsBytes();
@@ -47,15 +51,16 @@ class ReceiptService {
       final DateTime parsedDate =
           rawDate != null ? (DateTime.tryParse(rawDate) ?? DateTime.now()) : DateTime.now();
 
+      // OCR returns the amount printed on the receipt (major units, may have
+      // decimals). Store it as integer minor units to match manual entry.
       final dynamic amountRaw = jsonResult['amount'];
-      int amount = 0;
-      if (amountRaw is int) {
-        amount = amountRaw;
-      } else if (amountRaw is double) {
-        amount = amountRaw.round();
+      double amountMajor = 0;
+      if (amountRaw is num) {
+        amountMajor = amountRaw.toDouble();
       } else if (amountRaw != null) {
-        amount = int.tryParse(amountRaw.toString()) ?? 0;
+        amountMajor = double.tryParse(amountRaw.toString()) ?? 0;
       }
+      final int amount = config.toMinorUnits(amountMajor);
 
       final storeName = jsonResult['storeName']?.toString() ?? '상호명 미상';
       final category = jsonResult['category']?.toString() ?? '기타';
